@@ -1,17 +1,41 @@
 # oiv
 
-Open Image Viewer
+Open Image Viewer / Picavi desktop viewer.
 
-## Getting Started
+## What it does
 
-This project is a starting point for a Flutter application.
+- Opens a selected image and automatically loads every supported sibling image in the same folder.
+- Shows the active image centered with a dense bottom thumbnail strip.
+- Supports desktop-friendly zoom and pan via `photo_view` gestures, plus keyboard navigation with `←`, `→`, `Home`, and `End`.
+- Enters fullscreen viewer mode when an image is opened.
+- Uses a dark semi-transparent shell with a blurred backdrop for a Picasa-style browsing feel.
 
-A few resources to get you started if this is your first Flutter project:
+## Supported image extensions
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+`bmp`, `gif`, `ico`, `jpeg`, `jpg`, `png`, `webp`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Native desktop opening support
+
+- **macOS:** declares common image document types in `Info.plist` and forwards Finder open-file events into Flutter.
+- **Linux:** installs a desktop entry advertising common image MIME types for desktop integration.
+- **Windows:** registers the executable as an **Open with** target for common image extensions at user level.
+
+## Run locally
+
+```bash
+flutter pub get
+flutter run -d macos
+```
+
+You can also pass a file path directly:
+
+```bash
+flutter run -d macos -- /absolute/path/to/image.jpg
+```
+
+## Quality checks
+
+```bash
+flutter analyze
+flutter test
+```
