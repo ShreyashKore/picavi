@@ -96,9 +96,13 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
   static const MethodChannel _fileOpenChannel = MethodChannel(
     'com.gyanoba.oiv/file_open',
   );
+  static const List<int> _permissionDeniedErrorCodes = [1, 13];
   static const double _thumbnailExtent = 96;
 
   final ScrollController _thumbnailScrollController = ScrollController();
+  final FocusNode _viewerFocusNode = FocusNode(
+    debugLabel: 'viewerKeyboardFocus',
+  );
   late PageController _pageController;
 
   List<File> _images = const [];
@@ -106,6 +110,7 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
   int _currentIndex = 0;
   bool _enteredFullscreen = false;
   bool _isBootstrapping = true;
+  bool _isPickingFile = false;
 
   @override
   void initState() {
@@ -118,6 +123,7 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
   @override
   void dispose() {
     _thumbnailScrollController.dispose();
+    _viewerFocusNode.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -173,16 +179,85 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
   }
 
   Future<void> _pickAndOpenImage() async {
-    final selectedFile = await openFile(
-      acceptedTypeGroups: [_imageFileGroup],
-      confirmButtonText: 'Open viewer',
-    );
-
-    if (selectedFile == null) {
+    if (_isPickingFile) {
       return;
     }
 
-    await _handleOpenPaths([selectedFile.path]);
+    try {
+      _isPickingFile = true;
+      _viewerFocusNode.unfocus();
+      FocusManager.instance.primaryFocus?.unfocus();
+
+      await _syncKeyboardStateForNativeDialog();
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+
+      final selectedPath = await _pickImagePath();
+
+      await _syncKeyboardStateForNativeDialog();
+
+      if (selectedPath == null || selectedPath.isEmpty) {
+        return;
+      }
+
+      await _handleOpenPaths([selectedPath]);
+    } catch (e) {
+      debugPrint('Error picking file: $e');
+    } finally {
+      _isPickingFile = false;
+    }
+  }
+
+  Future<String?> _pickImagePath() async {
+    if (Platform.isMacOS) {
+      return _pickImagePathOnMacOs();
+    }
+
+    final selectedFile = await openFile(
+      acceptedTypeGroups: [_imageFileGroup],
+      initialDirectory: _preferredPickerDirectory(),
+      confirmButtonText: 'Open viewer',
+    );
+
+    return selectedFile?.path;
+  }
+
+  Future<String?> _pickImagePathOnMacOs() async {
+    try {
+      return await _fileOpenChannel.invokeMethod<String>('pickImageFile', {
+        'initialDirectory': _preferredPickerDirectory(),
+      });
+    } on MissingPluginException {
+      return null;
+    } on PlatformException catch (error) {
+      debugPrint('Native macOS image picker failed: ${error.message}');
+      return null;
+    }
+  }
+
+  String _preferredPickerDirectory() {
+    if (_currentDirectory != null && _currentDirectory!.isNotEmpty) {
+      return _currentDirectory!;
+    }
+
+    final homeDirectory = Platform.environment['HOME'];
+    if (homeDirectory != null && homeDirectory.isNotEmpty) {
+      final picturesDirectory = p.join(homeDirectory, 'Pictures');
+      if (Directory(picturesDirectory).existsSync()) {
+        return picturesDirectory;
+      }
+
+      return homeDirectory;
+    }
+
+    return Directory.current.path;
+  }
+
+  Future<void> _syncKeyboardStateForNativeDialog() async {
+    try {
+      await HardwareKeyboard.instance.syncKeyboardState();
+    } catch (_) {
+      // Best-effort only. Some embedders may not support keyboard state sync.
+    }
   }
 
   Future<void> _handleOpenPaths(Iterable<String> rawPaths) async {
@@ -253,6 +328,7 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       previousController.dispose();
       _centerThumbnailOn(selectedIndex, animate: false);
+      _viewerFocusNode.requestFocus();
     });
 
     await _enterFullscreenMode();
@@ -271,13 +347,43 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
     }
   }
 
-  Future<List<File>> _readImagesFromDirectory(Directory directory) async {
+  Future<List<File>> _readImagesFromDirectory(
+    Directory directory, {
+    bool allowMacPermissionPrompt = true,
+  }) async {
     final images = <File>[];
 
-    await for (final entity in directory.list(followLinks: false)) {
-      if (entity is File && _isSupportedImagePath(entity.path)) {
-        images.add(entity.absolute);
+    try {
+      await for (final entity in directory.list(followLinks: false)) {
+        if (entity is File && _isSupportedImagePath(entity.path)) {
+          images.add(entity.absolute);
+        }
       }
+    } on FileSystemException catch (error) {
+      debugPrint(
+        'Unable to read image directory ${directory.path}: ${error.message}',
+      );
+
+      if (Platform.isMacOS &&
+          allowMacPermissionPrompt &&
+          _isPermissionDeniedFileSystemError(error)) {
+        final authorizedDirectory = await _authorizeMacDirectoryAccess(
+          directory.path,
+        );
+        if (authorizedDirectory != null && authorizedDirectory.isNotEmpty) {
+          return _readImagesFromDirectory(
+            Directory(authorizedDirectory),
+            allowMacPermissionPrompt: false,
+          );
+        }
+      }
+
+      return const <File>[];
+    } catch (error) {
+      debugPrint(
+        'Unexpected directory scan failure for ${directory.path}: $error',
+      );
+      return const <File>[];
     }
 
     images.sort((left, right) {
@@ -287,6 +393,69 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
     });
 
     return images;
+  }
+
+  Future<String?> _authorizeMacDirectoryAccess(String directoryPath) async {
+    if (!Platform.isMacOS) {
+      return null;
+    }
+
+    try {
+      final grantedPath = await _fileOpenChannel.invokeMethod<String>(
+        'authorizeDirectoryAccess',
+        {'initialDirectory': directoryPath},
+      );
+
+      if (grantedPath == null || grantedPath.isEmpty) {
+        _showStatusMessage(
+          'Folder access was not granted, so only the selected image can be shown.',
+        );
+      }
+
+      return grantedPath;
+    } on MissingPluginException {
+      return null;
+    } on PlatformException catch (error) {
+      debugPrint('macOS folder authorization failed: ${error.message}');
+      _showStatusMessage(
+        'Folder access could not be requested. Showing only the selected image.',
+      );
+      return null;
+    }
+  }
+
+  bool _isPermissionDeniedFileSystemError(FileSystemException error) {
+    final code = error.osError?.errorCode;
+    if (code != null && _permissionDeniedErrorCodes.contains(code)) {
+      return true;
+    }
+
+    final message = error.message.toLowerCase();
+    return message.contains('operation not permitted') ||
+        message.contains('permission denied');
+  }
+
+  void _showStatusMessage(String message) {
+    if (!mounted) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      messenger
+        ?..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(message),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+    });
   }
 
   bool _isSupportedImagePath(String path) {
@@ -384,21 +553,26 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final content = Stack(
+      fit: StackFit.expand,
+      children: [
+        _buildBackdrop(),
+        Container(color: const Color(0xB3000000)),
+        if (_images.isEmpty) _buildEmptyState(context) else _buildGallery(),
+        if (_images.isNotEmpty) _buildTopOverlay(context),
+      ],
+    );
+
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Focus(
-        autofocus: true,
-        onKeyEvent: _handleKeyEvent,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            _buildBackdrop(),
-            Container(color: const Color(0xB3000000)),
-            if (_images.isEmpty) _buildEmptyState(context) else _buildGallery(),
-            if (_images.isNotEmpty) _buildTopOverlay(context),
-          ],
-        ),
-      ),
+      body: _images.isEmpty
+          ? content
+          : Focus(
+              focusNode: _viewerFocusNode,
+              autofocus: true,
+              onKeyEvent: _handleKeyEvent,
+              child: content,
+            ),
     );
   }
 
