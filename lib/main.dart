@@ -226,7 +226,8 @@ class _OivViewerScreenState extends State<OivViewerScreen> {
       return await _fileOpenChannel.invokeMethod<String>('pickImageFile', {
         'initialDirectory': _preferredPickerDirectory(),
       });
-    } on MissingPluginException {
+    } on MissingPluginException catch (e) {
+      debugPrint('Native macOS image picker is not implemented: $e');
       return null;
     } on PlatformException catch (error) {
       debugPrint('Native macOS image picker failed: ${error.message}');
