@@ -1,0 +1,27 @@
+{
+  "@@locale": "ar",
+  "appTitle": "Picavi",
+  "emptyStateTitle": "عارض الصور المكتبي Picavi",
+  "emptyStateDescription": "افتح أي صورة مدعومة لبدء العارض الكثيف بملء الشاشة مع تكبير بالإيماءات وشريط صور مصغرة لكل ملفات المجلد.",
+  "openImage": "افتح صورة",
+  "tipsText": "نصائح: اسحب بالماوس أو لوحة اللمس للتحريك، واستخدم القرص أو الإيماءة للتكبير، واستعمل ← / → للتنقل داخل المجلد.",
+  "folderFallback": "المجلد",
+  "viewerPosition": "{directoryName} • {current} / {total}",
+  "@viewerPosition": {
+    "placeholders": {
+      "directoryName": {},
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "folderAccessDenied": "لم يتم منح إذن الوصول إلى المجلد، لذلك يمكن عرض الصورة المحددة فقط.",
+  "folderAccessRequestFailed": "تعذر طلب إذن الوصول إلى المجلد. سيتم عرض الصورة المحددة فقط.",
+  "nativeOpenViewerPrompt": "افتح العارض",
+  "nativeGrantFolderAccessPrompt": "امنح إذن الوصول إلى المجلد",
+  "nativeGrantFolderAccessMessage": "اسمح لـ Picavi بقراءة الصور المجاورة داخل هذا المجلد."
+}
+

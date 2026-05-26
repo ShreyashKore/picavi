@@ -83,7 +83,7 @@ class MainFlutterWindow: NSWindow {
     panel.canChooseDirectories = false
     panel.allowsMultipleSelection = false
     panel.allowedFileTypes = ["bmp", "gif", "ico", "jpeg", "jpg", "png", "webp"]
-    panel.prompt = "Open viewer"
+    panel.prompt = stringValue(forKey: "prompt", arguments: arguments) ?? "Open viewer"
     panel.directoryURL = directoryURL(from: arguments)
 
     present(panel: panel) { [weak self] response in
@@ -102,8 +102,8 @@ class MainFlutterWindow: NSWindow {
     panel.canChooseFiles = false
     panel.canChooseDirectories = true
     panel.allowsMultipleSelection = false
-    panel.prompt = "Grant folder access"
-    panel.message = "Allow Picavi to read sibling images in this folder."
+    panel.prompt = stringValue(forKey: "prompt", arguments: arguments) ?? "Grant folder access"
+    panel.message = stringValue(forKey: "message", arguments: arguments) ?? "Allow Picavi to read sibling images in this folder."
     panel.directoryURL = directoryURL(from: arguments)
 
     present(panel: panel) { [weak self] response in
@@ -136,6 +136,16 @@ class MainFlutterWindow: NSWindow {
     }
 
     return URL(fileURLWithPath: path, isDirectory: true)
+  }
+
+  private func stringValue(forKey key: String, arguments: Any?) -> String? {
+    guard let dictionary = arguments as? [String: Any],
+          let value = dictionary[key] as? String,
+          !value.isEmpty else {
+      return nil
+    }
+
+    return value
   }
 
   private func startAccessingSecurityScope(for url: URL) {

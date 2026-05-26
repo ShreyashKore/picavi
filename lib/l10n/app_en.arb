@@ -1,0 +1,27 @@
+{
+  "@@locale": "en",
+  "appTitle": "Picavi",
+  "emptyStateTitle": "Picavi desktop viewer",
+  "emptyStateDescription": "Open any supported image to launch the dense, fullscreen viewer with gesture zoom and a folder-wide thumbnail rail.",
+  "openImage": "Open image",
+  "tipsText": "Tips: drag with the mouse or trackpad to pan, pinch or scroll to zoom, and use ← / → to move through the folder.",
+  "folderFallback": "Folder",
+  "viewerPosition": "{directoryName} • {current} / {total}",
+  "@viewerPosition": {
+    "placeholders": {
+      "directoryName": {},
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "folderAccessDenied": "Folder access was not granted, so only the selected image can be shown.",
+  "folderAccessRequestFailed": "Folder access could not be requested. Showing only the selected image.",
+  "nativeOpenViewerPrompt": "Open viewer",
+  "nativeGrantFolderAccessPrompt": "Grant folder access",
+  "nativeGrantFolderAccessMessage": "Allow Picavi to read sibling images in this folder."
+}
+

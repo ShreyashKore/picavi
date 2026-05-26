@@ -1,0 +1,27 @@
+{
+  "@@locale": "mr",
+  "appTitle": "Picavi",
+  "emptyStateTitle": "Picavi डेस्कटॉप प्रतिमा दर्शक",
+  "emptyStateDescription": "कोणतीही समर्थित प्रतिमा उघडा आणि जेश्चर झूम व संपूर्ण फोल्डरमधील थंबनेल पट्टीसह दाट, पूर्ण-स्क्रीन दर्शक सुरू करा.",
+  "openImage": "प्रतिमा उघडा",
+  "tipsText": "सूचना: पॅन करण्यासाठी माऊस किंवा ट्रॅकपॅडने ड्रॅग करा, झूम करण्यासाठी पिंच किंवा स्क्रोल करा आणि फोल्डरमध्ये फिरण्यासाठी ← / → वापरा.",
+  "folderFallback": "फोल्डर",
+  "viewerPosition": "{directoryName} • {current} / {total}",
+  "@viewerPosition": {
+    "placeholders": {
+      "directoryName": {},
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "folderAccessDenied": "फोल्डरची परवानगी दिली गेली नाही, त्यामुळे फक्त निवडलेली प्रतिमा दाखवता येईल.",
+  "folderAccessRequestFailed": "फोल्डर परवानगीची विनंती करता आली नाही. फक्त निवडलेली प्रतिमा दाखवली जाईल.",
+  "nativeOpenViewerPrompt": "दर्शक उघडा",
+  "nativeGrantFolderAccessPrompt": "फोल्डर परवानगी द्या",
+  "nativeGrantFolderAccessMessage": "या फोल्डरमधील शेजारील प्रतिमा वाचण्यासाठी Picavi ला परवानगी द्या."
+}
+

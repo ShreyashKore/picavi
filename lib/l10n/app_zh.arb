@@ -1,0 +1,27 @@
+{
+  "@@locale": "zh",
+  "appTitle": "Picavi",
+  "emptyStateTitle": "Picavi 桌面看图器",
+  "emptyStateDescription": "打开任意支持的图片，即可启动紧凑的全屏查看器，支持手势缩放和文件夹缩略图带。",
+  "openImage": "打开图片",
+  "tipsText": "提示：使用鼠标或触控板拖动可平移，捏合或滚动可缩放，使用 ← / → 可在文件夹中切换。",
+  "folderFallback": "文件夹",
+  "viewerPosition": "{directoryName} • {current} / {total}",
+  "@viewerPosition": {
+    "placeholders": {
+      "directoryName": {},
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "folderAccessDenied": "未授予文件夹访问权限，因此只能显示所选图片。",
+  "folderAccessRequestFailed": "无法请求文件夹访问权限。仅显示所选图片。",
+  "nativeOpenViewerPrompt": "打开查看器",
+  "nativeGrantFolderAccessPrompt": "授予文件夹访问权限",
+  "nativeGrantFolderAccessMessage": "允许 Picavi 读取此文件夹中的同级图片。"
+}
+

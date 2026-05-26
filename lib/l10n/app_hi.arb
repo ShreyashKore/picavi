@@ -1,0 +1,27 @@
+{
+  "@@locale": "hi",
+  "appTitle": "Picavi",
+  "emptyStateTitle": "Picavi डेस्कटॉप इमेज व्यूअर",
+  "emptyStateDescription": "किसी भी समर्थित छवि को खोलें और घने, फुलस्क्रीन व्यूअर को शुरू करें जिसमें जेस्चर ज़ूम और फ़ोल्डर-भर की थंबनेल पट्टी हो।",
+  "openImage": "छवि खोलें",
+  "tipsText": "सुझाव: पैन करने के लिए माउस या ट्रैकपैड से खींचें, ज़ूम करने के लिए पिंच या स्क्रॉल करें, और फ़ोल्डर में आगे-पीछे जाने के लिए ← / → का उपयोग करें।",
+  "folderFallback": "फ़ोल्डर",
+  "viewerPosition": "{directoryName} • {current} / {total}",
+  "@viewerPosition": {
+    "placeholders": {
+      "directoryName": {},
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "folderAccessDenied": "फ़ोल्डर एक्सेस नहीं दिया गया, इसलिए केवल चुनी हुई छवि दिखाई जा सकती है।",
+  "folderAccessRequestFailed": "फ़ोल्डर एक्सेस का अनुरोध नहीं किया जा सका। केवल चुनी हुई छवि दिखाई जा रही है।",
+  "nativeOpenViewerPrompt": "व्यूअर खोलें",
+  "nativeGrantFolderAccessPrompt": "फ़ोल्डर एक्सेस दें",
+  "nativeGrantFolderAccessMessage": "Picavi को इस फ़ोल्डर की अन्य छवियाँ पढ़ने की अनुमति दें।"
+}
+

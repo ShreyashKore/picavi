@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:oiv/main.dart';
+import 'package:oiv/app.dart';
 
 void main() {
   testWidgets('shows viewer empty state before an image is opened', (

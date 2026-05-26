@@ -1,0 +1,27 @@
+{
+  "@@locale": "es",
+  "appTitle": "Picavi",
+  "emptyStateTitle": "Visor de imágenes de escritorio Picavi",
+  "emptyStateDescription": "Abre cualquier imagen compatible para iniciar el visor denso en pantalla completa con zoom por gestos y una tira de miniaturas de toda la carpeta.",
+  "openImage": "Abrir imagen",
+  "tipsText": "Consejos: arrastra con el ratón o el trackpad para desplazar, pellizca o usa la rueda para ampliar y usa ← / → para moverte por la carpeta.",
+  "folderFallback": "Carpeta",
+  "viewerPosition": "{directoryName} • {current} / {total}",
+  "@viewerPosition": {
+    "placeholders": {
+      "directoryName": {},
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "folderAccessDenied": "No se concedió acceso a la carpeta, por lo que solo se puede mostrar la imagen seleccionada.",
+  "folderAccessRequestFailed": "No se pudo solicitar acceso a la carpeta. Se mostrará solo la imagen seleccionada.",
+  "nativeOpenViewerPrompt": "Abrir visor",
+  "nativeGrantFolderAccessPrompt": "Conceder acceso a la carpeta",
+  "nativeGrantFolderAccessMessage": "Permite que Picavi lea las imágenes vecinas de esta carpeta."
+}
+
