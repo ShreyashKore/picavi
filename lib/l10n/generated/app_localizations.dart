@@ -115,13 +115,13 @@ abstract class AppLocalizations {
   /// No description provided for @emptyStateTitle.
   ///
   /// In en, this message translates to:
-  /// **'Picavi desktop viewer'**
+  /// **'Picavi'**
   String get emptyStateTitle;
 
   /// No description provided for @emptyStateDescription.
   ///
   /// In en, this message translates to:
-  /// **'Open any supported image to launch the dense, fullscreen viewer with gesture zoom and a folder-wide thumbnail rail.'**
+  /// **'Lightweight, No frills image viewer.'**
   String get emptyStateDescription;
 
   /// No description provided for @openImage.

@@ -1,8 +1,8 @@
 {
   "@@locale": "zh",
   "appTitle": "Picavi",
-  "emptyStateTitle": "Picavi 桌面看图器",
-  "emptyStateDescription": "打开任意支持的图片，即可启动紧凑的全屏查看器，支持手势缩放和文件夹缩略图带。",
+  "emptyStateTitle": "Picavi",
+  "emptyStateDescription": "轻量、简洁、不花哨的图片查看器。",
   "openImage": "打开图片",
   "tipsText": "提示：使用鼠标或触控板拖动可平移，捏合或滚动可缩放，使用 ← / → 可在文件夹中切换。",
   "folderFallback": "文件夹",

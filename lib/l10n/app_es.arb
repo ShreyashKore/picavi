@@ -1,8 +1,8 @@
 {
   "@@locale": "es",
   "appTitle": "Picavi",
-  "emptyStateTitle": "Visor de imágenes de escritorio Picavi",
-  "emptyStateDescription": "Abre cualquier imagen compatible para iniciar el visor denso en pantalla completa con zoom por gestos y una tira de miniaturas de toda la carpeta.",
+  "emptyStateTitle": "Picavi",
+  "emptyStateDescription": "Visor de imágenes ligero y sin complicaciones.",
   "openImage": "Abrir imagen",
   "tipsText": "Consejos: arrastra con el ratón o el trackpad para desplazar, pellizca o usa la rueda para ampliar y usa ← / → para moverte por la carpeta.",
   "folderFallback": "Carpeta",

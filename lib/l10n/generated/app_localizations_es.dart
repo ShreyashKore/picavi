@@ -12,11 +12,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appTitle => 'Picavi';
 
   @override
-  String get emptyStateTitle => 'Visor de imágenes de escritorio Picavi';
+  String get emptyStateTitle => 'Picavi';
 
   @override
   String get emptyStateDescription =>
-      'Abre cualquier imagen compatible para iniciar el visor denso en pantalla completa con zoom por gestos y una tira de miniaturas de toda la carpeta.';
+      'Visor de imágenes ligero y sin complicaciones.';
 
   @override
   String get openImage => 'Abrir imagen';

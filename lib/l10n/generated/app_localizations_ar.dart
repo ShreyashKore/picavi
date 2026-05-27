@@ -12,11 +12,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTitle => 'Picavi';
 
   @override
-  String get emptyStateTitle => 'عارض الصور المكتبي Picavi';
+  String get emptyStateTitle => 'Picavi';
 
   @override
-  String get emptyStateDescription =>
-      'افتح أي صورة مدعومة لبدء العارض الكثيف بملء الشاشة مع تكبير بالإيماءات وشريط صور مصغرة لكل ملفات المجلد.';
+  String get emptyStateDescription => 'عارض صور خفيف وبسيط بلا تعقيد.';
 
   @override
   String get openImage => 'افتح صورة';

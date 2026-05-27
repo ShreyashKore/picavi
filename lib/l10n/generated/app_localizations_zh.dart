@@ -12,10 +12,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appTitle => 'Picavi';
 
   @override
-  String get emptyStateTitle => 'Picavi 桌面看图器';
+  String get emptyStateTitle => 'Picavi';
 
   @override
-  String get emptyStateDescription => '打开任意支持的图片，即可启动紧凑的全屏查看器，支持手势缩放和文件夹缩略图带。';
+  String get emptyStateDescription => '轻量、简洁、不花哨的图片查看器。';
 
   @override
   String get openImage => '打开图片';

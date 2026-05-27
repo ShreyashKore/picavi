@@ -8,8 +8,8 @@ void main() {
     await tester.pumpWidget(const OivApp());
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('Picavi desktop viewer'), findsOneWidget);
+    expect(find.text('Picavi'), findsOneWidget);
     expect(find.text('Open image'), findsOneWidget);
-    expect(find.textContaining('gesture zoom'), findsOneWidget);
+    expect(find.textContaining('No frills image viewer'), findsOneWidget);
   });
 }

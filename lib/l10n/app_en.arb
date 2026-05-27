@@ -1,8 +1,8 @@
 {
   "@@locale": "en",
   "appTitle": "Picavi",
-  "emptyStateTitle": "Picavi desktop viewer",
-  "emptyStateDescription": "Open any supported image to launch the dense, fullscreen viewer with gesture zoom and a folder-wide thumbnail rail.",
+  "emptyStateTitle": "Picavi",
+  "emptyStateDescription": "Lightweight, No frills image viewer.",
   "openImage": "Open image",
   "tipsText": "Tips: drag with the mouse or trackpad to pan, pinch or scroll to zoom, and use ← / → to move through the folder.",
   "folderFallback": "Folder",

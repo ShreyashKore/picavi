@@ -73,6 +73,7 @@ class ViewerEmptyState extends StatelessWidget {
                               label: Text(
                                 extension.replaceFirst('.', '').toUpperCase(),
                               ),
+                              padding: EdgeInsets.zero,
                               visualDensity: VisualDensity.compact,
                             ),
                           )

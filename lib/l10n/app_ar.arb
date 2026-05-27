@@ -1,8 +1,8 @@
 {
   "@@locale": "ar",
   "appTitle": "Picavi",
-  "emptyStateTitle": "عارض الصور المكتبي Picavi",
-  "emptyStateDescription": "افتح أي صورة مدعومة لبدء العارض الكثيف بملء الشاشة مع تكبير بالإيماءات وشريط صور مصغرة لكل ملفات المجلد.",
+  "emptyStateTitle": "Picavi",
+  "emptyStateDescription": "عارض صور خفيف وبسيط بلا تعقيد.",
   "openImage": "افتح صورة",
   "tipsText": "نصائح: اسحب بالماوس أو لوحة اللمس للتحريك، واستخدم القرص أو الإيماءة للتكبير، واستعمل ← / → للتنقل داخل المجلد.",
   "folderFallback": "المجلد",

@@ -12,11 +12,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Picavi';
 
   @override
-  String get emptyStateTitle => 'Picavi desktop viewer';
+  String get emptyStateTitle => 'Picavi';
 
   @override
-  String get emptyStateDescription =>
-      'Open any supported image to launch the dense, fullscreen viewer with gesture zoom and a folder-wide thumbnail rail.';
+  String get emptyStateDescription => 'Lightweight, No frills image viewer.';
 
   @override
   String get openImage => 'Open image';

@@ -12,11 +12,11 @@ class AppLocalizationsMr extends AppLocalizations {
   String get appTitle => 'Picavi';
 
   @override
-  String get emptyStateTitle => 'Picavi डेस्कटॉप प्रतिमा दर्शक';
+  String get emptyStateTitle => 'Picavi';
 
   @override
   String get emptyStateDescription =>
-      'कोणतीही समर्थित प्रतिमा उघडा आणि जेश्चर झूम व संपूर्ण फोल्डरमधील थंबनेल पट्टीसह दाट, पूर्ण-स्क्रीन दर्शक सुरू करा.';
+      'हलका आणि अनावश्यक गोष्टींशिवाय प्रतिमा दर्शक.';
 
   @override
   String get openImage => 'प्रतिमा उघडा';
