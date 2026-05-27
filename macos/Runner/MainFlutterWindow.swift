@@ -89,7 +89,7 @@ class MainFlutterWindow: NSWindow {
     panel.canChooseFiles = true
     panel.canChooseDirectories = false
     panel.allowsMultipleSelection = false
-    panel.allowedFileTypes = ["bmp", "gif", "ico", "jpeg", "jpg", "png", "webp"]
+    panel.allowedFileTypes = ["bmp", "gif", "ico", "jpeg", "jpg", "png", "svg", "webp"]
     panel.prompt = stringValue(forKey: "prompt", arguments: arguments) ?? "Open viewer"
     panel.directoryURL = directoryURL(from: arguments)
 

@@ -5,5 +5,6 @@ const Set<String> supportedImageExtensions = {
   '.jpeg',
   '.jpg',
   '.png',
+  '.svg',
   '.webp',
 };

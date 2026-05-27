@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path/path.dart' as p;
 
 class AppImage extends StatelessWidget {
   const AppImage({
     super.key,
     required this.image,
+    this.svgBytesLoader,
     this.width,
     this.height,
     this.fit,
@@ -23,6 +27,10 @@ class AppImage extends StatelessWidget {
     this.loadingBuilder,
     this.errorBuilder,
     this.opacity,
+    this.assetName,
+    this.filePath,
+    this.bundle,
+    this.package,
   });
 
   AppImage.file(
@@ -45,13 +53,18 @@ class AppImage extends StatelessWidget {
     this.loadingBuilder,
     this.errorBuilder,
     this.opacity,
-  }) : image = FileImage(File(path));
+  }) : filePath = path,
+       assetName = null,
+       bundle = null,
+       package = null,
+       svgBytesLoader = _isSvgPath(path) ? SvgFileLoader(File(path)) : null,
+       image = _isSvgPath(path) ? null : FileImage(File(path));
 
   AppImage.asset(
-    String assetName, {
+    this.assetName, {
     super.key,
-    AssetBundle? bundle,
-    String? package,
+    this.bundle,
+    this.package,
     this.width,
     this.height,
     this.fit,
@@ -69,9 +82,20 @@ class AppImage extends StatelessWidget {
     this.loadingBuilder,
     this.errorBuilder,
     this.opacity,
-  }) : image = AssetImage(assetName, bundle: bundle, package: package);
+  }) : filePath = null,
+       svgBytesLoader = _isSvgPath(assetName!)
+           ? SvgAssetLoader(
+               assetName,
+               assetBundle: bundle,
+               packageName: package,
+             )
+           : null,
+       image = _isSvgPath(assetName)
+           ? null
+           : AssetImage(assetName, bundle: bundle, package: package);
 
-  final ImageProvider image;
+  final ImageProvider? image;
+  final BytesLoader? svgBytesLoader;
   final double? width;
   final double? height;
   final BoxFit? fit;
@@ -90,14 +114,97 @@ class AppImage extends StatelessWidget {
   final ImageErrorWidgetBuilder? errorBuilder;
   final Animation<double>? opacity;
 
-  Object get providerIdentity => (image, cacheWidth, cacheHeight);
+  final String? assetName;
+  final String? filePath;
+  final AssetBundle? bundle;
+  final String? package;
+
+  bool get isSvg => svgBytesLoader != null;
+
+  Object get providerIdentity => (
+    image,
+    svgBytesLoader,
+    cacheWidth,
+    cacheHeight,
+    width,
+    height,
+    assetName,
+    filePath,
+  );
 
   ImageProvider get imageProvider {
-    return ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, image);
+    final resolvedImage = image;
+    if (resolvedImage == null) {
+      throw StateError('SVG images do not expose a raster ImageProvider.');
+    }
+
+    return ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, resolvedImage);
+  }
+
+  Future<AppImageInfo> resolveInfo(BuildContext context) async {
+    if (isSvg) {
+      final pictureInfo = await vg.loadPicture(svgBytesLoader!, context);
+      try {
+        return AppImageInfo(pixelSize: pictureInfo.size, isVector: true);
+      } finally {
+        pictureInfo.picture.dispose();
+      }
+    }
+
+    final completer = Completer<AppImageInfo>();
+    final stream = imageProvider.resolve(
+      createLocalImageConfiguration(context),
+    );
+    late final ImageStreamListener listener;
+    listener = ImageStreamListener(
+      (imageInfo, _) {
+        if (completer.isCompleted) {
+          return;
+        }
+        completer.complete(
+          AppImageInfo(
+            pixelSize: Size(
+              imageInfo.image.width.toDouble(),
+              imageInfo.image.height.toDouble(),
+            ),
+          ),
+        );
+        stream.removeListener(listener);
+      },
+      onError: (exception, stackTrace) {
+        if (!completer.isCompleted) {
+          completer.completeError(exception, stackTrace);
+        }
+        stream.removeListener(listener);
+      },
+    );
+    stream.addListener(listener);
+    return completer.future;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isSvg) {
+      return SvgPicture(
+        svgBytesLoader!,
+        width: width,
+        height: height,
+        fit: fit ?? BoxFit.contain,
+        alignment: alignment,
+        matchTextDirection: matchTextDirection,
+        semanticsLabel: semanticLabel,
+        excludeFromSemantics: excludeFromSemantics,
+        placeholderBuilder: loadingBuilder == null
+            ? null
+            : (context) =>
+                  loadingBuilder!(context, const SizedBox.shrink(), null),
+        errorBuilder: errorBuilder == null
+            ? null
+            : (context, error, stackTrace) =>
+                  errorBuilder!(context, error, stackTrace),
+      );
+    }
+
     return Image(
       image: imageProvider,
       width: width,
@@ -117,11 +224,16 @@ class AppImage extends StatelessWidget {
       opacity: opacity,
     );
   }
+
+  static bool _isSvgPath(String path) {
+    return p.extension(path).toLowerCase() == '.svg';
+  }
 }
 
 @immutable
 class AppImageInfo {
-  const AppImageInfo({required this.pixelSize});
+  const AppImageInfo({required this.pixelSize, this.isVector = false});
 
   final Size pixelSize;
+  final bool isVector;
 }

@@ -32,8 +32,8 @@ class ViewerScreen extends StatefulWidget {
 }
 
 class _ViewerScreenState extends State<ViewerScreen> {
-  static const double _thumbnailExtent = 96;
-  static const double _thumbnailControlsInset = 34;
+  static const double _thumbnailExtent = 80;
+  static const double _thumbnailControlsInset = 40;
   static const Duration _slideshowInterval = Duration(seconds: 3);
 
   final ScrollController _thumbnailScrollController = ScrollController();
@@ -565,12 +565,12 @@ class _ViewerControlBar extends StatelessWidget {
               children: [
                 _ControlButton(
                   tooltip: 'Rotate left',
-                  icon: Icons.rotate_90_degrees_ccw,
+                  icon: Icons.rotate_90_degrees_ccw_outlined,
                   onPressed: onRotateLeft,
                 ),
                 _ControlButton(
                   tooltip: 'Rotate right',
-                  icon: Icons.rotate_90_degrees_cw,
+                  icon: Icons.rotate_90_degrees_cw_outlined,
                   onPressed: onRotateRight,
                 ),
                 _ControlButton(

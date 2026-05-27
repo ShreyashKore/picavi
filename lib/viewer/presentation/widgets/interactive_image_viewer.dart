@@ -116,10 +116,9 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
   static const double _defaultMinZoom = 0.25;
   static const double _defaultMaxZoom = 8;
 
-  ImageStream? _imageStream;
-  ImageStreamListener? _imageStreamListener;
   AppImageInfo? _imageInfo;
   Object? _lastError;
+  int _imageResolveToken = 0;
   double _zoomFactor = 1;
   Offset _offset = Offset.zero;
   int _rotationQuarterTurns = 0;
@@ -158,60 +157,37 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
 
   @override
   void dispose() {
-    _removeImageListener();
     widget.controller?._detach(this);
     super.dispose();
   }
 
-  void _resolveImage() {
-    final oldStream = _imageStream;
-    final stream = widget.image.imageProvider.resolve(
-      createLocalImageConfiguration(context),
-    );
-    if (oldStream?.key == stream.key) {
-      return;
-    }
+  Future<void> _resolveImage() async {
+    final currentToken = ++_imageResolveToken;
 
-    _removeImageListener();
-    _imageStream = stream;
-    _imageStreamListener = ImageStreamListener(
-      (imageInfo, _) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {
-          _lastError = null;
-          _imageInfo = AppImageInfo(
-            pixelSize: Size(
-              imageInfo.image.width.toDouble(),
-              imageInfo.image.height.toDouble(),
-            ),
-          );
-          _zoomFactor = _clampedZoom(_zoomFactor);
-          _offset = _clampOffset(_offset);
-        });
-        _notifyController();
-      },
-      onError: (exception, _) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {
-          _lastError = exception;
-          _imageInfo = null;
-        });
-        _notifyController();
-      },
-    );
-    stream.addListener(_imageStreamListener!);
-  }
+    try {
+      final imageInfo = await widget.image.resolveInfo(context);
+      if (!mounted || currentToken != _imageResolveToken) {
+        return;
+      }
 
-  void _removeImageListener() {
-    if (_imageStream != null && _imageStreamListener != null) {
-      _imageStream!.removeListener(_imageStreamListener!);
+      setState(() {
+        _lastError = null;
+        _imageInfo = imageInfo;
+        _zoomFactor = _clampedZoom(_zoomFactor);
+        _offset = _clampOffset(_offset);
+      });
+      _notifyController();
+    } catch (exception) {
+      if (!mounted || currentToken != _imageResolveToken) {
+        return;
+      }
+
+      setState(() {
+        _lastError = exception;
+        _imageInfo = null;
+      });
+      _notifyController();
     }
-    _imageStream = null;
-    _imageStreamListener = null;
   }
 
   InteractiveImageViewerValue _currentValue() {
@@ -222,6 +198,18 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
       imageInfo: _imageInfo,
       isDragging: _isDragging,
     );
+  }
+
+  AppImageInfo? get _layoutImageInfo {
+    if (_imageInfo != null) {
+      return _imageInfo;
+    }
+
+    if (widget.image.isSvg && !_viewportSize.isEmpty) {
+      return AppImageInfo(pixelSize: _viewportSize, isVector: true);
+    }
+
+    return null;
   }
 
   double get _fitScale {
@@ -243,7 +231,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
   }
 
   double get _oneToOneZoomFactor {
-    if (_imageInfo == null) {
+    if (_layoutImageInfo == null) {
       return 1;
     }
 
@@ -256,7 +244,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
   }
 
   Size? get _rotatedImagePixelSize {
-    final imageSize = _imageInfo?.pixelSize;
+    final imageSize = _layoutImageInfo?.pixelSize;
     if (imageSize == null) {
       return null;
     }
@@ -466,7 +454,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      if (_imageInfo == null)
+                      if (_layoutImageInfo == null)
                         widget.loadingBuilder?.call(context) ??
                             const Center(
                               child: CircularProgressIndicator(strokeWidth: 2),
@@ -474,7 +462,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
                       else
                         Builder(
                           builder: (context) {
-                            final imageSize = _imageInfo!.pixelSize;
+                            final imageSize = _layoutImageInfo!.pixelSize;
                             final fittedImageSize = Size(
                               imageSize.width * _fitScale,
                               imageSize.height * _fitScale,
