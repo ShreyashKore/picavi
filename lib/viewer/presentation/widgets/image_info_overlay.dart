@@ -1,11 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../domain/entities/image_metadata.dart';
 import 'interactive_image_viewer.dart';
 
-class ImageInfoOverlay extends StatelessWidget {
+class ImageInfoOverlay extends StatefulWidget {
   const ImageInfoOverlay({
     super.key,
     required this.imagePath,
@@ -22,99 +22,121 @@ class ImageInfoOverlay extends StatelessWidget {
   final InteractiveImageViewerValue viewState;
 
   @override
-  Widget build(BuildContext context) {
-    final imageSize = viewState.imageInfo?.pixelSize;
-    final rotationDegrees = (viewState.rotationQuarterTurns % 4) * 90;
-    final fileSize = _readFileLength(imagePath);
+  State<ImageInfoOverlay> createState() => _ImageInfoOverlayState();
+}
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 360),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: AppColors.topOverlay,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: Colors.white70,
-              height: 1.35,
+class _ImageInfoOverlayState extends State<ImageInfoOverlay> {
+  late Future<ImageMetadata> _metadataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _metadataFuture = ImageMetadata.load(widget.imagePath);
+  }
+
+  @override
+  void didUpdateWidget(covariant ImageInfoOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imagePath != widget.imagePath) {
+      _metadataFuture = ImageMetadata.load(widget.imagePath);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final runtimeResolution = widget.viewState.imageInfo?.pixelSize;
+
+    return FutureBuilder<ImageMetadata>(
+      future: _metadataFuture,
+      builder: (context, snapshot) {
+        final metadata = snapshot.data;
+        final resolutionLabel = runtimeResolution == null
+            ? metadata?.embeddedResolution ?? 'Loading…'
+            : '${runtimeResolution.width.round()} × ${runtimeResolution.height.round()}';
+
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 380),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.topOverlay,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  fileName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: DefaultTextStyle(
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: Colors.white70,
+                  height: 1.35,
                 ),
-                const SizedBox(height: 10),
-                _InfoLine(
-                  label: 'Image',
-                  value: '${currentIndex + 1} of $imageCount',
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.fileName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _InfoLine(
+                      label: 'Image',
+                      value:
+                          '${widget.currentIndex + 1} of ${widget.imageCount}',
+                    ),
+                    _InfoLine(label: 'Type', value: metadata?.typeLabel ?? ''),
+                    _InfoLine(label: 'Resolution', value: resolutionLabel),
+                    _InfoLine(
+                      label: 'File size',
+                      value: metadata?.fileSize == null
+                          ? 'Unknown'
+                          : _formatBytes(metadata!.fileSize!),
+                    ),
+                    if (metadata?.capturedAt != null)
+                      _InfoLine(
+                        label: 'Captured',
+                        value: _formatDateTime(metadata!.capturedAt!),
+                      ),
+                    if (metadata?.modifiedAt != null)
+                      _InfoLine(
+                        label: 'Modified',
+                        value: _formatDateTime(metadata!.modifiedAt!),
+                      ),
+                    if (metadata?.camera != null)
+                      _InfoLine(label: 'Camera', value: metadata!.camera!),
+                    if (metadata?.lens != null)
+                      _InfoLine(label: 'Lens', value: metadata!.lens!),
+                    if (metadata?.focalLength != null)
+                      _InfoLine(
+                        label: 'Focal length',
+                        value: metadata!.focalLength!,
+                      ),
+                    if (metadata?.aperture != null)
+                      _InfoLine(label: 'Aperture', value: metadata!.aperture!),
+                    if (metadata?.exposure != null)
+                      _InfoLine(label: 'Exposure', value: metadata!.exposure!),
+                    if (metadata?.iso != null)
+                      _InfoLine(label: 'ISO', value: metadata!.iso!),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.imagePath,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: Colors.white54),
+                    ),
+                  ],
                 ),
-                _InfoLine(
-                  label: 'Resolution',
-                  value: imageSize == null
-                      ? 'Loading…'
-                      : '${imageSize.width.round()} × ${imageSize.height.round()}',
-                ),
-                _InfoLine(
-                  label: 'Zoom',
-                  value: '${viewState.zoomPercent.toStringAsFixed(0)}%',
-                ),
-                _InfoLine(label: 'Rotation', value: '$rotationDegrees°'),
-                _InfoLine(
-                  label: 'File size',
-                  value: fileSize == null ? 'Unknown' : _formatBytes(fileSize),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  imagePath,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: Colors.white54),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
-  }
-
-  static int? _readFileLength(String path) {
-    try {
-      return File(path).lengthSync();
-    } on FileSystemException {
-      return null;
-    }
-  }
-
-  static String _formatBytes(int bytes) {
-    const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    var value = bytes.toDouble();
-    var suffixIndex = 0;
-
-    while (value >= 1024 && suffixIndex < suffixes.length - 1) {
-      value /= 1024;
-      suffixIndex += 1;
-    }
-
-    final fractionDigits = value >= 100
-        ? 0
-        : value >= 10
-        ? 1
-        : 2;
-    return '${value.toStringAsFixed(fractionDigits)} ${suffixes[suffixIndex]}';
   }
 }
 
@@ -145,4 +167,26 @@ class _InfoLine extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatDateTime(DateTime value) {
+  return DateFormat('MMM d, y • h:mm a').format(value);
+}
+
+String _formatBytes(int bytes) {
+  const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  var value = bytes.toDouble();
+  var suffixIndex = 0;
+
+  while (value >= 1024 && suffixIndex < suffixes.length - 1) {
+    value /= 1024;
+    suffixIndex += 1;
+  }
+
+  final fractionDigits = value >= 100
+      ? 0
+      : value >= 10
+      ? 1
+      : 2;
+  return '${value.toStringAsFixed(fractionDigits)} ${suffixes[suffixIndex]}';
 }
