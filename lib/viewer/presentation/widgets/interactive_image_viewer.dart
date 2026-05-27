@@ -98,6 +98,7 @@ class InteractiveImageViewer extends StatefulWidget {
     this.errorBuilder,
     this.minZoomFactor,
     this.maxZoomFactor,
+    this.imagePadding = EdgeInsets.zero,
   });
 
   final AppImage image;
@@ -107,6 +108,7 @@ class InteractiveImageViewer extends StatefulWidget {
   final Widget Function(BuildContext context, Object error)? errorBuilder;
   final double? minZoomFactor;
   final double? maxZoomFactor;
+  final EdgeInsetsGeometry imagePadding;
 
   @override
   State<InteractiveImageViewer> createState() => _InteractiveImageViewerState();
@@ -475,10 +477,13 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
                                 child: Transform.scale(
                                   scale: _zoomFactor,
                                   child: Center(
-                                    child: SizedBox(
-                                      width: fittedImageSize.width,
-                                      height: fittedImageSize.height,
-                                      child: widget.image,
+                                    child: Padding(
+                                      padding: widget.imagePadding,
+                                      child: SizedBox(
+                                        width: fittedImageSize.width,
+                                        height: fittedImageSize.height,
+                                        child: widget.image,
+                                      ),
                                     ),
                                   ),
                                 ),

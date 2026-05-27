@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:path/path.dart' as p;
 
 import '../../../../core/l10n/l10n_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../core/widgets/app_image.dart';
 import '../../data/repositories/file_system_image_repository.dart';
 import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
@@ -16,9 +16,9 @@ import '../../domain/services/image_picker_service.dart';
 import '../controllers/viewer_controller.dart';
 import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
+import '../widgets/image_info_overlay.dart';
 import '../widgets/interactive_image_viewer.dart';
 import '../widgets/viewer_empty_state.dart';
-import '../widgets/viewer_gallery.dart';
 import '../widgets/viewer_thumbnail_rail.dart';
 import '../widgets/viewer_top_overlay.dart';
 
@@ -32,7 +32,7 @@ class ViewerScreen extends StatefulWidget {
 }
 
 class _ViewerScreenState extends State<ViewerScreen> {
-  static const double _thumbnailExtent = 80;
+  static const double _thumbnailExtent = 72;
   static const double _thumbnailControlsInset = 40;
   static const Duration _slideshowInterval = Duration(seconds: 3);
 
@@ -405,48 +405,68 @@ class _ViewerScreenState extends State<ViewerScreen> {
 
     return SafeArea(
       minimum: const EdgeInsets.fromLTRB(14, 14, 14, 10),
-      child: Column(
+      child: Stack(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: ViewerGallery(
-                    image: state.currentImage,
-                    controller: _imageViewerController,
-                  ),
+          Positioned.fill(
+            child: InteractiveImageViewer(
+              controller: _imageViewerController,
+              image: AppImage.file(
+                state.currentImage.path,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (_, _, _) => const SizedBox.expand(),
+              ),
+              semanticLabel: state.currentImage.fileName,
+              errorBuilder: (context, error) => const ColoredBox(
+                color: AppColors.brokenImage,
+                child: Center(
+                  child: Icon(Icons.broken_image_outlined, size: 28),
                 ),
-                if (_showInfoOverlay)
-                  Positioned(
-                    top: 16,
-                    right: 16,
-                    child: _ImageInfoOverlay(
-                      imagePath: state.currentImage.path,
-                      fileName: state.currentImage.fileName,
-                      currentIndex: state.currentIndex,
-                      imageCount: state.images.length,
-                      viewState: imageViewState,
-                    ),
-                  ),
-              ],
+              ),
+              imagePadding: EdgeInsets.only(
+                top: 20,
+                bottom: _thumbnailControlsInset + _thumbnailExtent,
+              ),
             ),
           ),
-          const SizedBox(height: 10),
-          Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.topCenter,
-            children: [
-              ViewerThumbnailRail(
-                images: state.images,
+
+          if (_showInfoOverlay)
+            Positioned(
+              top: 16,
+              right: 16,
+              child: ImageInfoOverlay(
+                imagePath: state.currentImage.path,
+                fileName: state.currentImage.fileName,
                 currentIndex: state.currentIndex,
-                thumbnailExtent: _thumbnailExtent,
-                scrollController: _thumbnailScrollController,
-                onTap: (index) => unawaited(_goToIndex(index)),
-                topInset: _thumbnailControlsInset,
+                imageCount: state.images.length,
+                viewState: imageViewState,
               ),
-              Positioned(
-                top: 0,
-                child: _ViewerControlBar(
+            ),
+
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: _thumbnailControlsInset + _thumbnailExtent,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.topCenter,
+              children: [
+                Positioned.fill(
+                  top: _thumbnailControlsInset,
+                  child: ViewerThumbnailRail(
+                    images: state.images,
+                    currentIndex: state.currentIndex,
+                    thumbnailExtent: _thumbnailExtent,
+                    scrollController: _thumbnailScrollController,
+                    onTap: (index) => unawaited(_goToIndex(index)),
+                    onScrollImageChange: (delta) =>
+                        unawaited(_goToRelativeIndex(delta)),
+                    topInset: _thumbnailControlsInset,
+                  ),
+                ),
+
+                _ViewerControlBar(
                   canNavigate: state.images.length > 1,
                   isPlaying: _isPlaying,
                   onZoomIn: _imageViewerController.zoomIn,
@@ -464,8 +484,8 @@ class _ViewerScreenState extends State<ViewerScreen> {
                   },
                   showInfo: _showInfoOverlay,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -705,147 +725,6 @@ class _PlaybackGroup extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ImageInfoOverlay extends StatelessWidget {
-  const _ImageInfoOverlay({
-    required this.imagePath,
-    required this.fileName,
-    required this.currentIndex,
-    required this.imageCount,
-    required this.viewState,
-  });
-
-  final String imagePath;
-  final String fileName;
-  final int currentIndex;
-  final int imageCount;
-  final InteractiveImageViewerValue viewState;
-
-  @override
-  Widget build(BuildContext context) {
-    final imageSize = viewState.imageInfo?.pixelSize;
-    final rotationDegrees = (viewState.rotationQuarterTurns % 4) * 90;
-    final fileSize = _readFileLength(imagePath);
-
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 360),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: AppColors.topOverlay,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: Colors.white70,
-              height: 1.35,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  fileName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 10),
-                _InfoLine(
-                  label: 'Image',
-                  value: '${currentIndex + 1} of $imageCount',
-                ),
-                _InfoLine(
-                  label: 'Resolution',
-                  value: imageSize == null
-                      ? 'Loading…'
-                      : '${imageSize.width.round()} × ${imageSize.height.round()}',
-                ),
-                _InfoLine(
-                  label: 'Zoom',
-                  value: '${viewState.zoomPercent.toStringAsFixed(0)}%',
-                ),
-                _InfoLine(label: 'Rotation', value: '$rotationDegrees°'),
-                _InfoLine(
-                  label: 'File size',
-                  value: fileSize == null ? 'Unknown' : _formatBytes(fileSize),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  imagePath,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: Colors.white54),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  static int? _readFileLength(String path) {
-    try {
-      return File(path).lengthSync();
-    } on FileSystemException {
-      return null;
-    }
-  }
-
-  static String _formatBytes(int bytes) {
-    const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    var value = bytes.toDouble();
-    var suffixIndex = 0;
-
-    while (value >= 1024 && suffixIndex < suffixes.length - 1) {
-      value /= 1024;
-      suffixIndex += 1;
-    }
-
-    final fractionDigits = value >= 100
-        ? 0
-        : value >= 10
-        ? 1
-        : 2;
-    return '${value.toStringAsFixed(fractionDigits)} ${suffixes[suffixIndex]}';
-  }
-}
-
-class _InfoLine extends StatelessWidget {
-  const _InfoLine({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 78,
-            child: Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: Colors.white54),
-            ),
-          ),
-          Expanded(child: Text(value)),
-        ],
       ),
     );
   }
