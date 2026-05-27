@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/app_image.dart';
 import '../../domain/entities/gallery_image.dart';
+import 'interactive_image_viewer.dart';
 
 class ViewerGallery extends StatelessWidget {
   const ViewerGallery({
     super.key,
-    required this.images,
-    required this.pageController,
-    required this.onPageChanged,
+    required this.image,
+    required this.controller,
   });
 
-  final List<GalleryImage> images;
-  final PageController pageController;
-  final ValueChanged<int> onPageChanged;
+  final GalleryImage image;
+  final InteractiveImageViewerController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -24,24 +22,22 @@ class ViewerGallery extends StatelessWidget {
         color: AppColors.galleryOverlay,
         borderRadius: BorderRadius.circular(18),
       ),
-      child: PhotoViewGallery.builder(
-        pageController: pageController,
-        itemCount: images.length,
-        backgroundDecoration: const BoxDecoration(color: Colors.transparent),
-        scrollPhysics: const BouncingScrollPhysics(),
-        loadingBuilder: (context, loadingProgress) =>
-            const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-        builder: (context, index) {
-          return PhotoViewGalleryPageOptions(
-            imageProvider: FileImage(images[index].asFile),
-            minScale: PhotoViewComputedScale.contained,
-            initialScale: PhotoViewComputedScale.contained,
-            maxScale: PhotoViewComputedScale.covered * 3.6,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: InteractiveImageViewer(
+          controller: controller,
+          image: AppImage.file(
+            image.path,
+            fit: BoxFit.contain,
             filterQuality: FilterQuality.high,
-            tightMode: true,
-          );
-        },
-        onPageChanged: onPageChanged,
+            errorBuilder: (_, _, _) => const SizedBox.expand(),
+          ),
+          semanticLabel: image.fileName,
+          errorBuilder: (context, error) => const ColoredBox(
+            color: AppColors.brokenImage,
+            child: Center(child: Icon(Icons.broken_image_outlined, size: 28)),
+          ),
+        ),
       ),
     );
   }

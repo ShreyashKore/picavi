@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 abstract final class AppColors {
   static const seed = Color(0xFF7C5CFF);
-  static const shellOverlay = Color(0xB3000000);
-  static const shellStart = Color(0xFF181820);
-  static const shellEnd = Color(0xFF09090C);
+  static const windowBackdrop = Color(0x66090A0F);
+  static const shellOverlay = Color(0x26000000);
+  static const shellStart = Color(0x4D181820);
+  static const shellEnd = Color(0x2609090C);
   static const panel = Color(0xCC14141B);
   static const softPanel = Color(0xB5121218);
   static const topOverlay = Color(0x99111117);

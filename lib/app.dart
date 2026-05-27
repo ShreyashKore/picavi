@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'viewer/presentation/screens/viewer_screen.dart';
@@ -16,6 +17,10 @@ class OivApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.darkTheme,
+      builder: (context, child) => ColoredBox(
+        color: AppColors.windowBackdrop,
+        child: child ?? const SizedBox.shrink(),
+      ),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

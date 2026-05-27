@@ -12,12 +12,19 @@ class MainFlutterWindow: NSWindow {
     let windowFrame = self.frame
     self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
+    self.isOpaque = false
+    self.hasShadow = true
+    self.backgroundColor = .clear
     self.titleVisibility = .hidden
     self.titlebarAppearsTransparent = true
-    self.isOpaque = false
-    self.backgroundColor = .clear
     self.styleMask.insert(.fullSizeContentView)
     self.collectionBehavior.insert(.fullScreenPrimary)
+
+    flutterViewController.backgroundColor = .clear
+    flutterViewController.view.wantsLayer = true
+    flutterViewController.view.layer?.backgroundColor = NSColor.clear.cgColor
+    self.contentView?.wantsLayer = true
+    self.contentView?.layer?.backgroundColor = NSColor.clear.cgColor
 
     RegisterGeneratedPlugins(registry: flutterViewController)
     configureFileOpenChannelIfNeeded(with: flutterViewController)
