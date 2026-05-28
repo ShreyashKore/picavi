@@ -1,9 +1,20 @@
 import 'dart:math' as math;
+import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/app_image.dart';
+
+const _viewerTranslationTransformKey = ValueKey<String>(
+  'interactive_image_viewer.translation_transform',
+);
+const _viewerRotationTransformKey = ValueKey<String>(
+  'interactive_image_viewer.rotation_transform',
+);
+const _viewerScaleTransformKey = ValueKey<String>(
+  'interactive_image_viewer.scale_transform',
+);
 
 @immutable
 class InteractiveImageViewerValue {
@@ -114,25 +125,44 @@ class InteractiveImageViewer extends StatefulWidget {
   State<InteractiveImageViewer> createState() => _InteractiveImageViewerState();
 }
 
-class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
+class _InteractiveImageViewerState extends State<InteractiveImageViewer>
+    with TickerProviderStateMixin {
   static const double _defaultMinZoom = 0.25;
   static const double _defaultMaxZoom = 8;
+  static const Duration _zoomAnimationDuration = Duration(milliseconds: 180);
+  static const Duration _rotationAnimationDuration = Duration(
+    milliseconds: 260,
+  );
+  static const Duration _resetAnimationDuration = Duration(milliseconds: 240);
+  static const Duration _imageTransitionDuration = Duration(milliseconds: 220);
 
+  late AppImage _displayedImage;
   AppImageInfo? _imageInfo;
   Object? _lastError;
   int _imageResolveToken = 0;
   double _zoomFactor = 1;
   Offset _offset = Offset.zero;
+  double _rotationAngle = 0;
   int _rotationQuarterTurns = 0;
   bool _isDragging = false;
   Offset? _gestureStartFocalPoint;
   Offset _gestureStartOffset = Offset.zero;
   double _gestureStartZoom = 1;
   Size _viewportSize = Size.zero;
+  late final AnimationController _transformAnimationController =
+      AnimationController(vsync: this)..addListener(_handleTransformAnimation);
+  Curve _transformAnimationCurve = Curves.linear;
+  double _animationStartZoom = 1;
+  double _animationEndZoom = 1;
+  Offset _animationStartOffset = Offset.zero;
+  Offset _animationEndOffset = Offset.zero;
+  double _animationStartAngle = 0;
+  double _animationEndAngle = 0;
 
   @override
   void initState() {
     super.initState();
+    _displayedImage = widget.image;
     widget.controller?._attach(this);
   }
 
@@ -150,30 +180,32 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
       widget.controller?._attach(this);
     }
     if (oldWidget.image.providerIdentity != widget.image.providerIdentity) {
-      _imageInfo = null;
       _lastError = null;
-      _resetTransform(notify: false);
+      _animateResetTransform(notify: false);
       _resolveImage();
     }
   }
 
   @override
   void dispose() {
+    _transformAnimationController.dispose();
     widget.controller?._detach(this);
     super.dispose();
   }
 
   Future<void> _resolveImage() async {
     final currentToken = ++_imageResolveToken;
+    final nextImage = widget.image;
 
     try {
-      final imageInfo = await widget.image.resolveInfo(context);
+      final imageInfo = await nextImage.resolveInfo(context);
       if (!mounted || currentToken != _imageResolveToken) {
         return;
       }
 
       setState(() {
         _lastError = null;
+        _displayedImage = nextImage;
         _imageInfo = imageInfo;
         _zoomFactor = _clampedZoom(_zoomFactor);
         _offset = _clampOffset(_offset);
@@ -186,6 +218,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
 
       setState(() {
         _lastError = exception;
+        _displayedImage = nextImage;
         _imageInfo = null;
       });
       _notifyController();
@@ -207,15 +240,31 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
       return _imageInfo;
     }
 
-    if (widget.image.isSvg && !_viewportSize.isEmpty) {
+    if (_displayedImage.isSvg && !_viewportSize.isEmpty) {
       return AppImageInfo(pixelSize: _viewportSize, isVector: true);
     }
 
     return null;
   }
 
-  double get _fitScale {
-    final imageSize = _rotatedImagePixelSize;
+  Size? _rotatedImageBoundsForAngle(double angle) {
+    final imageSize = _layoutImageInfo?.pixelSize;
+    if (imageSize == null) {
+      return null;
+    }
+
+    final normalizedAngle = angle % (2 * math.pi);
+    final sinTheta = math.sin(normalizedAngle).abs();
+    final cosTheta = math.cos(normalizedAngle).abs();
+
+    return Size(
+      imageSize.width * cosTheta + imageSize.height * sinTheta,
+      imageSize.width * sinTheta + imageSize.height * cosTheta,
+    );
+  }
+
+  double _fitScaleForAngle(double angle) {
+    final imageSize = _rotatedImageBoundsForAngle(angle);
     if (_viewportSize.isEmpty || imageSize == null) {
       return 1;
     }
@@ -232,30 +281,19 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
     return fitScale;
   }
 
+  double get _fitScale => _fitScaleForAngle(_rotationAngle);
+
   double get _oneToOneZoomFactor {
     if (_layoutImageInfo == null) {
       return 1;
     }
 
-    final fitScale = _fitScale;
+    final fitScale = _fitScaleForAngle(_rotationAngle);
     if (fitScale <= 0 || !fitScale.isFinite) {
       return 1;
     }
 
     return 1 / fitScale;
-  }
-
-  Size? get _rotatedImagePixelSize {
-    final imageSize = _layoutImageInfo?.pixelSize;
-    if (imageSize == null) {
-      return null;
-    }
-
-    if (_rotationQuarterTurns.isEven) {
-      return imageSize;
-    }
-
-    return Size(imageSize.height, imageSize.width);
   }
 
   double get _minZoomFactor {
@@ -274,16 +312,22 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
     return zoomFactor.clamp(_minZoomFactor, _maxZoomFactor);
   }
 
-  Offset _clampOffset(Offset candidate) {
-    final imageSize = _rotatedImagePixelSize;
+  Offset _clampOffset(
+    Offset candidate, {
+    double? zoomFactor,
+    double? rotationAngle,
+  }) {
+    final effectiveAngle = rotationAngle ?? _rotationAngle;
+    final effectiveZoom = zoomFactor ?? _zoomFactor;
+    final imageSize = _rotatedImageBoundsForAngle(effectiveAngle);
     if (_viewportSize.isEmpty || imageSize == null) {
       return Offset.zero;
     }
 
-    final fitScale = _fitScale;
+    final fitScale = _fitScaleForAngle(effectiveAngle);
     final displayedSize = Size(
-      imageSize.width * fitScale * _zoomFactor,
-      imageSize.height * fitScale * _zoomFactor,
+      imageSize.width * fitScale * effectiveZoom,
+      imageSize.height * fitScale * effectiveZoom,
     );
 
     final horizontalLimit = math.max(
@@ -305,20 +349,122 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
     widget.controller?._updateValue(_currentValue());
   }
 
-  void _resetTransform({bool notify = true}) {
+  void _handleTransformAnimation() {
     if (!mounted) {
       return;
     }
 
+    final progress = _transformAnimationCurve.transform(
+      _transformAnimationController.value,
+    );
+
     setState(() {
-      _zoomFactor = 1;
-      _offset = Offset.zero;
-      _rotationQuarterTurns = 0;
-      _isDragging = false;
+      final nextAngle =
+          lerpDouble(_animationStartAngle, _animationEndAngle, progress) ??
+          _animationEndAngle;
+      final nextZoom =
+          lerpDouble(_animationStartZoom, _animationEndZoom, progress) ??
+          _animationEndZoom;
+      final desiredOffset =
+          Offset.lerp(_animationStartOffset, _animationEndOffset, progress) ??
+          _animationEndOffset;
+
+      _rotationAngle = nextAngle;
+      _zoomFactor = _clampedZoom(nextZoom);
+      _offset = _clampOffset(
+        desiredOffset,
+        zoomFactor: _zoomFactor,
+        rotationAngle: _rotationAngle,
+      );
     });
+  }
+
+  void _animateTransformTo({
+    required double zoomFactor,
+    required Offset offset,
+    required double rotationAngle,
+    required Duration duration,
+    required Curve curve,
+    bool notify = true,
+  }) {
+    final targetZoom = _clampedZoom(zoomFactor);
+    final targetOffset = _clampOffset(
+      offset,
+      zoomFactor: targetZoom,
+      rotationAngle: rotationAngle,
+    );
+    final shouldAnimate =
+        (_zoomFactor - targetZoom).abs() >= 0.001 ||
+        (_offset - targetOffset).distance >= 0.5 ||
+        (_rotationAngle - rotationAngle).abs() >= 0.001;
+
+    if (!mounted) {
+      return;
+    }
+
+    _transformAnimationController.stop();
+
+    if (!shouldAnimate) {
+      setState(() {
+        _zoomFactor = targetZoom;
+        _offset = targetOffset;
+        _rotationAngle = rotationAngle;
+      });
+      if (notify) {
+        _notifyController();
+      }
+      return;
+    }
+
+    _transformAnimationCurve = curve;
+    _animationStartZoom = _zoomFactor;
+    _animationEndZoom = targetZoom;
+    _animationStartOffset = _offset;
+    _animationEndOffset = targetOffset;
+    _animationStartAngle = _rotationAngle;
+    _animationEndAngle = rotationAngle;
+    _transformAnimationController.duration = duration;
+    _transformAnimationController.forward(from: 0);
+
     if (notify) {
       _notifyController();
     }
+  }
+
+  double _nearestEquivalentAngle({
+    required double fromAngle,
+    required int targetQuarterTurns,
+  }) {
+    final baseAngle = targetQuarterTurns * (math.pi / 2);
+    final fullTurn = 2 * math.pi;
+    final turns = ((fromAngle - baseAngle) / fullTurn).roundToDouble();
+    return baseAngle + (turns * fullTurn);
+  }
+
+  void _animateResetTransform({bool notify = true}) {
+    if (!mounted) {
+      return;
+    }
+
+    _gestureStartFocalPoint = null;
+    _rotationQuarterTurns = 0;
+    _isDragging = false;
+
+    _animateTransformTo(
+      zoomFactor: 1,
+      offset: Offset.zero,
+      rotationAngle: _nearestEquivalentAngle(
+        fromAngle: _rotationAngle,
+        targetQuarterTurns: 0,
+      ),
+      duration: _resetAnimationDuration,
+      curve: Curves.easeOutCubic,
+      notify: notify,
+    );
+  }
+
+  void _resetTransform({bool notify = true}) {
+    _animateResetTransform(notify: notify);
   }
 
   void _rotateBy(int quarterTurns) {
@@ -326,47 +472,91 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
       return;
     }
 
-    setState(() {
-      _rotationQuarterTurns = (_rotationQuarterTurns + quarterTurns) % 4;
-      if (_rotationQuarterTurns < 0) {
-        _rotationQuarterTurns += 4;
-      }
-      _offset = _clampOffset(_offset);
-    });
-    _notifyController();
+    _gestureStartFocalPoint = null;
+    _isDragging = false;
+    _rotationQuarterTurns = (_rotationQuarterTurns + quarterTurns) % 4;
+    if (_rotationQuarterTurns < 0) {
+      _rotationQuarterTurns += 4;
+    }
+
+    _animateTransformTo(
+      zoomFactor: _zoomFactor,
+      offset: _offset,
+      rotationAngle: _nearestEquivalentAngle(
+        fromAngle: _rotationAngle,
+        targetQuarterTurns: _rotationQuarterTurns,
+      ),
+      duration: _rotationAnimationDuration,
+      curve: Curves.easeInOutCubic,
+    );
   }
 
   void _zoomToOneToOne() {
     _setZoom(_oneToOneZoomFactor);
   }
 
-  void _zoomBy(double factor, {Offset? focalPoint}) {
-    _setZoom(_zoomFactor * factor, focalPoint: focalPoint);
+  void _zoomBy(
+    double factor, {
+    Offset? focalPoint,
+    bool animate = true,
+    Duration duration = _zoomAnimationDuration,
+    Curve curve = Curves.easeOutCubic,
+  }) {
+    _setZoom(
+      _zoomFactor * factor,
+      focalPoint: focalPoint,
+      animate: animate,
+      duration: duration,
+      curve: curve,
+    );
   }
 
-  void _setZoom(double nextZoom, {Offset? focalPoint}) {
+  void _setZoom(
+    double nextZoom, {
+    Offset? focalPoint,
+    bool animate = true,
+    Duration duration = _zoomAnimationDuration,
+    Curve curve = Curves.easeOutCubic,
+  }) {
     final clampedZoom = _clampedZoom(nextZoom);
     if (!mounted || (_zoomFactor - clampedZoom).abs() < 0.001) {
       return;
     }
 
-    setState(() {
-      final previousZoom = _zoomFactor;
-      final center = Offset(_viewportSize.width / 2, _viewportSize.height / 2);
-      final targetFocalPoint = focalPoint ?? center;
-      final normalizedFocalPoint = targetFocalPoint - center;
-      final scaleRatio = clampedZoom / previousZoom;
-      _zoomFactor = clampedZoom;
-      _offset = _clampOffset(
-        targetFocalPoint -
-            center -
-            ((normalizedFocalPoint - _offset) * scaleRatio),
-      );
-    });
-    _notifyController();
+    final previousZoom = _zoomFactor;
+    final center = Offset(_viewportSize.width / 2, _viewportSize.height / 2);
+    final targetFocalPoint = focalPoint ?? center;
+    final normalizedFocalPoint = targetFocalPoint - center;
+    final scaleRatio = clampedZoom / previousZoom;
+    final nextOffset = _clampOffset(
+      targetFocalPoint -
+          center -
+          ((normalizedFocalPoint - _offset) * scaleRatio),
+      zoomFactor: clampedZoom,
+      rotationAngle: _rotationAngle,
+    );
+
+    if (!animate) {
+      _transformAnimationController.stop();
+      setState(() {
+        _zoomFactor = clampedZoom;
+        _offset = nextOffset;
+      });
+      _notifyController();
+      return;
+    }
+
+    _animateTransformTo(
+      zoomFactor: clampedZoom,
+      offset: nextOffset,
+      rotationAngle: _rotationAngle,
+      duration: duration,
+      curve: curve,
+    );
   }
 
   void _handleScaleStart(ScaleStartDetails details) {
+    _transformAnimationController.stop();
     _gestureStartFocalPoint = details.localFocalPoint;
     _gestureStartOffset = _offset;
     _gestureStartZoom = _zoomFactor;
@@ -386,7 +576,11 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
       final nextZoom = _clampedZoom(_gestureStartZoom * details.scale);
       _zoomFactor = nextZoom;
       final panDelta = details.localFocalPoint - startFocalPoint;
-      _offset = _clampOffset(_gestureStartOffset + panDelta);
+      _offset = _clampOffset(
+        _gestureStartOffset + panDelta,
+        zoomFactor: nextZoom,
+        rotationAngle: _rotationAngle,
+      );
     });
     _notifyController();
   }
@@ -411,7 +605,70 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
     }
 
     final zoomFactor = scrollDelta < 0 ? 1.1 : 1 / 1.1;
-    _zoomBy(zoomFactor, focalPoint: event.localPosition);
+    _zoomBy(
+      zoomFactor,
+      focalPoint: event.localPosition,
+      duration: const Duration(milliseconds: 120),
+    );
+  }
+
+  Widget _buildAnimatedDisplayedImage(Size fittedImageSize) {
+    return AnimatedSwitcher(
+      duration: _imageTransitionDuration,
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      layoutBuilder: (currentChild, previousChildren) {
+        return Stack(
+          alignment: Alignment.center,
+          children: [...previousChildren, ?currentChild],
+        );
+      },
+      transitionBuilder: (child, animation) {
+        final fadeAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+        );
+        final scaleAnimation = Tween<double>(begin: 0.985, end: 1).animate(
+          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+        );
+
+        return FadeTransition(
+          opacity: fadeAnimation,
+          child: ScaleTransition(scale: scaleAnimation, child: child),
+        );
+      },
+      child: SizedBox(
+        key: ValueKey<Object>(_displayedImage.providerIdentity),
+        width: fittedImageSize.width,
+        height: fittedImageSize.height,
+        child: AppImage(
+          image: _displayedImage.image,
+          svgBytesLoader: _displayedImage.svgBytesLoader,
+          width: _displayedImage.width,
+          height: _displayedImage.height,
+          fit: _displayedImage.fit,
+          alignment: _displayedImage.alignment,
+          repeat: _displayedImage.repeat,
+          matchTextDirection: _displayedImage.matchTextDirection,
+          gaplessPlayback: true,
+          isAntiAlias: _displayedImage.isAntiAlias,
+          filterQuality: _displayedImage.filterQuality,
+          semanticLabel: widget.semanticLabel ?? _displayedImage.semanticLabel,
+          excludeFromSemantics: _displayedImage.excludeFromSemantics,
+          cacheWidth: _displayedImage.cacheWidth,
+          cacheHeight: _displayedImage.cacheHeight,
+          frameBuilder: _displayedImage.frameBuilder,
+          loadingBuilder: _displayedImage.loadingBuilder,
+          errorBuilder: _displayedImage.errorBuilder,
+          opacity: _displayedImage.opacity,
+          assetName: _displayedImage.assetName,
+          filePath: _displayedImage.filePath,
+          bundle: _displayedImage.bundle,
+          package: _displayedImage.package,
+        ),
+      ),
+    );
   }
 
   @override
@@ -427,7 +684,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
         final viewportChanged = _viewportSize != nextViewportSize;
         _viewportSize = nextViewportSize;
         _zoomFactor = _clampedZoom(_zoomFactor);
-        _offset = _clampOffset(_offset);
+        _offset = _clampOffset(_offset, rotationAngle: _rotationAngle);
         if (viewportChanged) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
@@ -465,24 +722,26 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer> {
                         Builder(
                           builder: (context) {
                             final imageSize = _layoutImageInfo!.pixelSize;
+                            final fitScale = _fitScale;
                             final fittedImageSize = Size(
-                              imageSize.width * _fitScale,
-                              imageSize.height * _fitScale,
+                              imageSize.width * fitScale,
+                              imageSize.height * fitScale,
                             );
 
-                            return Transform.translate(
-                              offset: _offset,
-                              child: Transform.rotate(
-                                angle: _rotationQuarterTurns * (math.pi / 2),
-                                child: Transform.scale(
-                                  scale: _zoomFactor,
-                                  child: Center(
-                                    child: Padding(
-                                      padding: widget.imagePadding,
-                                      child: SizedBox(
-                                        width: fittedImageSize.width,
-                                        height: fittedImageSize.height,
-                                        child: widget.image,
+                            return Padding(
+                              padding: widget.imagePadding,
+                              child: Transform.translate(
+                                key: _viewerTranslationTransformKey,
+                                offset: _offset,
+                                child: Transform.rotate(
+                                  key: _viewerRotationTransformKey,
+                                  angle: _rotationAngle,
+                                  child: Transform.scale(
+                                    key: _viewerScaleTransformKey,
+                                    scale: _zoomFactor,
+                                    child: Center(
+                                      child: _buildAnimatedDisplayedImage(
+                                        fittedImageSize,
                                       ),
                                     ),
                                   ),

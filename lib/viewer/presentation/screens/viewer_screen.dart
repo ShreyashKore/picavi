@@ -643,9 +643,13 @@ class _ViewerScreenState extends State<ViewerScreen>
                 errorBuilder: (_, _, _) => const SizedBox.expand(),
               ),
               semanticLabel: state.currentImage.fileName,
-              errorBuilder: (context, error) => ColoredBox(
-                color: AppColors.brokenImage,
-                child: Center(
+              errorBuilder: (context, error) => Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.topOverlay,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
