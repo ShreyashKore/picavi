@@ -20,6 +20,7 @@ import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
 import '../widgets/image_info_overlay.dart';
 import '../widgets/interactive_image_viewer.dart';
+import '../widgets/viewer_control_bar.dart';
 import '../widgets/viewer_empty_state.dart';
 import '../widgets/viewer_thumbnail_rail.dart';
 import '../widgets/viewer_top_overlay.dart';
@@ -37,7 +38,7 @@ class ViewerScreen extends StatefulWidget {
 class _ViewerScreenState extends State<ViewerScreen>
     with WidgetsBindingObserver {
   static const double _thumbnailExtent = 72;
-  static const double _thumbnailControlsInset = 40;
+  static const double _thumbnailControlsInset = 60;
   static const Duration _slideshowInterval = Duration(seconds: 3);
 
   final ScrollController _thumbnailScrollController = ScrollController();
@@ -588,6 +589,8 @@ class _ViewerScreenState extends State<ViewerScreen>
 
   Widget _buildGalleryContent(ViewerState state) {
     final imageViewState = _imageViewerController.value;
+    final showThumbnailRail = state.images.length > 1 && !_isPlaying;
+    final showControls = !_isPlaying;
 
     return SafeArea(
       minimum: const EdgeInsets.fromLTRB(14, 14, 14, 10),
@@ -603,15 +606,31 @@ class _ViewerScreenState extends State<ViewerScreen>
                 errorBuilder: (_, _, _) => const SizedBox.expand(),
               ),
               semanticLabel: state.currentImage.fileName,
-              errorBuilder: (context, error) => const ColoredBox(
+              errorBuilder: (context, error) => ColoredBox(
                 color: AppColors.brokenImage,
                 child: Center(
-                  child: Icon(Icons.broken_image_outlined, size: 28),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.broken_image_outlined, size: 48),
+                      SizedBox(height: 12),
+                      Text(
+                        'Failed to load image',
+                        style: TextStyle(fontSize: 16, color: Colors.white70),
+                      ),
+                      Text(
+                        '$error',
+                        style: TextStyle(fontSize: 10, color: Colors.white54),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               imagePadding: EdgeInsets.only(
                 top: 20,
-                bottom: _thumbnailControlsInset + _thumbnailExtent,
+                bottom: !showControls ? 20 : _thumbnailExtent,
+                left: 20,
+                right: 20,
               ),
             ),
           ),
@@ -638,38 +657,40 @@ class _ViewerScreenState extends State<ViewerScreen>
               clipBehavior: Clip.none,
               alignment: Alignment.topCenter,
               children: [
-                Positioned.fill(
-                  top: _thumbnailControlsInset,
-                  child: ViewerThumbnailRail(
-                    images: state.images,
-                    currentIndex: state.currentIndex,
-                    thumbnailExtent: _thumbnailExtent,
-                    scrollController: _thumbnailScrollController,
-                    onTap: (index) => unawaited(_goToIndex(index)),
-                    onScrollImageChange: (delta) =>
-                        unawaited(_goToRelativeIndex(delta)),
-                    topInset: _thumbnailControlsInset,
+                if (showThumbnailRail)
+                  Positioned.fill(
+                    top: _thumbnailControlsInset,
+                    child: ViewerThumbnailRail(
+                      images: state.images,
+                      currentIndex: state.currentIndex,
+                      thumbnailExtent: _thumbnailExtent,
+                      scrollController: _thumbnailScrollController,
+                      onTap: (index) => unawaited(_goToIndex(index)),
+                      onScrollImageChange: (delta) =>
+                          unawaited(_goToRelativeIndex(delta)),
+                      topInset: _thumbnailControlsInset,
+                    ),
                   ),
-                ),
 
-                _ViewerControlBar(
-                  canNavigate: state.images.length > 1,
-                  isPlaying: _isPlaying,
-                  onZoomIn: _imageViewerController.zoomIn,
-                  onZoomOut: _imageViewerController.zoomOut,
-                  onZoomOneToOne: _imageViewerController.zoomToOneToOne,
-                  onPrevious: () => unawaited(_goToRelativeIndex(-1)),
-                  onTogglePlay: _toggleSlideshow,
-                  onNext: () => unawaited(_goToRelativeIndex(1)),
-                  onRotateLeft: _imageViewerController.rotateLeft,
-                  onRotateRight: _imageViewerController.rotateRight,
-                  onToggleInfo: () {
-                    setState(() {
-                      _showInfoOverlay = !_showInfoOverlay;
-                    });
-                  },
-                  showInfo: _showInfoOverlay,
-                ),
+                if (showControls)
+                  ViewerControlBar(
+                    canNavigate: state.images.length > 1,
+                    isPlaying: _isPlaying,
+                    onZoomIn: _imageViewerController.zoomIn,
+                    onZoomOut: _imageViewerController.zoomOut,
+                    onZoomOneToOne: _imageViewerController.zoomToOneToOne,
+                    onPrevious: () => unawaited(_goToRelativeIndex(-1)),
+                    onTogglePlay: _toggleSlideshow,
+                    onNext: () => unawaited(_goToRelativeIndex(1)),
+                    onRotateLeft: _imageViewerController.rotateLeft,
+                    onRotateRight: _imageViewerController.rotateRight,
+                    onToggleInfo: () {
+                      setState(() {
+                        _showInfoOverlay = !_showInfoOverlay;
+                      });
+                    },
+                    showInfo: _showInfoOverlay,
+                  ),
               ],
             ),
           ),
@@ -753,228 +774,6 @@ class _DefaultViewerHintTile extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ViewerControlBar extends StatelessWidget {
-  const _ViewerControlBar({
-    required this.canNavigate,
-    required this.isPlaying,
-    required this.onZoomIn,
-    required this.onZoomOut,
-    required this.onZoomOneToOne,
-    required this.onPrevious,
-    required this.onTogglePlay,
-    required this.onNext,
-    required this.onRotateLeft,
-    required this.onRotateRight,
-    required this.onToggleInfo,
-    required this.showInfo,
-  });
-
-  final bool canNavigate;
-  final bool isPlaying;
-  final VoidCallback onZoomIn;
-  final VoidCallback onZoomOut;
-  final VoidCallback onZoomOneToOne;
-  final VoidCallback onPrevious;
-  final VoidCallback onTogglePlay;
-  final VoidCallback onNext;
-  final VoidCallback onRotateLeft;
-  final VoidCallback onRotateRight;
-  final VoidCallback onToggleInfo;
-  final bool showInfo;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.topOverlay,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x22000000),
-            blurRadius: 22,
-            offset: Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            _ControlGroup(
-              children: [
-                _ControlButton(
-                  tooltip: 'Zoom out',
-                  icon: Icons.remove,
-                  onPressed: onZoomOut,
-                ),
-                _ControlButton(
-                  tooltip: 'Zoom in',
-                  icon: Icons.add,
-                  onPressed: onZoomIn,
-                ),
-                _OneToOneButton(onPressed: onZoomOneToOne),
-              ],
-            ),
-            _PlaybackGroup(
-              enabled: canNavigate,
-              isPlaying: isPlaying,
-              onPrevious: onPrevious,
-              onTogglePlay: onTogglePlay,
-              onNext: onNext,
-            ),
-            _ControlGroup(
-              children: [
-                _ControlButton(
-                  tooltip: 'Rotate left',
-                  icon: Icons.rotate_90_degrees_ccw_outlined,
-                  onPressed: onRotateLeft,
-                ),
-                _ControlButton(
-                  tooltip: 'Rotate right',
-                  icon: Icons.rotate_90_degrees_cw_outlined,
-                  onPressed: onRotateRight,
-                ),
-                _ControlButton(
-                  tooltip: showInfo ? 'Hide image info' : 'Show image info',
-                  icon: showInfo ? Icons.info : Icons.info_outline,
-                  onPressed: onToggleInfo,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ControlGroup extends StatelessWidget {
-  const _ControlGroup({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: Row(mainAxisSize: MainAxisSize.min, children: children),
-      ),
-    );
-  }
-}
-
-class _ControlButton extends StatelessWidget {
-  const _ControlButton({
-    required this.tooltip,
-    required this.icon,
-    required this.onPressed,
-  });
-
-  final String tooltip;
-  final IconData icon;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: tooltip,
-      onPressed: onPressed,
-      icon: Icon(icon, size: 18),
-      visualDensity: VisualDensity.compact,
-    );
-  }
-}
-
-class _OneToOneButton extends StatelessWidget {
-  const _OneToOneButton({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-        minimumSize: const Size(0, 36),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      child: const Text('1:1'),
-    );
-  }
-}
-
-class _PlaybackGroup extends StatelessWidget {
-  const _PlaybackGroup({
-    required this.enabled,
-    required this.isPlaying,
-    required this.onPrevious,
-    required this.onTogglePlay,
-    required this.onNext,
-  });
-
-  final bool enabled;
-  final bool isPlaying;
-  final VoidCallback onPrevious;
-  final VoidCallback onTogglePlay;
-  final VoidCallback onNext;
-
-  @override
-  Widget build(BuildContext context) {
-    final disabled = !enabled;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _ControlButton(
-              tooltip: 'Previous image',
-              icon: Icons.skip_previous_rounded,
-              onPressed: disabled ? null : onPrevious,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Material(
-                color: Theme.of(context).colorScheme.primary,
-                shape: const CircleBorder(),
-                child: IconButton(
-                  tooltip: isPlaying ? 'Pause slideshow' : 'Play slideshow',
-                  onPressed: disabled ? null : onTogglePlay,
-                  icon: Icon(
-                    isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                    size: 20,
-                  ),
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              ),
-            ),
-            _ControlButton(
-              tooltip: 'Next image',
-              icon: Icons.skip_next_rounded,
-              onPressed: disabled ? null : onNext,
-            ),
-          ],
         ),
       ),
     );

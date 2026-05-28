@@ -44,86 +44,82 @@ class ViewerThumbnailRail extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: thumbnailExtent,
-      child: Stack(
-        children: [
-          Listener(
-            onPointerSignal: _handlePointerSignal,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: AppColors.softPanel,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-              ),
-              child: Scrollbar(
-                controller: scrollController,
-                thumbVisibility: true,
-                trackVisibility: true,
-                interactive: true,
-                thickness: 6,
-                radius: const Radius.circular(999),
-                child: ListView.builder(
-                  controller: scrollController,
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 16),
-                  itemCount: images.length,
-                  itemBuilder: (context, index) {
-                    final isSelected = index == currentIndex;
+      child: Listener(
+        onPointerSignal: _handlePointerSignal,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.softPanel,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+          ),
+          child: Scrollbar(
+            controller: scrollController,
+            thumbVisibility: true,
+            trackVisibility: true,
+            interactive: true,
+            thickness: 6,
+            radius: const Radius.circular(999),
+            child: ListView.builder(
+              controller: scrollController,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 16),
+              itemCount: images.length,
+              itemBuilder: (context, index) {
+                final isSelected = index == currentIndex;
+                final borderRadius = BorderRadius.circular(4);
 
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
-                        onTap: () => onTap(index),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 140),
-                          width: thumbnailExtent - 8,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isSelected
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.white.withValues(alpha: 0.05),
-                              width: isSelected ? 2 : 1,
-                            ),
-                            boxShadow: isSelected
-                                ? [
-                                    BoxShadow(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withValues(alpha: 0.6),
-                                      blurRadius: 10,
-                                      spreadRadius: 2,
-                                    ),
-                                  ]
-                                : const [],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(11),
-                            child: AppImage.file(
-                              images[index].path,
-                              fit: BoxFit.cover,
-                              cacheWidth: 220,
-                              errorBuilder: (_, _, _) => const ColoredBox(
-                                color: AppColors.brokenImage,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.broken_image_outlined,
-                                    size: 18,
-                                  ),
+                return Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: InkWell(
+                    borderRadius: borderRadius,
+                    onTap: () => onTap(index),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 140),
+                      width: thumbnailExtent - 8,
+                      decoration: BoxDecoration(
+                        borderRadius: borderRadius,
+                        border: Border.all(
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.white.withValues(alpha: 0.05),
+                          width: isSelected ? 4 : 1,
+                        ),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.6),
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
                                 ),
+                              ]
+                            : const [],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: borderRadius,
+                        child: AppImage.file(
+                          images[index].path,
+                          fit: BoxFit.cover,
+                          cacheWidth: 220,
+                          errorBuilder: (_, _, _) => const ColoredBox(
+                            color: AppColors.brokenImage,
+                            child: Center(
+                              child: Icon(
+                                Icons.broken_image_outlined,
+                                size: 18,
                               ),
                             ),
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        ],
+        ),
       ),
     );
   }
