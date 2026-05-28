@@ -25,6 +25,37 @@ class NativeFileChannelService {
     }
   }
 
+  Future<Map<Object?, Object?>?> getDefaultViewerStatus() async {
+    if (!Platform.isMacOS) {
+      return null;
+    }
+
+    try {
+      final status = await _channel.invokeMethod<Object>(
+        'getDefaultViewerStatus',
+      );
+      return status is Map<Object?, Object?> ? status : null;
+    } on MissingPluginException {
+      return null;
+    } on PlatformException {
+      return null;
+    }
+  }
+
+  Future<bool?> setAsDefaultViewer() async {
+    if (!Platform.isMacOS) {
+      return null;
+    }
+
+    try {
+      return await _channel.invokeMethod<bool>('setAsDefaultViewer');
+    } on MissingPluginException {
+      return null;
+    } on PlatformException {
+      return null;
+    }
+  }
+
   void setOpenFilesHandler(Future<void> Function(List<String> paths)? handler) {
     _channel.setMethodCallHandler(
       handler == null

@@ -22,6 +22,23 @@
   "folderAccessRequestFailed": "फोल्डर परवानगीची विनंती करता आली नाही. फक्त निवडलेली प्रतिमा दाखवली जाईल.",
   "nativeOpenViewerPrompt": "दर्शक उघडा",
   "nativeGrantFolderAccessPrompt": "फोल्डर परवानगी द्या",
-  "nativeGrantFolderAccessMessage": "या फोल्डरमधील शेजारील प्रतिमा वाचण्यासाठी Picavi ला परवानगी द्या."
+  "nativeGrantFolderAccessMessage": "या फोल्डरमधील शेजारील प्रतिमा वाचण्यासाठी Picavi ला परवानगी द्या.",
+  "settingsTitle": "सेटिंग्ज",
+  "defaultViewerTitle": "डीफॉल्ट दर्शक",
+  "versionTitle": "आवृत्ती",
+  "defaultViewerActionSet": "डीफॉल्ट दर्शक म्हणून सेट करा",
+  "defaultViewerActionOpenSystemSettings": "डीफॉल्ट अॅप्स सेटिंग्ज उघडा",
+  "defaultViewerPromptTitle": "तुम्हाला Picavi हा तुमचा डीफॉल्ट प्रतिमा दर्शक बनवायचा आहे का?",
+  "defaultViewerPromptMessage": "तुम्ही Finder, File Explorer किंवा तुमच्या फाइल मॅनेजरमधून थेट Picavi मध्ये प्रतिमा उघडू शकता. हे तुम्ही नंतर सेटिंग्जमधून बदलू शकता.",
+  "notNowLabel": "आत्ता नाही",
+  "defaultViewerHintTitle": "Picavi हा डीफॉल्ट प्रतिमा दर्शक नाही.",
+  "defaultViewerChecking": "तपासले जात आहे…",
+  "defaultViewerStatusDefault": "समर्थित स्वरूपांसाठी Picavi हा सध्या तुमचा डीफॉल्ट प्रतिमा दर्शक आहे.",
+  "defaultViewerStatusNotDefault": "Picavi अजून तुमचा डीफॉल्ट प्रतिमा दर्शक नाही.",
+  "defaultViewerGuidedHelp": "उर्वरित टप्प्यांमध्ये तुमची ऑपरेटिंग सिस्टीम तुम्हाला मार्गदर्शन करेल.",
+  "defaultViewerSetSuccess": "समर्थित स्वरूपांसाठी Picavi आता डीफॉल्ट प्रतिमा दर्शक आहे.",
+  "defaultViewerFlowOpened": "सिस्टममधील डीफॉल्ट अॅप्स सेटिंग्ज उघडल्या गेल्या.",
+  "defaultViewerSetFailed": "Picavi ला आपोआप डीफॉल्ट दर्शक म्हणून सेट करता आले नाही.",
+  "defaultViewerUnsupported": "या प्लॅटफॉर्मवर डीफॉल्ट दर्शक सेटअप उपलब्ध नाही."
 }
 

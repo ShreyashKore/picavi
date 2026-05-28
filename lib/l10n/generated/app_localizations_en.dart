@@ -49,4 +49,66 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get nativeGrantFolderAccessMessage =>
       'Allow Picavi to read sibling images in this folder.';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get defaultViewerTitle => 'Default viewer';
+
+  @override
+  String get versionTitle => 'Version';
+
+  @override
+  String get defaultViewerActionSet => 'Set default viewer';
+
+  @override
+  String get defaultViewerActionOpenSystemSettings =>
+      'Open default apps settings';
+
+  @override
+  String get defaultViewerPromptTitle =>
+      'Make Picavi your default image viewer?';
+
+  @override
+  String get defaultViewerPromptMessage =>
+      'You can open images in Picavi directly from Finder, File Explorer, or your file manager. You can change this later from Settings.';
+
+  @override
+  String get notNowLabel => 'Not now';
+
+  @override
+  String get defaultViewerHintTitle =>
+      'Picavi is not the default image viewer.';
+
+  @override
+  String get defaultViewerChecking => 'Checking…';
+
+  @override
+  String get defaultViewerStatusDefault =>
+      'Picavi is currently your default image viewer for supported formats.';
+
+  @override
+  String get defaultViewerStatusNotDefault =>
+      'Picavi is not your default image viewer yet.';
+
+  @override
+  String get defaultViewerGuidedHelp =>
+      'Your operating system will guide you through the remaining steps.';
+
+  @override
+  String get defaultViewerSetSuccess =>
+      'Picavi is now the default image viewer for supported formats.';
+
+  @override
+  String get defaultViewerFlowOpened =>
+      'System default-app settings were opened.';
+
+  @override
+  String get defaultViewerSetFailed =>
+      'Picavi couldn\'t be set as the default viewer automatically.';
+
+  @override
+  String get defaultViewerUnsupported =>
+      'Default viewer setup is not available on this platform.';
 }

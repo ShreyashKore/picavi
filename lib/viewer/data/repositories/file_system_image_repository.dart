@@ -51,17 +51,33 @@ class FileSystemImageRepository implements ImageRepository {
       return null;
     }
 
-    final uri = Uri.tryParse(trimmedPath);
+    if (trimmedPath.startsWith('-') && !trimmedPath.startsWith('file://')) {
+      return null;
+    }
+
+    final sanitizedPath = _stripWrappingQuotes(trimmedPath);
+
+    final uri = Uri.tryParse(sanitizedPath);
     if (uri != null && uri.hasScheme && uri.scheme == 'file') {
       return uri.toFilePath();
     }
 
-    return trimmedPath;
+    return sanitizedPath;
   }
 
   @override
   String normalizedPath(String path) {
     final normalized = p.normalize(path);
     return Platform.isWindows ? normalized.toLowerCase() : normalized;
+  }
+
+  String _stripWrappingQuotes(String path) {
+    if (path.length >= 2 &&
+        ((path.startsWith('"') && path.endsWith('"')) ||
+            (path.startsWith("'") && path.endsWith("'")))) {
+      return path.substring(1, path.length - 1);
+    }
+
+    return path;
   }
 }

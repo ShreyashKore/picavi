@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 
 import '../../../../core/l10n/l10n_extensions.dart';
+import '../../../../core/services/app_preferences_service.dart';
+import '../../../../core/services/default_viewer_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_image.dart';
 import '../../data/repositories/file_system_image_repository.dart';
@@ -21,6 +23,7 @@ import '../widgets/interactive_image_viewer.dart';
 import '../widgets/viewer_empty_state.dart';
 import '../widgets/viewer_thumbnail_rail.dart';
 import '../widgets/viewer_top_overlay.dart';
+import 'settings_screen.dart';
 
 class ViewerScreen extends StatefulWidget {
   const ViewerScreen({super.key, this.initialArguments = const []});
@@ -31,7 +34,8 @@ class ViewerScreen extends StatefulWidget {
   State<ViewerScreen> createState() => _ViewerScreenState();
 }
 
-class _ViewerScreenState extends State<ViewerScreen> {
+class _ViewerScreenState extends State<ViewerScreen>
+    with WidgetsBindingObserver {
   static const double _thumbnailExtent = 72;
   static const double _thumbnailControlsInset = 40;
   static const Duration _slideshowInterval = Duration(seconds: 3);
@@ -41,6 +45,8 @@ class _ViewerScreenState extends State<ViewerScreen> {
     debugLabel: 'viewerKeyboardFocus',
   );
   late final ViewerController _controller;
+  late final AppPreferencesService _appPreferencesService;
+  late final DefaultViewerService _defaultViewerService;
   late final InteractiveImageViewerController _imageViewerController;
   Timer? _slideshowTimer;
 
@@ -50,13 +56,22 @@ class _ViewerScreenState extends State<ViewerScreen> {
   bool _didBootstrap = false;
   bool _isPickingFile = false;
   bool _isPlaying = false;
+  bool _isUpdatingDefaultViewer = false;
   bool _showInfoOverlay = false;
+  bool _defaultViewerPromptHandled = false;
+  bool _suppressDefaultViewerHintUntilRestart = false;
   String? _lastImagePath;
+  DefaultViewerStatus? _defaultViewerStatus;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final nativeFileChannelService = NativeFileChannelService();
+    _appPreferencesService = AppPreferencesService();
+    _defaultViewerService = DefaultViewerService(
+      nativeFileChannelService: nativeFileChannelService,
+    );
     _controller = ViewerController(
       imageRepository: FileSystemImageRepository(),
       imagePickerService: DesktopImagePickerService(
@@ -66,6 +81,14 @@ class _ViewerScreenState extends State<ViewerScreen> {
     )..addListener(_onControllerChanged);
     _imageViewerController = InteractiveImageViewerController()
       ..addListener(_onImageViewerChanged);
+    unawaited(_initializeDefaultViewerState());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_refreshDefaultViewerStatus());
+    }
   }
 
   @override
@@ -90,6 +113,7 @@ class _ViewerScreenState extends State<ViewerScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _stopSlideshow(rebuild: false);
     _imageViewerController
       ..removeListener(_onImageViewerChanged)
@@ -159,6 +183,154 @@ class _ViewerScreenState extends State<ViewerScreen> {
         });
       }
     }
+  }
+
+  Future<void> _initializeDefaultViewerState() async {
+    final status = await _defaultViewerService.getStatus();
+    final promptHandled = await _appPreferencesService
+        .hasHandledDefaultViewerPrompt();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _defaultViewerStatus = status;
+      _defaultViewerPromptHandled = promptHandled;
+    });
+
+    if (!status.isSupported || promptHandled) {
+      return;
+    }
+
+    await _appPreferencesService.markDefaultViewerPromptHandled();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _defaultViewerPromptHandled = true;
+      _suppressDefaultViewerHintUntilRestart = true;
+    });
+
+    if (status.isDefault) {
+      return;
+    }
+
+    await Future<void>.delayed(Duration.zero);
+    if (!mounted) {
+      return;
+    }
+
+    final shouldSetDefault = await _showDefaultViewerPrompt();
+    if (shouldSetDefault == true) {
+      await _requestDefaultViewerUpdate();
+    }
+  }
+
+  Future<void> _refreshDefaultViewerStatus() async {
+    final status = await _defaultViewerService.getStatus();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _defaultViewerStatus = status;
+    });
+  }
+
+  Future<bool?> _showDefaultViewerPrompt() {
+    final actionLabel = _defaultViewerActionLabel(_defaultViewerStatus);
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.defaultViewerPromptTitle),
+        content: Text(context.l10n.defaultViewerPromptMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(context.l10n.notNowLabel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(actionLabel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _requestDefaultViewerUpdate() async {
+    if (_isUpdatingDefaultViewer) {
+      return;
+    }
+
+    final status = _defaultViewerStatus;
+    if (status == null || !status.isSupported) {
+      return;
+    }
+
+    setState(() {
+      _isUpdatingDefaultViewer = true;
+    });
+
+    final result = await _defaultViewerService.requestSetAsDefault();
+    final refreshedStatus = await _defaultViewerService.getStatus();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _isUpdatingDefaultViewer = false;
+      _defaultViewerStatus = refreshedStatus;
+    });
+
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    messenger
+      ?..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(_defaultViewerResultMessage(result.outcome))),
+      );
+  }
+
+  Future<void> _openSettings() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => SettingsScreen(
+          defaultViewerService: _defaultViewerService,
+          initialStatus: _defaultViewerStatus,
+        ),
+      ),
+    );
+
+    await _refreshDefaultViewerStatus();
+  }
+
+  String _defaultViewerActionLabel(DefaultViewerStatus? status) {
+    if (status?.actionType == DefaultViewerActionType.guided) {
+      return context.l10n.defaultViewerActionOpenSystemSettings;
+    }
+
+    return context.l10n.defaultViewerActionSet;
+  }
+
+  String _defaultViewerResultMessage(DefaultViewerRequestOutcome outcome) {
+    return switch (outcome) {
+      DefaultViewerRequestOutcome.success =>
+        context.l10n.defaultViewerSetSuccess,
+      DefaultViewerRequestOutcome.launchedSystemSettings =>
+        context.l10n.defaultViewerFlowOpened,
+      DefaultViewerRequestOutcome.failed => context.l10n.defaultViewerSetFailed,
+      DefaultViewerRequestOutcome.unsupported =>
+        context.l10n.defaultViewerUnsupported,
+    };
+  }
+
+  bool get _showDefaultViewerHint {
+    final status = _defaultViewerStatus;
+    return _defaultViewerPromptHandled &&
+        !_suppressDefaultViewerHintUntilRestart &&
+        status != null &&
+        status.needsAttention;
   }
 
   Future<void> _syncKeyboardStateForNativeDialog() async {
@@ -372,6 +544,18 @@ class _ViewerScreenState extends State<ViewerScreen> {
         else
           _buildEmptyState(),
         if (state.hasImages) _buildTopOverlay(state),
+        if (_showDefaultViewerHint)
+          Positioned(
+            right: 18,
+            bottom: state.hasImages ? 148 : 18,
+            child: _DefaultViewerHintTile(
+              message: context.l10n.defaultViewerHintTitle,
+              actionLabel: _defaultViewerActionLabel(_defaultViewerStatus),
+              settingsLabel: context.l10n.settingsTitle,
+              onSetDefault: _requestDefaultViewerUpdate,
+              onOpenSettings: _openSettings,
+            ),
+          ),
       ],
     );
 
@@ -395,8 +579,10 @@ class _ViewerScreenState extends State<ViewerScreen> {
       title: context.l10n.emptyStateTitle,
       description: context.l10n.emptyStateDescription,
       openImageLabel: context.l10n.openImage,
+      settingsLabel: context.l10n.settingsTitle,
       tipsText: context.l10n.tipsText,
       onOpenImage: _pickAndOpenImage,
+      onOpenSettings: _openSettings,
     );
   }
 
@@ -503,6 +689,71 @@ class _ViewerScreenState extends State<ViewerScreen> {
         currentDirectoryName,
         state.currentIndex + 1,
         state.images.length,
+      ),
+      settingsTooltip: context.l10n.settingsTitle,
+      onOpenSettings: _openSettings,
+    );
+  }
+}
+
+class _DefaultViewerHintTile extends StatelessWidget {
+  const _DefaultViewerHintTile({
+    required this.message,
+    required this.actionLabel,
+    required this.settingsLabel,
+    required this.onSetDefault,
+    required this.onOpenSettings,
+  });
+
+  final String message;
+  final String actionLabel;
+  final String settingsLabel;
+  final VoidCallback onSetDefault;
+  final VoidCallback onOpenSettings;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 340),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.topOverlay,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.info_outline, size: 16),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      message,
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                children: [
+                  TextButton(onPressed: onSetDefault, child: Text(actionLabel)),
+                  TextButton(
+                    onPressed: onOpenSettings,
+                    child: Text(settingsLabel),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,8 +1,10 @@
 import Cocoa
+import CoreServices
 import FlutterMacOS
 
 class MainFlutterWindow: NSWindow {
   private let fileOpenChannelName = "com.gyanoba.oiv/file_open"
+  private let supportedImageExtensions = ["bmp", "gif", "ico", "jpeg", "jpg", "png", "svg", "webp"]
   private var pendingFiles: [String] = []
   private var fileOpenChannel: FlutterMethodChannel?
   private var activeSecurityScopedURLs: [URL] = []
@@ -60,6 +62,10 @@ class MainFlutterWindow: NSWindow {
         let files = self.pendingFiles
         self.pendingFiles.removeAll()
         result(files)
+      case "getDefaultViewerStatus":
+        self.resolveDefaultViewerStatus(result: result)
+      case "setAsDefaultViewer":
+        self.setAsDefaultViewer(result: result)
       case "pickImageFile":
         self.presentImageOpenPanel(arguments: call.arguments, result: result)
       case "authorizeDirectoryAccess":
@@ -131,6 +137,54 @@ class MainFlutterWindow: NSWindow {
     panel.beginSheetModal(for: self, completionHandler: completion)
   }
 
+  private func resolveDefaultViewerStatus(result: FlutterResult) {
+    guard let bundleIdentifier = Bundle.main.bundleIdentifier else {
+      result(["isDefault": false, "isSupported": false])
+      return
+    }
+
+    let contentTypes = resolvedImageContentTypes()
+    guard !contentTypes.isEmpty else {
+      result(["isDefault": false, "isSupported": false])
+      return
+    }
+
+    let isDefault = contentTypes.allSatisfy { contentType in
+      guard let handler = LSCopyDefaultRoleHandlerForContentType(
+        contentType as CFString,
+        .viewer
+      )?.takeRetainedValue() as String? else {
+        return false
+      }
+
+      return handler == bundleIdentifier
+    }
+
+    result(["isDefault": isDefault, "isSupported": true])
+  }
+
+  private func setAsDefaultViewer(result: FlutterResult) {
+    guard let bundleIdentifier = Bundle.main.bundleIdentifier else {
+      result(false)
+      return
+    }
+
+    let contentTypes = resolvedImageContentTypes()
+    guard !contentTypes.isEmpty else {
+      result(false)
+      return
+    }
+
+    let statuses = contentTypes.map {
+      LSSetDefaultRoleHandlerForContentType(
+        $0 as CFString,
+        .viewer,
+        bundleIdentifier as CFString
+      )
+    }
+    result(statuses.allSatisfy { $0 == noErr })
+  }
+
   private func resolveFlutterViewController() -> FlutterViewController? {
     return contentViewController as? FlutterViewController
   }
@@ -164,5 +218,26 @@ class MainFlutterWindow: NSWindow {
     if parentDirectoryURL != url, parentDirectoryURL.startAccessingSecurityScopedResource() {
       activeSecurityScopedURLs.append(parentDirectoryURL)
     }
+  }
+
+  private func resolvedImageContentTypes() -> [String] {
+    var contentTypes: [String] = []
+
+    for pathExtension in supportedImageExtensions {
+      guard let unmanagedContentType = UTTypeCreatePreferredIdentifierForTag(
+        kUTTagClassFilenameExtension,
+        pathExtension as CFString,
+        nil
+      ) else {
+        continue
+      }
+
+      let contentType = unmanagedContentType.takeRetainedValue() as String
+      if !contentTypes.contains(contentType) {
+        contentTypes.append(contentType)
+      }
+    }
+
+    return contentTypes
   }
 }

@@ -50,4 +50,66 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get nativeGrantFolderAccessMessage =>
       'Permite que Picavi lea las imágenes vecinas de esta carpeta.';
+
+  @override
+  String get settingsTitle => 'Configuración';
+
+  @override
+  String get defaultViewerTitle => 'Visor predeterminado';
+
+  @override
+  String get versionTitle => 'Versión';
+
+  @override
+  String get defaultViewerActionSet => 'Establecer como visor predeterminado';
+
+  @override
+  String get defaultViewerActionOpenSystemSettings =>
+      'Abrir la configuración de aplicaciones predeterminadas';
+
+  @override
+  String get defaultViewerPromptTitle =>
+      '¿Quieres que Picavi sea tu visor de imágenes predeterminado?';
+
+  @override
+  String get defaultViewerPromptMessage =>
+      'Puedes abrir imágenes en Picavi directamente desde Finder, el Explorador de archivos o tu administrador de archivos. Puedes cambiar esto más tarde desde Configuración.';
+
+  @override
+  String get notNowLabel => 'Ahora no';
+
+  @override
+  String get defaultViewerHintTitle =>
+      'Picavi no es el visor de imágenes predeterminado.';
+
+  @override
+  String get defaultViewerChecking => 'Comprobando…';
+
+  @override
+  String get defaultViewerStatusDefault =>
+      'Picavi es actualmente tu visor de imágenes predeterminado para los formatos compatibles.';
+
+  @override
+  String get defaultViewerStatusNotDefault =>
+      'Picavi aún no es tu visor de imágenes predeterminado.';
+
+  @override
+  String get defaultViewerGuidedHelp =>
+      'Tu sistema operativo te guiará en los pasos restantes.';
+
+  @override
+  String get defaultViewerSetSuccess =>
+      'Picavi ahora es el visor de imágenes predeterminado para los formatos compatibles.';
+
+  @override
+  String get defaultViewerFlowOpened =>
+      'Se abrió la configuración de aplicaciones predeterminadas del sistema.';
+
+  @override
+  String get defaultViewerSetFailed =>
+      'No se pudo establecer Picavi como visor predeterminado automáticamente.';
+
+  @override
+  String get defaultViewerUnsupported =>
+      'La configuración del visor predeterminado no está disponible en esta plataforma.';
 }

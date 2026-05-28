@@ -22,6 +22,23 @@
   "folderAccessRequestFailed": "无法请求文件夹访问权限。仅显示所选图片。",
   "nativeOpenViewerPrompt": "打开查看器",
   "nativeGrantFolderAccessPrompt": "授予文件夹访问权限",
-  "nativeGrantFolderAccessMessage": "允许 Picavi 读取此文件夹中的同级图片。"
+  "nativeGrantFolderAccessMessage": "允许 Picavi 读取此文件夹中的同级图片。",
+  "settingsTitle": "设置",
+  "defaultViewerTitle": "默认查看器",
+  "versionTitle": "版本",
+  "defaultViewerActionSet": "设为默认查看器",
+  "defaultViewerActionOpenSystemSettings": "打开默认应用设置",
+  "defaultViewerPromptTitle": "要将 Picavi 设为默认图片查看器吗？",
+  "defaultViewerPromptMessage": "你可以直接从 Finder、文件资源管理器或文件管理器中用 Picavi 打开图片。你也可以稍后在“设置”中更改此项。",
+  "notNowLabel": "暂不",
+  "defaultViewerHintTitle": "Picavi 不是默认图片查看器。",
+  "defaultViewerChecking": "正在检查…",
+  "defaultViewerStatusDefault": "对于受支持的格式，Picavi 当前是你的默认图片查看器。",
+  "defaultViewerStatusNotDefault": "Picavi 还不是你的默认图片查看器。",
+  "defaultViewerGuidedHelp": "你的操作系统会引导你完成剩余步骤。",
+  "defaultViewerSetSuccess": "对于受支持的格式，Picavi 现在已是默认图片查看器。",
+  "defaultViewerFlowOpened": "系统默认应用设置已打开。",
+  "defaultViewerSetFailed": "无法自动将 Picavi 设为默认查看器。",
+  "defaultViewerUnsupported": "此平台不支持默认查看器设置。"
 }
 

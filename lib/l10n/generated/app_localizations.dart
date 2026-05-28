@@ -177,6 +177,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Allow Picavi to read sibling images in this folder.'**
   String get nativeGrantFolderAccessMessage;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @defaultViewerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Default viewer'**
+  String get defaultViewerTitle;
+
+  /// No description provided for @versionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get versionTitle;
+
+  /// No description provided for @defaultViewerActionSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default viewer'**
+  String get defaultViewerActionSet;
+
+  /// No description provided for @defaultViewerActionOpenSystemSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open default apps settings'**
+  String get defaultViewerActionOpenSystemSettings;
+
+  /// No description provided for @defaultViewerPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Make Picavi your default image viewer?'**
+  String get defaultViewerPromptTitle;
+
+  /// No description provided for @defaultViewerPromptMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can open images in Picavi directly from Finder, File Explorer, or your file manager. You can change this later from Settings.'**
+  String get defaultViewerPromptMessage;
+
+  /// No description provided for @notNowLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNowLabel;
+
+  /// No description provided for @defaultViewerHintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Picavi is not the default image viewer.'**
+  String get defaultViewerHintTitle;
+
+  /// No description provided for @defaultViewerChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get defaultViewerChecking;
+
+  /// No description provided for @defaultViewerStatusDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Picavi is currently your default image viewer for supported formats.'**
+  String get defaultViewerStatusDefault;
+
+  /// No description provided for @defaultViewerStatusNotDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Picavi is not your default image viewer yet.'**
+  String get defaultViewerStatusNotDefault;
+
+  /// No description provided for @defaultViewerGuidedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Your operating system will guide you through the remaining steps.'**
+  String get defaultViewerGuidedHelp;
+
+  /// No description provided for @defaultViewerSetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Picavi is now the default image viewer for supported formats.'**
+  String get defaultViewerSetSuccess;
+
+  /// No description provided for @defaultViewerFlowOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'System default-app settings were opened.'**
+  String get defaultViewerFlowOpened;
+
+  /// No description provided for @defaultViewerSetFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Picavi couldn\'t be set as the default viewer automatically.'**
+  String get defaultViewerSetFailed;
+
+  /// No description provided for @defaultViewerUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Default viewer setup is not available on this platform.'**
+  String get defaultViewerUnsupported;
 }
 
 class _AppLocalizationsDelegate

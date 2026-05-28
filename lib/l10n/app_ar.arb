@@ -22,6 +22,23 @@
   "folderAccessRequestFailed": "تعذر طلب إذن الوصول إلى المجلد. سيتم عرض الصورة المحددة فقط.",
   "nativeOpenViewerPrompt": "افتح العارض",
   "nativeGrantFolderAccessPrompt": "امنح إذن الوصول إلى المجلد",
-  "nativeGrantFolderAccessMessage": "اسمح لـ Picavi بقراءة الصور المجاورة داخل هذا المجلد."
+  "nativeGrantFolderAccessMessage": "اسمح لـ Picavi بقراءة الصور المجاورة داخل هذا المجلد.",
+  "settingsTitle": "الإعدادات",
+  "defaultViewerTitle": "العارض الافتراضي",
+  "versionTitle": "الإصدار",
+  "defaultViewerActionSet": "تعيين كعارض افتراضي",
+  "defaultViewerActionOpenSystemSettings": "افتح إعدادات التطبيقات الافتراضية",
+  "defaultViewerPromptTitle": "هل تريد جعل Picavi عارض الصور الافتراضي؟",
+  "defaultViewerPromptMessage": "يمكنك فتح الصور في Picavi مباشرةً من Finder أو File Explorer أو مدير الملفات لديك. ويمكنك تغيير ذلك لاحقًا من الإعدادات.",
+  "notNowLabel": "ليس الآن",
+  "defaultViewerHintTitle": "Picavi ليس عارض الصور الافتراضي.",
+  "defaultViewerChecking": "جارٍ التحقق…",
+  "defaultViewerStatusDefault": "Picavi هو حاليًا عارض الصور الافتراضي للتنسيقات المدعومة.",
+  "defaultViewerStatusNotDefault": "Picavi ليس عارض الصور الافتراضي لديك بعد.",
+  "defaultViewerGuidedHelp": "سيقوم نظام التشغيل لديك بإرشادك خلال الخطوات المتبقية.",
+  "defaultViewerSetSuccess": "أصبح Picavi الآن عارض الصور الافتراضي للتنسيقات المدعومة.",
+  "defaultViewerFlowOpened": "تم فتح إعدادات التطبيقات الافتراضية في النظام.",
+  "defaultViewerSetFailed": "تعذر تعيين Picavi كعارض افتراضي تلقائيًا.",
+  "defaultViewerUnsupported": "إعداد العارض الافتراضي غير متاح على هذه المنصة."
 }
 

@@ -22,6 +22,23 @@
   "folderAccessRequestFailed": "फ़ोल्डर एक्सेस का अनुरोध नहीं किया जा सका। केवल चुनी हुई छवि दिखाई जा रही है।",
   "nativeOpenViewerPrompt": "व्यूअर खोलें",
   "nativeGrantFolderAccessPrompt": "फ़ोल्डर एक्सेस दें",
-  "nativeGrantFolderAccessMessage": "Picavi को इस फ़ोल्डर की अन्य छवियाँ पढ़ने की अनुमति दें।"
+  "nativeGrantFolderAccessMessage": "Picavi को इस फ़ोल्डर की अन्य छवियाँ पढ़ने की अनुमति दें।",
+  "settingsTitle": "सेटिंग्स",
+  "defaultViewerTitle": "डिफ़ॉल्ट व्यूअर",
+  "versionTitle": "संस्करण",
+  "defaultViewerActionSet": "डिफ़ॉल्ट व्यूअर के रूप में सेट करें",
+  "defaultViewerActionOpenSystemSettings": "डिफ़ॉल्ट ऐप्स सेटिंग्स खोलें",
+  "defaultViewerPromptTitle": "क्या आप Picavi को अपना डिफ़ॉल्ट इमेज व्यूअर बनाना चाहते हैं?",
+  "defaultViewerPromptMessage": "आप Finder, File Explorer या अपने फ़ाइल मैनेजर से सीधे Picavi में छवियाँ खोल सकते हैं। आप इसे बाद में सेटिंग्स से बदल सकते हैं।",
+  "notNowLabel": "अभी नहीं",
+  "defaultViewerHintTitle": "Picavi डिफ़ॉल्ट इमेज व्यूअर नहीं है।",
+  "defaultViewerChecking": "जाँचा जा रहा है…",
+  "defaultViewerStatusDefault": "समर्थित फ़ॉर्मैट्स के लिए Picavi इस समय आपका डिफ़ॉल्ट इमेज व्यूअर है।",
+  "defaultViewerStatusNotDefault": "Picavi अभी तक आपका डिफ़ॉल्ट इमेज व्यूअर नहीं है।",
+  "defaultViewerGuidedHelp": "आपका ऑपरेटिंग सिस्टम बाकी चरणों में आपका मार्गदर्शन करेगा।",
+  "defaultViewerSetSuccess": "समर्थित फ़ॉर्मैट्स के लिए Picavi अब डिफ़ॉल्ट इमेज व्यूअर है।",
+  "defaultViewerFlowOpened": "सिस्टम की डिफ़ॉल्ट ऐप्स सेटिंग्स खोल दी गई हैं।",
+  "defaultViewerSetFailed": "Picavi को अपने-आप डिफ़ॉल्ट व्यूअर के रूप में सेट नहीं किया जा सका।",
+  "defaultViewerUnsupported": "इस प्लेटफ़ॉर्म पर डिफ़ॉल्ट व्यूअर सेटअप उपलब्ध नहीं है।"
 }
 

@@ -13,8 +13,9 @@ namespace {
 
 constexpr wchar_t kProgId[] = L"Picavi.ImageFile";
 constexpr wchar_t kFriendlyName[] = L"Picavi Image Viewer";
-constexpr std::array<const wchar_t*, 7> kSupportedExtensions = {
-    L".bmp", L".gif", L".ico", L".jpeg", L".jpg", L".png", L".webp"};
+constexpr std::array<const wchar_t*, 8> kSupportedExtensions = {
+    L".bmp", L".gif", L".ico", L".jpeg", L".jpg", L".png", L".svg",
+    L".webp"};
 
 std::wstring GetExecutablePath() {
   wchar_t buffer[MAX_PATH];

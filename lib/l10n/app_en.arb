@@ -22,6 +22,23 @@
   "folderAccessRequestFailed": "Folder access could not be requested. Showing only the selected image.",
   "nativeOpenViewerPrompt": "Open viewer",
   "nativeGrantFolderAccessPrompt": "Grant folder access",
-  "nativeGrantFolderAccessMessage": "Allow Picavi to read sibling images in this folder."
+  "nativeGrantFolderAccessMessage": "Allow Picavi to read sibling images in this folder.",
+  "settingsTitle": "Settings",
+  "defaultViewerTitle": "Default viewer",
+  "versionTitle": "Version",
+  "defaultViewerActionSet": "Set default viewer",
+  "defaultViewerActionOpenSystemSettings": "Open default apps settings",
+  "defaultViewerPromptTitle": "Make Picavi your default image viewer?",
+  "defaultViewerPromptMessage": "You can open images in Picavi directly from Finder, File Explorer, or your file manager. You can change this later from Settings.",
+  "notNowLabel": "Not now",
+  "defaultViewerHintTitle": "Picavi is not the default image viewer.",
+  "defaultViewerChecking": "Checking…",
+  "defaultViewerStatusDefault": "Picavi is currently your default image viewer for supported formats.",
+  "defaultViewerStatusNotDefault": "Picavi is not your default image viewer yet.",
+  "defaultViewerGuidedHelp": "Your operating system will guide you through the remaining steps.",
+  "defaultViewerSetSuccess": "Picavi is now the default image viewer for supported formats.",
+  "defaultViewerFlowOpened": "System default-app settings were opened.",
+  "defaultViewerSetFailed": "Picavi couldn't be set as the default viewer automatically.",
+  "defaultViewerUnsupported": "Default viewer setup is not available on this platform."
 }
 

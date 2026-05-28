@@ -49,4 +49,65 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get nativeGrantFolderAccessMessage =>
       'اسمح لـ Picavi بقراءة الصور المجاورة داخل هذا المجلد.';
+
+  @override
+  String get settingsTitle => 'الإعدادات';
+
+  @override
+  String get defaultViewerTitle => 'العارض الافتراضي';
+
+  @override
+  String get versionTitle => 'الإصدار';
+
+  @override
+  String get defaultViewerActionSet => 'تعيين كعارض افتراضي';
+
+  @override
+  String get defaultViewerActionOpenSystemSettings =>
+      'افتح إعدادات التطبيقات الافتراضية';
+
+  @override
+  String get defaultViewerPromptTitle =>
+      'هل تريد جعل Picavi عارض الصور الافتراضي؟';
+
+  @override
+  String get defaultViewerPromptMessage =>
+      'يمكنك فتح الصور في Picavi مباشرةً من Finder أو File Explorer أو مدير الملفات لديك. ويمكنك تغيير ذلك لاحقًا من الإعدادات.';
+
+  @override
+  String get notNowLabel => 'ليس الآن';
+
+  @override
+  String get defaultViewerHintTitle => 'Picavi ليس عارض الصور الافتراضي.';
+
+  @override
+  String get defaultViewerChecking => 'جارٍ التحقق…';
+
+  @override
+  String get defaultViewerStatusDefault =>
+      'Picavi هو حاليًا عارض الصور الافتراضي للتنسيقات المدعومة.';
+
+  @override
+  String get defaultViewerStatusNotDefault =>
+      'Picavi ليس عارض الصور الافتراضي لديك بعد.';
+
+  @override
+  String get defaultViewerGuidedHelp =>
+      'سيقوم نظام التشغيل لديك بإرشادك خلال الخطوات المتبقية.';
+
+  @override
+  String get defaultViewerSetSuccess =>
+      'أصبح Picavi الآن عارض الصور الافتراضي للتنسيقات المدعومة.';
+
+  @override
+  String get defaultViewerFlowOpened =>
+      'تم فتح إعدادات التطبيقات الافتراضية في النظام.';
+
+  @override
+  String get defaultViewerSetFailed =>
+      'تعذر تعيين Picavi كعارض افتراضي تلقائيًا.';
+
+  @override
+  String get defaultViewerUnsupported =>
+      'إعداد العارض الافتراضي غير متاح على هذه المنصة.';
 }

@@ -50,4 +50,65 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get nativeGrantFolderAccessMessage =>
       'या फोल्डरमधील शेजारील प्रतिमा वाचण्यासाठी Picavi ला परवानगी द्या.';
+
+  @override
+  String get settingsTitle => 'सेटिंग्ज';
+
+  @override
+  String get defaultViewerTitle => 'डीफॉल्ट दर्शक';
+
+  @override
+  String get versionTitle => 'आवृत्ती';
+
+  @override
+  String get defaultViewerActionSet => 'डीफॉल्ट दर्शक म्हणून सेट करा';
+
+  @override
+  String get defaultViewerActionOpenSystemSettings =>
+      'डीफॉल्ट अॅप्स सेटिंग्ज उघडा';
+
+  @override
+  String get defaultViewerPromptTitle =>
+      'तुम्हाला Picavi हा तुमचा डीफॉल्ट प्रतिमा दर्शक बनवायचा आहे का?';
+
+  @override
+  String get defaultViewerPromptMessage =>
+      'तुम्ही Finder, File Explorer किंवा तुमच्या फाइल मॅनेजरमधून थेट Picavi मध्ये प्रतिमा उघडू शकता. हे तुम्ही नंतर सेटिंग्जमधून बदलू शकता.';
+
+  @override
+  String get notNowLabel => 'आत्ता नाही';
+
+  @override
+  String get defaultViewerHintTitle => 'Picavi हा डीफॉल्ट प्रतिमा दर्शक नाही.';
+
+  @override
+  String get defaultViewerChecking => 'तपासले जात आहे…';
+
+  @override
+  String get defaultViewerStatusDefault =>
+      'समर्थित स्वरूपांसाठी Picavi हा सध्या तुमचा डीफॉल्ट प्रतिमा दर्शक आहे.';
+
+  @override
+  String get defaultViewerStatusNotDefault =>
+      'Picavi अजून तुमचा डीफॉल्ट प्रतिमा दर्शक नाही.';
+
+  @override
+  String get defaultViewerGuidedHelp =>
+      'उर्वरित टप्प्यांमध्ये तुमची ऑपरेटिंग सिस्टीम तुम्हाला मार्गदर्शन करेल.';
+
+  @override
+  String get defaultViewerSetSuccess =>
+      'समर्थित स्वरूपांसाठी Picavi आता डीफॉल्ट प्रतिमा दर्शक आहे.';
+
+  @override
+  String get defaultViewerFlowOpened =>
+      'सिस्टममधील डीफॉल्ट अॅप्स सेटिंग्ज उघडल्या गेल्या.';
+
+  @override
+  String get defaultViewerSetFailed =>
+      'Picavi ला आपोआप डीफॉल्ट दर्शक म्हणून सेट करता आले नाही.';
+
+  @override
+  String get defaultViewerUnsupported =>
+      'या प्लॅटफॉर्मवर डीफॉल्ट दर्शक सेटअप उपलब्ध नाही.';
 }

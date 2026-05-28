@@ -49,4 +49,65 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get nativeGrantFolderAccessMessage =>
       'Picavi को इस फ़ोल्डर की अन्य छवियाँ पढ़ने की अनुमति दें।';
+
+  @override
+  String get settingsTitle => 'सेटिंग्स';
+
+  @override
+  String get defaultViewerTitle => 'डिफ़ॉल्ट व्यूअर';
+
+  @override
+  String get versionTitle => 'संस्करण';
+
+  @override
+  String get defaultViewerActionSet => 'डिफ़ॉल्ट व्यूअर के रूप में सेट करें';
+
+  @override
+  String get defaultViewerActionOpenSystemSettings =>
+      'डिफ़ॉल्ट ऐप्स सेटिंग्स खोलें';
+
+  @override
+  String get defaultViewerPromptTitle =>
+      'क्या आप Picavi को अपना डिफ़ॉल्ट इमेज व्यूअर बनाना चाहते हैं?';
+
+  @override
+  String get defaultViewerPromptMessage =>
+      'आप Finder, File Explorer या अपने फ़ाइल मैनेजर से सीधे Picavi में छवियाँ खोल सकते हैं। आप इसे बाद में सेटिंग्स से बदल सकते हैं।';
+
+  @override
+  String get notNowLabel => 'अभी नहीं';
+
+  @override
+  String get defaultViewerHintTitle => 'Picavi डिफ़ॉल्ट इमेज व्यूअर नहीं है।';
+
+  @override
+  String get defaultViewerChecking => 'जाँचा जा रहा है…';
+
+  @override
+  String get defaultViewerStatusDefault =>
+      'समर्थित फ़ॉर्मैट्स के लिए Picavi इस समय आपका डिफ़ॉल्ट इमेज व्यूअर है।';
+
+  @override
+  String get defaultViewerStatusNotDefault =>
+      'Picavi अभी तक आपका डिफ़ॉल्ट इमेज व्यूअर नहीं है।';
+
+  @override
+  String get defaultViewerGuidedHelp =>
+      'आपका ऑपरेटिंग सिस्टम बाकी चरणों में आपका मार्गदर्शन करेगा।';
+
+  @override
+  String get defaultViewerSetSuccess =>
+      'समर्थित फ़ॉर्मैट्स के लिए Picavi अब डिफ़ॉल्ट इमेज व्यूअर है।';
+
+  @override
+  String get defaultViewerFlowOpened =>
+      'सिस्टम की डिफ़ॉल्ट ऐप्स सेटिंग्स खोल दी गई हैं।';
+
+  @override
+  String get defaultViewerSetFailed =>
+      'Picavi को अपने-आप डिफ़ॉल्ट व्यूअर के रूप में सेट नहीं किया जा सका।';
+
+  @override
+  String get defaultViewerUnsupported =>
+      'इस प्लेटफ़ॉर्म पर डिफ़ॉल्ट व्यूअर सेटअप उपलब्ध नहीं है।';
 }

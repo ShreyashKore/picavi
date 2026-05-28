@@ -22,6 +22,23 @@
   "folderAccessRequestFailed": "No se pudo solicitar acceso a la carpeta. Se mostrará solo la imagen seleccionada.",
   "nativeOpenViewerPrompt": "Abrir visor",
   "nativeGrantFolderAccessPrompt": "Conceder acceso a la carpeta",
-  "nativeGrantFolderAccessMessage": "Permite que Picavi lea las imágenes vecinas de esta carpeta."
+  "nativeGrantFolderAccessMessage": "Permite que Picavi lea las imágenes vecinas de esta carpeta.",
+  "settingsTitle": "Configuración",
+  "defaultViewerTitle": "Visor predeterminado",
+  "versionTitle": "Versión",
+  "defaultViewerActionSet": "Establecer como visor predeterminado",
+  "defaultViewerActionOpenSystemSettings": "Abrir la configuración de aplicaciones predeterminadas",
+  "defaultViewerPromptTitle": "¿Quieres que Picavi sea tu visor de imágenes predeterminado?",
+  "defaultViewerPromptMessage": "Puedes abrir imágenes en Picavi directamente desde Finder, el Explorador de archivos o tu administrador de archivos. Puedes cambiar esto más tarde desde Configuración.",
+  "notNowLabel": "Ahora no",
+  "defaultViewerHintTitle": "Picavi no es el visor de imágenes predeterminado.",
+  "defaultViewerChecking": "Comprobando…",
+  "defaultViewerStatusDefault": "Picavi es actualmente tu visor de imágenes predeterminado para los formatos compatibles.",
+  "defaultViewerStatusNotDefault": "Picavi aún no es tu visor de imágenes predeterminado.",
+  "defaultViewerGuidedHelp": "Tu sistema operativo te guiará en los pasos restantes.",
+  "defaultViewerSetSuccess": "Picavi ahora es el visor de imágenes predeterminado para los formatos compatibles.",
+  "defaultViewerFlowOpened": "Se abrió la configuración de aplicaciones predeterminadas del sistema.",
+  "defaultViewerSetFailed": "No se pudo establecer Picavi como visor predeterminado automáticamente.",
+  "defaultViewerUnsupported": "La configuración del visor predeterminado no está disponible en esta plataforma."
 }
 

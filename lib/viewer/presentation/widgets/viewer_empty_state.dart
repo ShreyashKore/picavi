@@ -10,8 +10,10 @@ class ViewerEmptyState extends StatelessWidget {
     required this.title,
     required this.description,
     required this.openImageLabel,
+    required this.settingsLabel,
     required this.tipsText,
     required this.onOpenImage,
+    required this.onOpenSettings,
   });
 
   final bool isBootstrapping;
@@ -19,8 +21,10 @@ class ViewerEmptyState extends StatelessWidget {
   final String title;
   final String description;
   final String openImageLabel;
+  final String settingsLabel;
   final String tipsText;
   final VoidCallback onOpenImage;
+  final VoidCallback onOpenSettings;
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +89,21 @@ class ViewerEmptyState extends StatelessWidget {
                         ),
                 ),
                 const SizedBox(height: 20),
-                FilledButton.icon(
-                  onPressed: onOpenImage,
-                  icon: const Icon(Icons.photo_library_outlined),
-                  label: Text(openImageLabel),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    FilledButton.icon(
+                      onPressed: onOpenImage,
+                      icon: const Icon(Icons.photo_library_outlined),
+                      label: Text(openImageLabel),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: onOpenSettings,
+                      icon: const Icon(Icons.settings_outlined),
+                      label: Text(settingsLabel),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 Text(

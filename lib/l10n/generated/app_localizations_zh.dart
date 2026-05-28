@@ -45,4 +45,56 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nativeGrantFolderAccessMessage => '允许 Picavi 读取此文件夹中的同级图片。';
+
+  @override
+  String get settingsTitle => '设置';
+
+  @override
+  String get defaultViewerTitle => '默认查看器';
+
+  @override
+  String get versionTitle => '版本';
+
+  @override
+  String get defaultViewerActionSet => '设为默认查看器';
+
+  @override
+  String get defaultViewerActionOpenSystemSettings => '打开默认应用设置';
+
+  @override
+  String get defaultViewerPromptTitle => '要将 Picavi 设为默认图片查看器吗？';
+
+  @override
+  String get defaultViewerPromptMessage =>
+      '你可以直接从 Finder、文件资源管理器或文件管理器中用 Picavi 打开图片。你也可以稍后在“设置”中更改此项。';
+
+  @override
+  String get notNowLabel => '暂不';
+
+  @override
+  String get defaultViewerHintTitle => 'Picavi 不是默认图片查看器。';
+
+  @override
+  String get defaultViewerChecking => '正在检查…';
+
+  @override
+  String get defaultViewerStatusDefault => '对于受支持的格式，Picavi 当前是你的默认图片查看器。';
+
+  @override
+  String get defaultViewerStatusNotDefault => 'Picavi 还不是你的默认图片查看器。';
+
+  @override
+  String get defaultViewerGuidedHelp => '你的操作系统会引导你完成剩余步骤。';
+
+  @override
+  String get defaultViewerSetSuccess => '对于受支持的格式，Picavi 现在已是默认图片查看器。';
+
+  @override
+  String get defaultViewerFlowOpened => '系统默认应用设置已打开。';
+
+  @override
+  String get defaultViewerSetFailed => '无法自动将 Picavi 设为默认查看器。';
+
+  @override
+  String get defaultViewerUnsupported => '此平台不支持默认查看器设置。';
 }
