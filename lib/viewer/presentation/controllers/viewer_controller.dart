@@ -41,16 +41,17 @@ class ViewerController extends ChangeNotifier {
     required List<String> initialArguments,
     required DirectoryAccessTexts directoryAccessTexts,
   }) async {
+    var didOpenInitialPath = false;
     final pendingFiles = await _nativeFileChannelService.consumePendingFiles();
     if (pendingFiles.isNotEmpty) {
-      await handleOpenPaths(
+      didOpenInitialPath = await handleOpenPaths(
         pendingFiles,
         directoryAccessTexts: directoryAccessTexts,
       );
     }
 
-    if (initialArguments.isNotEmpty) {
-      await handleOpenPaths(
+    if (!didOpenInitialPath && initialArguments.isNotEmpty) {
+      didOpenInitialPath = await handleOpenPaths(
         initialArguments,
         directoryAccessTexts: directoryAccessTexts,
       );
@@ -77,7 +78,7 @@ class ViewerController extends ChangeNotifier {
     ], directoryAccessTexts: directoryAccessTexts);
   }
 
-  Future<void> handleOpenPaths(
+  Future<bool> handleOpenPaths(
     Iterable<String> rawPaths, {
     required DirectoryAccessTexts directoryAccessTexts,
   }) async {
@@ -99,7 +100,7 @@ class ViewerController extends ChangeNotifier {
             selectedIndex: 0,
             currentDirectory: normalizedPath,
           );
-          return;
+          return true;
         }
       }
 
@@ -108,9 +109,11 @@ class ViewerController extends ChangeNotifier {
           normalizedPath,
           directoryAccessTexts: directoryAccessTexts,
         );
-        return;
+        return _state.hasImages;
       }
     }
+
+    return false;
   }
 
   Future<void> openIndex(int index) async {

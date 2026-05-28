@@ -25,6 +25,8 @@
   "nativeGrantFolderAccessMessage": "Permite que Picavi lea las imágenes vecinas de esta carpeta.",
   "settingsTitle": "Configuración",
   "defaultViewerTitle": "Visor predeterminado",
+  "restoreLastOpenedImageTitle": "Restaurar la última imagen abierta al iniciar",
+  "restoreLastOpenedImageDescription": "Vuelve a abrir la última imagen vista, o su carpeta si la imagen ya no está disponible, cuando Picavi se inicie sin un archivo explícito.",
   "versionTitle": "Versión",
   "defaultViewerActionSet": "Establecer como visor predeterminado",
   "defaultViewerActionOpenSystemSettings": "Abrir la configuración de aplicaciones predeterminadas",

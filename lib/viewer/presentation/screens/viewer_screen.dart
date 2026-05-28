@@ -61,6 +61,7 @@ class _ViewerScreenState extends State<ViewerScreen>
   bool _showInfoOverlay = false;
   bool _defaultViewerPromptHandled = false;
   bool _suppressDefaultViewerHintUntilRestart = false;
+  bool _restoreLastOpenedImageEnabled = false;
   String? _lastImagePath;
   DefaultViewerStatus? _defaultViewerStatus;
 
@@ -83,6 +84,7 @@ class _ViewerScreenState extends State<ViewerScreen>
     _imageViewerController = InteractiveImageViewerController()
       ..addListener(_onImageViewerChanged);
     unawaited(_initializeDefaultViewerState());
+    unawaited(_refreshRestoreLastOpenedImagePreference());
   }
 
   @override
@@ -239,6 +241,37 @@ class _ViewerScreenState extends State<ViewerScreen>
     });
   }
 
+  Future<void> _refreshRestoreLastOpenedImagePreference() async {
+    final isEnabled = await _appPreferencesService
+        .isRestoreLastOpenedImageEnabled();
+    if (!mounted) {
+      return;
+    }
+
+    final shouldRebuild = _restoreLastOpenedImageEnabled != isEnabled;
+    _restoreLastOpenedImageEnabled = isEnabled;
+    if (shouldRebuild) {
+      setState(() {});
+    }
+
+    if (!isEnabled) {
+      return;
+    }
+
+    final state = _controller.state;
+    if (state.hasImages) {
+      await _persistLastOpenedImagePath(state.currentImage.path);
+    }
+  }
+
+  Future<void> _persistLastOpenedImagePath(String imagePath) async {
+    if (!_restoreLastOpenedImageEnabled) {
+      return;
+    }
+
+    await _appPreferencesService.setLastOpenedImagePath(imagePath);
+  }
+
   Future<bool?> _showDefaultViewerPrompt() {
     final actionLabel = _defaultViewerActionLabel(_defaultViewerStatus);
     return showDialog<bool>(
@@ -297,6 +330,7 @@ class _ViewerScreenState extends State<ViewerScreen>
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) => SettingsScreen(
+          appPreferencesService: _appPreferencesService,
           defaultViewerService: _defaultViewerService,
           initialStatus: _defaultViewerStatus,
         ),
@@ -304,6 +338,7 @@ class _ViewerScreenState extends State<ViewerScreen>
     );
 
     await _refreshDefaultViewerStatus();
+    await _refreshRestoreLastOpenedImagePreference();
   }
 
   String _defaultViewerActionLabel(DefaultViewerStatus? status) {
@@ -362,6 +397,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       _lastGalleryPaths = galleryPaths;
       _lastSyncedIndex = state.currentIndex;
       _lastImagePath = currentImagePath;
+      unawaited(_persistLastOpenedImagePath(currentImagePath));
       _showInfoOverlay = false;
       _imageViewerController.reset();
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -379,6 +415,7 @@ class _ViewerScreenState extends State<ViewerScreen>
         _lastImagePath != currentImagePath) {
       _lastSyncedIndex = state.currentIndex;
       _lastImagePath = currentImagePath;
+      unawaited(_persistLastOpenedImagePath(currentImagePath));
       _imageViewerController.reset();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted || !state.hasImages) {

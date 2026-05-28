@@ -4,16 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/l10n/l10n_extensions.dart';
+import '../../../../core/services/app_preferences_service.dart';
 import '../../../../core/services/default_viewer_service.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({
     super.key,
+    required this.appPreferencesService,
     required this.defaultViewerService,
     this.initialStatus,
   });
 
+  final AppPreferencesService appPreferencesService;
   final DefaultViewerService defaultViewerService;
   final DefaultViewerStatus? initialStatus;
 
@@ -26,6 +29,9 @@ class _SettingsScreenState extends State<SettingsScreen>
   DefaultViewerStatus? _status;
   bool _isLoadingStatus = true;
   bool _isUpdatingDefaultViewer = false;
+  bool _isLoadingResumePreference = true;
+  bool _isUpdatingResumePreference = false;
+  bool _restoreLastOpenedImageEnabled = false;
   String _versionLabel = '—';
 
   @override
@@ -55,9 +61,13 @@ class _SettingsScreenState extends State<SettingsScreen>
     final statusFuture = refreshStatus
         ? widget.defaultViewerService.getStatus()
         : Future<DefaultViewerStatus?>.value(_status);
+    final restoreLastOpenedImageEnabledFuture = widget.appPreferencesService
+        .isRestoreLastOpenedImageEnabled();
 
     final versionLabel = await versionFuture;
     final status = await statusFuture;
+    final restoreLastOpenedImageEnabled =
+        await restoreLastOpenedImageEnabledFuture;
     if (!mounted) {
       return;
     }
@@ -66,6 +76,8 @@ class _SettingsScreenState extends State<SettingsScreen>
       _versionLabel = versionLabel;
       _status = status;
       _isLoadingStatus = false;
+      _restoreLastOpenedImageEnabled = restoreLastOpenedImageEnabled;
+      _isLoadingResumePreference = false;
     });
   }
 
@@ -118,6 +130,29 @@ class _SettingsScreenState extends State<SettingsScreen>
     messenger
       ?..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(_resultMessage(result.outcome))));
+  }
+
+  Future<void> _setRestoreLastOpenedImageEnabled(bool enabled) async {
+    if (_isUpdatingResumePreference) {
+      return;
+    }
+
+    setState(() {
+      _isUpdatingResumePreference = true;
+    });
+
+    await widget.appPreferencesService.setRestoreLastOpenedImageEnabled(
+      enabled,
+    );
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _restoreLastOpenedImageEnabled = enabled;
+      _isLoadingResumePreference = false;
+      _isUpdatingResumePreference = false;
+    });
   }
 
   String _resultMessage(DefaultViewerRequestOutcome outcome) {
@@ -226,6 +261,31 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   ),
                                 ),
                         ),
+                        const Divider(height: 28),
+                        SwitchListTile.adaptive(
+                          contentPadding: EdgeInsets.zero,
+                          secondary: const CircleAvatar(
+                            child: Icon(Icons.history_toggle_off),
+                          ),
+                          value: _restoreLastOpenedImageEnabled,
+                          onChanged:
+                              _isLoadingResumePreference ||
+                                  _isUpdatingResumePreference
+                              ? null
+                              : (value) => unawaited(
+                                  _setRestoreLastOpenedImageEnabled(value),
+                                ),
+                          title: Text(context.l10n.restoreLastOpenedImageTitle),
+                          subtitle: Text(
+                            context.l10n.restoreLastOpenedImageDescription,
+                          ),
+                        ),
+                        if (_isLoadingResumePreference ||
+                            _isUpdatingResumePreference)
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 8),
+                            child: LinearProgressIndicator(minHeight: 2),
+                          ),
                         const Divider(height: 28),
                         ListTile(
                           contentPadding: EdgeInsets.zero,

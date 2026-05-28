@@ -58,6 +58,14 @@ class AppLocalizationsMr extends AppLocalizations {
   String get defaultViewerTitle => 'डीफॉल्ट दर्शक';
 
   @override
+  String get restoreLastOpenedImageTitle =>
+      'अॅप सुरू होताना शेवटची उघडलेली प्रतिमा पुन्हा उघडा';
+
+  @override
+  String get restoreLastOpenedImageDescription =>
+      'जेव्हा Picavi कोणतीही स्पष्ट फाइल न देता सुरू होते, तेव्हा शेवटची पाहिलेली प्रतिमा पुन्हा उघडा; प्रतिमा उपलब्ध नसेल तर तिचा फोल्डर उघडा.';
+
+  @override
   String get versionTitle => 'आवृत्ती';
 
   @override

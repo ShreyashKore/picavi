@@ -190,6 +190,18 @@ abstract class AppLocalizations {
   /// **'Default viewer'**
   String get defaultViewerTitle;
 
+  /// No description provided for @restoreLastOpenedImageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore last opened image on launch'**
+  String get restoreLastOpenedImageTitle;
+
+  /// No description provided for @restoreLastOpenedImageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen the last viewed image, or its folder if the image is no longer available, when Picavi starts without an explicit file.'**
+  String get restoreLastOpenedImageDescription;
+
   /// No description provided for @versionTitle.
   ///
   /// In en, this message translates to:

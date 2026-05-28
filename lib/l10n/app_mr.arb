@@ -25,6 +25,8 @@
   "nativeGrantFolderAccessMessage": "या फोल्डरमधील शेजारील प्रतिमा वाचण्यासाठी Picavi ला परवानगी द्या.",
   "settingsTitle": "सेटिंग्ज",
   "defaultViewerTitle": "डीफॉल्ट दर्शक",
+  "restoreLastOpenedImageTitle": "अॅप सुरू होताना शेवटची उघडलेली प्रतिमा पुन्हा उघडा",
+  "restoreLastOpenedImageDescription": "जेव्हा Picavi कोणतीही स्पष्ट फाइल न देता सुरू होते, तेव्हा शेवटची पाहिलेली प्रतिमा पुन्हा उघडा; प्रतिमा उपलब्ध नसेल तर तिचा फोल्डर उघडा.",
   "versionTitle": "आवृत्ती",
   "defaultViewerActionSet": "डीफॉल्ट दर्शक म्हणून सेट करा",
   "defaultViewerActionOpenSystemSettings": "डीफॉल्ट अॅप्स सेटिंग्ज उघडा",

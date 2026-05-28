@@ -57,6 +57,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get defaultViewerTitle => 'Default viewer';
 
   @override
+  String get restoreLastOpenedImageTitle =>
+      'Restore last opened image on launch';
+
+  @override
+  String get restoreLastOpenedImageDescription =>
+      'Reopen the last viewed image, or its folder if the image is no longer available, when Picavi starts without an explicit file.';
+
+  @override
   String get versionTitle => 'Version';
 
   @override

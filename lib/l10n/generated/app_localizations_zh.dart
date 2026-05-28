@@ -53,6 +53,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get defaultViewerTitle => '默认查看器';
 
   @override
+  String get restoreLastOpenedImageTitle => '启动时恢复上次打开的图片';
+
+  @override
+  String get restoreLastOpenedImageDescription =>
+      '当 Picavi 在没有明确指定文件的情况下启动时，重新打开上次查看的图片；如果该图片已不存在，则打开其所在文件夹。';
+
+  @override
   String get versionTitle => '版本';
 
   @override

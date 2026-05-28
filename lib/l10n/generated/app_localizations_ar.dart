@@ -57,6 +57,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get defaultViewerTitle => 'العارض الافتراضي';
 
   @override
+  String get restoreLastOpenedImageTitle =>
+      'استعادة آخر صورة تم فتحها عند التشغيل';
+
+  @override
+  String get restoreLastOpenedImageDescription =>
+      'أعد فتح آخر صورة تمت مشاهدتها، أو مجلدها إذا لم تعد الصورة متاحة، عندما يبدأ Picavi بدون ملف محدد صراحةً.';
+
+  @override
   String get versionTitle => 'الإصدار';
 
   @override

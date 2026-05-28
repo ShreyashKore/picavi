@@ -57,6 +57,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get defaultViewerTitle => 'डिफ़ॉल्ट व्यूअर';
 
   @override
+  String get restoreLastOpenedImageTitle =>
+      'ऐप खुलने पर पिछली खोली गई छवि बहाल करें';
+
+  @override
+  String get restoreLastOpenedImageDescription =>
+      'जब Picavi बिना किसी स्पष्ट फ़ाइल के शुरू हो, तो आख़िरी देखी गई छवि खोलें; अगर वह उपलब्ध न हो तो उसका फ़ोल्डर खोलें।';
+
+  @override
   String get versionTitle => 'संस्करण';
 
   @override

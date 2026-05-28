@@ -25,6 +25,8 @@
   "nativeGrantFolderAccessMessage": "Allow Picavi to read sibling images in this folder.",
   "settingsTitle": "Settings",
   "defaultViewerTitle": "Default viewer",
+  "restoreLastOpenedImageTitle": "Restore last opened image on launch",
+  "restoreLastOpenedImageDescription": "Reopen the last viewed image, or its folder if the image is no longer available, when Picavi starts without an explicit file.",
   "versionTitle": "Version",
   "defaultViewerActionSet": "Set default viewer",
   "defaultViewerActionOpenSystemSettings": "Open default apps settings",

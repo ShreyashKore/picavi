@@ -25,6 +25,8 @@
   "nativeGrantFolderAccessMessage": "允许 Picavi 读取此文件夹中的同级图片。",
   "settingsTitle": "设置",
   "defaultViewerTitle": "默认查看器",
+  "restoreLastOpenedImageTitle": "启动时恢复上次打开的图片",
+  "restoreLastOpenedImageDescription": "当 Picavi 在没有明确指定文件的情况下启动时，重新打开上次查看的图片；如果该图片已不存在，则打开其所在文件夹。",
   "versionTitle": "版本",
   "defaultViewerActionSet": "设为默认查看器",
   "defaultViewerActionOpenSystemSettings": "打开默认应用设置",

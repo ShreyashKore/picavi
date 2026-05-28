@@ -25,6 +25,8 @@
   "nativeGrantFolderAccessMessage": "اسمح لـ Picavi بقراءة الصور المجاورة داخل هذا المجلد.",
   "settingsTitle": "الإعدادات",
   "defaultViewerTitle": "العارض الافتراضي",
+  "restoreLastOpenedImageTitle": "استعادة آخر صورة تم فتحها عند التشغيل",
+  "restoreLastOpenedImageDescription": "أعد فتح آخر صورة تمت مشاهدتها، أو مجلدها إذا لم تعد الصورة متاحة، عندما يبدأ Picavi بدون ملف محدد صراحةً.",
   "versionTitle": "الإصدار",
   "defaultViewerActionSet": "تعيين كعارض افتراضي",
   "defaultViewerActionOpenSystemSettings": "افتح إعدادات التطبيقات الافتراضية",
