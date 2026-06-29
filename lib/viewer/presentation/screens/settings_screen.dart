@@ -32,6 +32,8 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _isLoadingResumePreference = true;
   bool _isUpdatingResumePreference = false;
   bool _restoreLastOpenedImageEnabled = false;
+  bool _isUpdatingRecentFoldersPreference = false;
+  bool _showRecentFoldersEnabled = false;
   String _versionLabel = '—';
 
   @override
@@ -63,11 +65,14 @@ class _SettingsScreenState extends State<SettingsScreen>
         : Future<DefaultViewerStatus?>.value(_status);
     final restoreLastOpenedImageEnabledFuture = widget.appPreferencesService
         .isRestoreLastOpenedImageEnabled();
+    final showRecentFoldersEnabledFuture = widget.appPreferencesService
+        .isShowRecentFoldersEnabled();
 
     final versionLabel = await versionFuture;
     final status = await statusFuture;
     final restoreLastOpenedImageEnabled =
         await restoreLastOpenedImageEnabledFuture;
+    final showRecentFoldersEnabled = await showRecentFoldersEnabledFuture;
     if (!mounted) {
       return;
     }
@@ -77,6 +82,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       _status = status;
       _isLoadingStatus = false;
       _restoreLastOpenedImageEnabled = restoreLastOpenedImageEnabled;
+      _showRecentFoldersEnabled = showRecentFoldersEnabled;
       _isLoadingResumePreference = false;
     });
   }
@@ -152,6 +158,26 @@ class _SettingsScreenState extends State<SettingsScreen>
       _restoreLastOpenedImageEnabled = enabled;
       _isLoadingResumePreference = false;
       _isUpdatingResumePreference = false;
+    });
+  }
+
+  Future<void> _setShowRecentFoldersEnabled(bool enabled) async {
+    if (_isUpdatingRecentFoldersPreference) {
+      return;
+    }
+
+    setState(() {
+      _isUpdatingRecentFoldersPreference = true;
+    });
+
+    await widget.appPreferencesService.setShowRecentFoldersEnabled(enabled);
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _showRecentFoldersEnabled = enabled;
+      _isUpdatingRecentFoldersPreference = false;
     });
   }
 
@@ -282,6 +308,30 @@ class _SettingsScreenState extends State<SettingsScreen>
                         ),
                         if (_isLoadingResumePreference ||
                             _isUpdatingResumePreference)
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 8),
+                            child: LinearProgressIndicator(minHeight: 2),
+                          ),
+                        const Divider(height: 28),
+                        SwitchListTile.adaptive(
+                          contentPadding: EdgeInsets.zero,
+                          secondary: const CircleAvatar(
+                            child: Icon(Icons.folder_copy_outlined),
+                          ),
+                          value: _showRecentFoldersEnabled,
+                          onChanged:
+                              _isLoadingResumePreference ||
+                                  _isUpdatingRecentFoldersPreference
+                              ? null
+                              : (value) => unawaited(
+                                  _setShowRecentFoldersEnabled(value),
+                                ),
+                          title: Text(context.l10n.showRecentFoldersTitle),
+                          subtitle: Text(
+                            context.l10n.showRecentFoldersDescription,
+                          ),
+                        ),
+                        if (_isUpdatingRecentFoldersPreference)
                           const Padding(
                             padding: EdgeInsets.only(bottom: 8),
                             child: LinearProgressIndicator(minHeight: 2),

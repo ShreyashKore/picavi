@@ -75,5 +75,65 @@ void main() {
       expect(await service.getLastOpenedImagePath(), isNull);
       expect(await service.resolveStartupOpenPath(), isNull);
     });
+
+    test('recent folders are enabled by default and start empty', () async {
+      expect(await service.isShowRecentFoldersEnabled(), isTrue);
+      expect(await service.getRecentFolders(), isEmpty);
+    });
+
+    test('addRecentFolder keeps newest first and de-duplicates', () async {
+      await service.addRecentFolder('/photos/a');
+      await service.addRecentFolder('/photos/b');
+      await service.addRecentFolder('/photos/a');
+
+      expect(await service.getRecentFolders(), <String>[
+        '/photos/a',
+        '/photos/b',
+      ]);
+    });
+
+    test('addRecentFolder caps history at maxRecentFolders', () async {
+      for (
+        var index = 0;
+        index <= AppPreferencesService.maxRecentFolders;
+        index++
+      ) {
+        await service.addRecentFolder('/photos/$index');
+      }
+
+      final folders = await service.getRecentFolders();
+      expect(folders, hasLength(AppPreferencesService.maxRecentFolders));
+      expect(
+        folders.first,
+        '/photos/${AppPreferencesService.maxRecentFolders}',
+      );
+      expect(folders, isNot(contains('/photos/0')));
+    });
+
+    test('removeRecentFolder drops only the matching entry', () async {
+      await service.addRecentFolder('/photos/a');
+      await service.addRecentFolder('/photos/b');
+
+      await service.removeRecentFolder('/photos/a');
+
+      expect(await service.getRecentFolders(), <String>['/photos/b']);
+    });
+
+    test('addRecentFolder is a no-op while the feature is disabled', () async {
+      await service.setShowRecentFoldersEnabled(false);
+
+      await service.addRecentFolder('/photos/a');
+
+      expect(await service.getRecentFolders(), isEmpty);
+    });
+
+    test('disabling recent folders clears the stored history', () async {
+      await service.addRecentFolder('/photos/a');
+      await service.addRecentFolder('/photos/b');
+
+      await service.setShowRecentFoldersEnabled(false);
+
+      expect(await service.getRecentFolders(), isEmpty);
+    });
   });
 }

@@ -65,6 +65,31 @@ class AppLocalizationsAr extends AppLocalizations {
       'أعد فتح آخر صورة تمت مشاهدتها، أو مجلدها إذا لم تعد الصورة متاحة، عندما يبدأ Picavi بدون ملف محدد صراحةً.';
 
   @override
+  String get showRecentFoldersTitle => 'إظهار المجلدات الأخيرة عند التشغيل';
+
+  @override
+  String get showRecentFoldersDescription =>
+      'اعرض في شاشة البداية المجلدات التي فُتحت مؤخرًا مع معاينات للصور.';
+
+  @override
+  String get recentFoldersTitle => 'المجلدات الأخيرة';
+
+  @override
+  String recentFolderImageCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count صور',
+      one: 'صورة واحدة',
+      zero: 'لا توجد صور',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentFolderRemoveTooltip => 'إزالة من الأخيرة';
+
+  @override
   String get versionTitle => 'الإصدار';
 
   @override

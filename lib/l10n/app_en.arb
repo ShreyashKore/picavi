@@ -27,6 +27,18 @@
   "defaultViewerTitle": "Default viewer",
   "restoreLastOpenedImageTitle": "Restore last opened image on launch",
   "restoreLastOpenedImageDescription": "Reopen the last viewed image, or its folder if the image is no longer available, when Picavi starts without an explicit file.",
+  "showRecentFoldersTitle": "Show recent folders on launch",
+  "showRecentFoldersDescription": "List recently opened folders with image previews on the start screen.",
+  "recentFoldersTitle": "Recent folders",
+  "recentFolderImageCount": "{count, plural, =0{No images} =1{1 image} other{{count} images}}",
+  "@recentFolderImageCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recentFolderRemoveTooltip": "Remove from recent",
   "versionTitle": "Version",
   "defaultViewerActionSet": "Set default viewer",
   "defaultViewerActionOpenSystemSettings": "Open default apps settings",

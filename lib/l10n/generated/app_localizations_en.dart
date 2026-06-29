@@ -65,6 +65,31 @@ class AppLocalizationsEn extends AppLocalizations {
       'Reopen the last viewed image, or its folder if the image is no longer available, when Picavi starts without an explicit file.';
 
   @override
+  String get showRecentFoldersTitle => 'Show recent folders on launch';
+
+  @override
+  String get showRecentFoldersDescription =>
+      'List recently opened folders with image previews on the start screen.';
+
+  @override
+  String get recentFoldersTitle => 'Recent folders';
+
+  @override
+  String recentFolderImageCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count images',
+      one: '1 image',
+      zero: 'No images',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentFolderRemoveTooltip => 'Remove from recent';
+
+  @override
   String get versionTitle => 'Version';
 
   @override

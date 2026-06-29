@@ -65,6 +65,31 @@ class AppLocalizationsHi extends AppLocalizations {
       'जब Picavi बिना किसी स्पष्ट फ़ाइल के शुरू हो, तो आख़िरी देखी गई छवि खोलें; अगर वह उपलब्ध न हो तो उसका फ़ोल्डर खोलें।';
 
   @override
+  String get showRecentFoldersTitle => 'लॉन्च पर हाल के फ़ोल्डर दिखाएं';
+
+  @override
+  String get showRecentFoldersDescription =>
+      'प्रारंभ स्क्रीन पर हाल ही में खोले गए फ़ोल्डर छवि पूर्वावलोकन के साथ दिखाएं।';
+
+  @override
+  String get recentFoldersTitle => 'हाल के फ़ोल्डर';
+
+  @override
+  String recentFolderImageCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ',
+      one: '1 छवि',
+      zero: 'कोई छवि नहीं',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentFolderRemoveTooltip => 'हाल से हटाएं';
+
+  @override
   String get versionTitle => 'संस्करण';
 
   @override

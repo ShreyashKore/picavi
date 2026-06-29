@@ -60,6 +60,30 @@ class AppLocalizationsZh extends AppLocalizations {
       '当 Picavi 在没有明确指定文件的情况下启动时，重新打开上次查看的图片；如果该图片已不存在，则打开其所在文件夹。';
 
   @override
+  String get showRecentFoldersTitle => '启动时显示最近的文件夹';
+
+  @override
+  String get showRecentFoldersDescription => '在起始屏幕上列出最近打开的文件夹及其图片预览。';
+
+  @override
+  String get recentFoldersTitle => '最近的文件夹';
+
+  @override
+  String recentFolderImageCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 张图片',
+      one: '1 张图片',
+      zero: '没有图片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentFolderRemoveTooltip => '从最近列表中移除';
+
+  @override
   String get versionTitle => '版本';
 
   @override

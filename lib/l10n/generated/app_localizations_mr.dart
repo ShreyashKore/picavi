@@ -66,6 +66,31 @@ class AppLocalizationsMr extends AppLocalizations {
       'जेव्हा Picavi कोणतीही स्पष्ट फाइल न देता सुरू होते, तेव्हा शेवटची पाहिलेली प्रतिमा पुन्हा उघडा; प्रतिमा उपलब्ध नसेल तर तिचा फोल्डर उघडा.';
 
   @override
+  String get showRecentFoldersTitle => 'सुरू करताना अलीकडील फोल्डर दाखवा';
+
+  @override
+  String get showRecentFoldersDescription =>
+      'सुरुवातीच्या स्क्रीनवर अलीकडे उघडलेले फोल्डर प्रतिमेच्या पूर्वावलोकनासह दाखवा.';
+
+  @override
+  String get recentFoldersTitle => 'अलीकडील फोल्डर';
+
+  @override
+  String recentFolderImageCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा',
+      one: '1 प्रतिमा',
+      zero: 'प्रतिमा नाहीत',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentFolderRemoveTooltip => 'अलीकडील मधून काढा';
+
+  @override
   String get versionTitle => 'आवृत्ती';
 
   @override

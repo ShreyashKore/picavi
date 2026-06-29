@@ -202,6 +202,36 @@ abstract class AppLocalizations {
   /// **'Reopen the last viewed image, or its folder if the image is no longer available, when Picavi starts without an explicit file.'**
   String get restoreLastOpenedImageDescription;
 
+  /// No description provided for @showRecentFoldersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show recent folders on launch'**
+  String get showRecentFoldersTitle;
+
+  /// No description provided for @showRecentFoldersDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'List recently opened folders with image previews on the start screen.'**
+  String get showRecentFoldersDescription;
+
+  /// No description provided for @recentFoldersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent folders'**
+  String get recentFoldersTitle;
+
+  /// No description provided for @recentFolderImageCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No images} =1{1 image} other{{count} images}}'**
+  String recentFolderImageCount(int count);
+
+  /// No description provided for @recentFolderRemoveTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from recent'**
+  String get recentFolderRemoveTooltip;
+
   /// No description provided for @versionTitle.
   ///
   /// In en, this message translates to:

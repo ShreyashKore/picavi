@@ -66,6 +66,31 @@ class AppLocalizationsEs extends AppLocalizations {
       'Vuelve a abrir la última imagen vista, o su carpeta si la imagen ya no está disponible, cuando Picavi se inicie sin un archivo explícito.';
 
   @override
+  String get showRecentFoldersTitle => 'Mostrar carpetas recientes al iniciar';
+
+  @override
+  String get showRecentFoldersDescription =>
+      'Muestra en la pantalla de inicio las carpetas abiertas recientemente con vistas previas de imágenes.';
+
+  @override
+  String get recentFoldersTitle => 'Carpetas recientes';
+
+  @override
+  String recentFolderImageCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count imágenes',
+      one: '1 imagen',
+      zero: 'Sin imágenes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recentFolderRemoveTooltip => 'Quitar de recientes';
+
+  @override
   String get versionTitle => 'Versión';
 
   @override

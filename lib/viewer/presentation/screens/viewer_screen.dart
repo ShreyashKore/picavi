@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,15 @@ import '../../data/repositories/file_system_image_repository.dart';
 import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
 import '../../domain/constants/supported_image_extensions.dart';
+import '../../domain/entities/recent_folder.dart';
+import '../../domain/repositories/image_repository.dart';
 import '../../domain/services/image_picker_service.dart';
 import '../controllers/viewer_controller.dart';
 import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
 import '../widgets/image_info_overlay.dart';
 import '../widgets/interactive_image_viewer.dart';
+import '../widgets/recent_folders_panel.dart';
 import '../widgets/viewer_control_bar.dart';
 import '../widgets/viewer_empty_state.dart';
 import '../widgets/viewer_thumbnail_rail.dart';
@@ -40,11 +44,13 @@ class _ViewerScreenState extends State<ViewerScreen>
   static const double _thumbnailExtent = 72;
   static const double _thumbnailControlsInset = 60;
   static const Duration _slideshowInterval = Duration(seconds: 3);
+  static const int _recentFolderPreviewCount = 4;
 
   final ScrollController _thumbnailScrollController = ScrollController();
   final FocusNode _viewerFocusNode = FocusNode(
     debugLabel: 'viewerKeyboardFocus',
   );
+  late final ImageRepository _imageRepository;
   late final ViewerController _controller;
   late final AppPreferencesService _appPreferencesService;
   late final DefaultViewerService _defaultViewerService;
@@ -62,6 +68,8 @@ class _ViewerScreenState extends State<ViewerScreen>
   bool _defaultViewerPromptHandled = false;
   bool _suppressDefaultViewerHintUntilRestart = false;
   bool _restoreLastOpenedImageEnabled = false;
+  bool _showRecentFoldersEnabled = false;
+  List<RecentFolder> _recentFolders = const <RecentFolder>[];
   String? _lastImagePath;
   DefaultViewerStatus? _defaultViewerStatus;
 
@@ -71,11 +79,12 @@ class _ViewerScreenState extends State<ViewerScreen>
     WidgetsBinding.instance.addObserver(this);
     final nativeFileChannelService = NativeFileChannelService();
     _appPreferencesService = AppPreferencesService();
+    _imageRepository = FileSystemImageRepository();
     _defaultViewerService = DefaultViewerService(
       nativeFileChannelService: nativeFileChannelService,
     );
     _controller = ViewerController(
-      imageRepository: FileSystemImageRepository(),
+      imageRepository: _imageRepository,
       imagePickerService: DesktopImagePickerService(
         nativeChannel: nativeFileChannelService,
       ),
@@ -85,6 +94,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       ..addListener(_onImageViewerChanged);
     unawaited(_initializeDefaultViewerState());
     unawaited(_refreshRestoreLastOpenedImagePreference());
+    unawaited(_refreshRecentFolders());
   }
 
   @override
@@ -107,10 +117,16 @@ class _ViewerScreenState extends State<ViewerScreen>
 
     _didBootstrap = true;
     unawaited(
-      _controller.bootstrap(
-        initialArguments: widget.initialArguments,
-        directoryAccessTexts: directoryAccessTexts,
-      ),
+      _controller
+          .bootstrap(
+            initialArguments: widget.initialArguments,
+            directoryAccessTexts: directoryAccessTexts,
+          )
+          .then((_) {
+            if (mounted && !_controller.state.hasImages) {
+              unawaited(_refreshRecentFolders());
+            }
+          }),
     );
   }
 
@@ -272,6 +288,96 @@ class _ViewerScreenState extends State<ViewerScreen>
     await _appPreferencesService.setLastOpenedImagePath(imagePath);
   }
 
+  Future<void> _refreshRecentFolders() async {
+    final enabled = await _appPreferencesService.isShowRecentFoldersEnabled();
+    if (!mounted) {
+      return;
+    }
+
+    _showRecentFoldersEnabled = enabled;
+    if (!enabled) {
+      if (_recentFolders.isNotEmpty) {
+        setState(() {
+          _recentFolders = const <RecentFolder>[];
+        });
+      }
+      return;
+    }
+
+    final paths = await _appPreferencesService.getRecentFolders();
+    final folders = <RecentFolder>[];
+    final stalePaths = <String>[];
+
+    for (final path in paths) {
+      try {
+        final entityType = await _imageRepository.entityType(path);
+        if (entityType != FileSystemEntityType.directory) {
+          stalePaths.add(path);
+          continue;
+        }
+
+        final images = await _imageRepository.readImagesFromDirectory(path);
+        if (images.isEmpty) {
+          stalePaths.add(path);
+          continue;
+        }
+
+        folders.add(
+          RecentFolder(
+            path: path,
+            previewImages: images
+                .take(_recentFolderPreviewCount)
+                .toList(growable: false),
+            imageCount: images.length,
+          ),
+        );
+      } catch (error) {
+        // Keep folders we simply couldn't read this time (e.g. a transient
+        // permission issue); only entries that are gone are pruned below.
+        debugPrint('Unable to load recent folder $path: $error');
+      }
+    }
+
+    for (final stalePath in stalePaths) {
+      await _appPreferencesService.removeRecentFolder(stalePath);
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _recentFolders = folders;
+    });
+  }
+
+  void _persistRecentFolder(String? directoryPath) {
+    if (directoryPath == null || directoryPath.isEmpty) {
+      return;
+    }
+
+    unawaited(_appPreferencesService.addRecentFolder(directoryPath));
+  }
+
+  Future<void> _openRecentFolder(RecentFolder folder) async {
+    await _controller.handleOpenPaths([
+      folder.path,
+    ], directoryAccessTexts: _directoryAccessTexts);
+  }
+
+  Future<void> _removeRecentFolder(RecentFolder folder) async {
+    await _appPreferencesService.removeRecentFolder(folder.path);
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _recentFolders = _recentFolders
+          .where((candidate) => candidate.path != folder.path)
+          .toList(growable: false);
+    });
+  }
+
   Future<bool?> _showDefaultViewerPrompt() {
     final actionLabel = _defaultViewerActionLabel(_defaultViewerStatus);
     return showDialog<bool>(
@@ -339,6 +445,7 @@ class _ViewerScreenState extends State<ViewerScreen>
 
     await _refreshDefaultViewerStatus();
     await _refreshRestoreLastOpenedImagePreference();
+    await _refreshRecentFolders();
   }
 
   String _defaultViewerActionLabel(DefaultViewerStatus? status) {
@@ -398,6 +505,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       _lastSyncedIndex = state.currentIndex;
       _lastImagePath = currentImagePath;
       unawaited(_persistLastOpenedImagePath(currentImagePath));
+      _persistRecentFolder(state.currentDirectory);
       _showInfoOverlay = false;
       _imageViewerController.reset();
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -621,6 +729,17 @@ class _ViewerScreenState extends State<ViewerScreen>
       tipsText: context.l10n.tipsText,
       onOpenImage: _pickAndOpenImage,
       onOpenSettings: _openSettings,
+      recentFolders: _showRecentFoldersEnabled && _recentFolders.isNotEmpty
+          ? RecentFoldersPanel(
+              folders: _recentFolders,
+              title: context.l10n.recentFoldersTitle,
+              imageCountLabel: (count) =>
+                  context.l10n.recentFolderImageCount(count),
+              removeTooltip: context.l10n.recentFolderRemoveTooltip,
+              onOpen: (folder) => unawaited(_openRecentFolder(folder)),
+              onRemove: (folder) => unawaited(_removeRecentFolder(folder)),
+            )
+          : null,
     );
   }
 

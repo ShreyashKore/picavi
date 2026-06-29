@@ -8,6 +8,11 @@ class AppPreferencesService {
   static const String _restoreLastOpenedImageEnabledKey =
       'restoreLastOpenedImageEnabled';
   static const String _lastOpenedImagePathKey = 'lastOpenedImagePath';
+  static const String _showRecentFoldersEnabledKey = 'showRecentFoldersEnabled';
+  static const String _recentFoldersKey = 'recentFolders';
+
+  /// Maximum number of recently opened folders kept in history.
+  static const int maxRecentFolders = 10;
 
   Future<bool> hasHandledDefaultViewerPrompt() async {
     try {
@@ -86,6 +91,89 @@ class AppPreferencesService {
     try {
       final preferences = await SharedPreferences.getInstance();
       await preferences.remove(_lastOpenedImagePathKey);
+    } catch (_) {
+      // Ignore persistence failures and keep the app usable.
+    }
+  }
+
+  Future<bool> isShowRecentFoldersEnabled() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      return preferences.getBool(_showRecentFoldersEnabledKey) ?? true;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  Future<void> setShowRecentFoldersEnabled(bool enabled) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.setBool(_showRecentFoldersEnabledKey, enabled);
+      if (!enabled) {
+        await preferences.remove(_recentFoldersKey);
+      }
+    } catch (_) {
+      // Ignore persistence failures and keep the app usable.
+    }
+  }
+
+  Future<List<String>> getRecentFolders() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      return preferences.getStringList(_recentFoldersKey) ?? const <String>[];
+    } catch (_) {
+      return const <String>[];
+    }
+  }
+
+  /// Records [path] as the most recently opened folder, de-duplicating and
+  /// capping the history at [maxRecentFolders]. No-op when the feature is
+  /// disabled, so history is only collected while the user opts in.
+  Future<void> addRecentFolder(String path) async {
+    final trimmedPath = path.trim();
+    if (trimmedPath.isEmpty) {
+      return;
+    }
+
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final enabled = preferences.getBool(_showRecentFoldersEnabledKey) ?? true;
+      if (!enabled) {
+        return;
+      }
+
+      final existing =
+          preferences.getStringList(_recentFoldersKey) ?? const <String>[];
+      final updated = <String>[
+        trimmedPath,
+        ...existing.where((folder) => folder != trimmedPath),
+      ];
+      if (updated.length > maxRecentFolders) {
+        updated.removeRange(maxRecentFolders, updated.length);
+      }
+
+      await preferences.setStringList(_recentFoldersKey, updated);
+    } catch (_) {
+      // Ignore persistence failures and keep the app usable.
+    }
+  }
+
+  Future<void> removeRecentFolder(String path) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final existing = preferences.getStringList(_recentFoldersKey);
+      if (existing == null || existing.isEmpty) {
+        return;
+      }
+
+      final updated = existing
+          .where((folder) => folder != path)
+          .toList(growable: false);
+      if (updated.length == existing.length) {
+        return;
+      }
+
+      await preferences.setStringList(_recentFoldersKey, updated);
     } catch (_) {
       // Ignore persistence failures and keep the app usable.
     }
