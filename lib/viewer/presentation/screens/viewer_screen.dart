@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
+import 'package:window_manager/window_manager.dart';
 
 import '../../../../core/l10n/l10n_extensions.dart';
 import '../../../../core/services/app_preferences_service.dart';
@@ -672,6 +674,11 @@ class _ViewerScreenState extends State<ViewerScreen>
       return KeyEventResult.handled;
     }
 
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      _closeApp();
+      return KeyEventResult.handled;
+    }
+
     return KeyEventResult.ignored;
   }
 
@@ -690,6 +697,11 @@ class _ViewerScreenState extends State<ViewerScreen>
         else
           _buildEmptyState(),
         if (state.hasImages) _buildTopOverlay(state),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: _ViewerCloseButton(onPressed: _closeApp),
+        ),
         if (_showDefaultViewerHint)
           Positioned(
             right: 18,
@@ -705,16 +717,21 @@ class _ViewerScreenState extends State<ViewerScreen>
       ],
     );
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: state.hasImages
-          ? Focus(
-              focusNode: _viewerFocusNode,
-              autofocus: true,
-              onKeyEvent: _handleKeyEvent,
-              child: content,
-            )
-          : content,
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): _closeApp,
+      },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: state.hasImages
+            ? Focus(
+                focusNode: _viewerFocusNode,
+                autofocus: true,
+                onKeyEvent: _handleKeyEvent,
+                child: content,
+              )
+            : content,
+      ),
     );
   }
 
@@ -875,6 +892,73 @@ class _ViewerScreenState extends State<ViewerScreen>
       onOpenSettings: _openSettings,
     );
   }
+
+  void _closeApp() {
+    windowManager.close();
+  }
+}
+
+class _ViewerCloseButton extends StatelessWidget {
+  const _ViewerCloseButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Stack(
+            children: [
+              CustomPaint(
+                size: const Size(48, 48),
+                painter: _QuarterCirclePainter(),
+              ),
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Icon(
+                  Icons.close,
+                  size: 18,
+                  color: Colors.white.withValues(alpha: 0.4),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuarterCirclePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.22)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+
+    canvas.drawArc(
+      Rect.fromLTWH(
+        -size.width,
+        -size.height,
+        size.width * 2,
+        size.height * 2,
+      ),
+      -pi / 2,
+      pi / 2,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _DefaultViewerHintTile extends StatelessWidget {
