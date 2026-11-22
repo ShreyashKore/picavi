@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
-import '../../domain/constants/supported_image_extensions.dart';
+import '../platform_image_formats.dart';
 import '../../domain/entities/gallery_image.dart';
 import '../../domain/entities/image_sort_order.dart';
 import '../../domain/repositories/image_repository.dart';
@@ -126,7 +126,7 @@ class FileSystemImageRepository implements ImageRepository {
 
   @override
   bool isSupportedImagePath(String path) {
-    return supportedImageExtensions.contains(p.extension(path).toLowerCase());
+    return platformImageExtensions.contains(p.extension(path).toLowerCase());
   }
 
   @override

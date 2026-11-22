@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../domain/constants/supported_image_extensions.dart';
+import '../platform_image_formats.dart';
 import '../../domain/services/image_picker_service.dart';
 import 'native_file_channel_service.dart';
 
 final XTypeGroup _imageFileGroup = XTypeGroup(
   label: 'Images',
   extensions:
-      supportedImageExtensions
+      platformImageExtensions
           .map((extension) => extension.replaceFirst('.', ''))
           .toList()
         ..sort(),

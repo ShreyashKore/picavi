@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path/path.dart' as p;
+
+import '../../viewer/domain/constants/supported_image_extensions.dart';
+import '../images/system_decoded_image.dart';
 
 class AppImage extends StatelessWidget {
   const AppImage({
@@ -60,7 +64,9 @@ class AppImage extends StatelessWidget {
        bundle = null,
        package = null,
        svgBytesLoader = _isSvgPath(path) ? SvgFileLoader(File(path)) : null,
-       image = _isSvgPath(path) ? null : FileImage(File(path));
+       image = _isSvgPath(path)
+           ? null
+           : _rasterFileProvider(path, cacheWidth, cacheHeight);
 
   AppImage.asset(
     this.assetName, {
@@ -143,6 +149,11 @@ class AppImage extends StatelessWidget {
     final resolvedImage = image;
     if (resolvedImage == null) {
       throw StateError('SVG images do not expose a raster ImageProvider.');
+    }
+
+    if (resolvedImage is SystemDecodedImage) {
+      // Already decoded at the requested size natively.
+      return resolvedImage;
     }
 
     return ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, resolvedImage);
@@ -240,9 +251,31 @@ class AppImage extends StatelessWidget {
   }) async {
     final provider = FileImage(File(path));
     await provider.evict();
+    await SystemDecodedImage(path).evict();
     for (final width in cacheWidths) {
       await ResizeImage(provider, width: width).evict();
+      await SystemDecodedImage(path, maxPixelSize: width).evict();
     }
+  }
+
+  static bool _isSystemDecodedPath(String path) =>
+      isSystemImageDecodingAvailable &&
+      systemDecodedImageExtensions.contains(p.extension(path).toLowerCase());
+
+  static ImageProvider _rasterFileProvider(
+    String path,
+    int? cacheWidth,
+    int? cacheHeight,
+  ) {
+    if (!_isSystemDecodedPath(path)) {
+      return FileImage(File(path));
+    }
+
+    final bounds = [cacheWidth, cacheHeight].whereType<int>();
+    return SystemDecodedImage(
+      path,
+      maxPixelSize: bounds.isEmpty ? null : bounds.reduce(math.max),
+    );
   }
 
   static bool _isSvgPath(String path) {

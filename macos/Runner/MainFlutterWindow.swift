@@ -1,11 +1,17 @@
 import Cocoa
 import CoreServices
+import ImageIO
 import UniformTypeIdentifiers
 import FlutterMacOS
 
 class MainFlutterWindow: NSWindow {
   private let fileOpenChannelName = "com.gyanoba.oiv/file_open"
-  private let supportedImageExtensions = ["bmp", "gif", "ico", "jpeg", "jpg", "png", "svg", "webp"]
+  // Keep in sync with lib/viewer/domain/constants/supported_image_extensions.dart.
+  private let supportedImageExtensions = [
+    "avif", "bmp", "gif", "heic", "heif", "ico", "jpeg", "jpg", "png", "svg", "tif", "tiff", "webp",
+  ]
+  /// Long-edge cap for full-size native decodes (fits 48 MP photos).
+  private let maxDecodedPixelSize = 8192
   private var pendingFiles: [String] = []
   private var fileOpenChannel: FlutterMethodChannel?
   private var activeSecurityScopedURLs: [URL] = []
@@ -71,6 +77,8 @@ class MainFlutterWindow: NSWindow {
         self.presentImageOpenPanel(arguments: call.arguments, result: result)
       case "authorizeDirectoryAccess":
         self.presentDirectoryAccessPanel(arguments: call.arguments, result: result)
+      case "decodeImage":
+        self.decodeImage(arguments: call.arguments, result: result)
       case "moveToTrash":
         self.moveToTrash(arguments: call.arguments, result: result)
       case "revealInFinder":
@@ -104,7 +112,7 @@ class MainFlutterWindow: NSWindow {
     panel.canChooseFiles = true
     panel.canChooseDirectories = false
     panel.allowsMultipleSelection = false
-    panel.allowedFileTypes = ["bmp", "gif", "ico", "jpeg", "jpg", "png", "svg", "webp"]
+    panel.allowedFileTypes = supportedImageExtensions
     panel.prompt = stringValue(forKey: "prompt", arguments: arguments) ?? "Open viewer"
     panel.directoryURL = directoryURL(from: arguments)
 
@@ -145,6 +153,72 @@ class MainFlutterWindow: NSWindow {
     }
 
     return URL(fileURLWithPath: path)
+  }
+
+  /// Decodes formats Flutter can't (HEIC, AVIF, TIFF) with ImageIO, applying
+  /// EXIF orientation, and returns JPEG bytes (PNG when there is alpha).
+  private func decodeImage(arguments: Any?, result: @escaping FlutterResult) {
+    guard let url = fileURL(from: arguments) else {
+      result(nil)
+      return
+    }
+
+    let requestedSize = (arguments as? [String: Any])?["maxPixelSize"] as? Int
+    let maxDecodedPixelSize = self.maxDecodedPixelSize
+
+    DispatchQueue.global(qos: .userInitiated).async {
+      let encoded = Self.decodeWithImageIO(
+        url: url,
+        maxPixelSize: requestedSize,
+        cap: maxDecodedPixelSize
+      )
+      DispatchQueue.main.async {
+        result(encoded.map { FlutterStandardTypedData(bytes: $0) })
+      }
+    }
+  }
+
+  private static func decodeWithImageIO(url: URL, maxPixelSize: Int?, cap: Int) -> Data? {
+    let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+    guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions) else {
+      return nil
+    }
+
+    let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
+    var longEdge = maxPixelSize ?? cap
+    if maxPixelSize == nil,
+       let width = properties?[kCGImagePropertyPixelWidth] as? Int,
+       let height = properties?[kCGImagePropertyPixelHeight] as? Int {
+      longEdge = min(max(width, height), cap)
+    }
+
+    let thumbnailOptions = [
+      kCGImageSourceCreateThumbnailFromImageAlways: true,
+      kCGImageSourceCreateThumbnailWithTransform: true,
+      kCGImageSourceShouldCacheImmediately: true,
+      kCGImageSourceThumbnailMaxPixelSize: max(1, longEdge),
+    ] as CFDictionary
+    guard let image = CGImageSourceCreateThumbnailAtIndex(source, 0, thumbnailOptions) else {
+      return nil
+    }
+
+    // Use the file's own flag. ImageIO sets HasAlpha only when the image
+    // really has transparency, while the decoded thumbnail usually carries an
+    // alpha channel even for opaque photos (PNG-encoding those would be slow
+    // and huge).
+    let hasAlpha = (properties?[kCGImagePropertyHasAlpha] as? Bool) ?? false
+
+    let output = NSMutableData()
+    let type = (hasAlpha ? UTType.png : UTType.jpeg).identifier as CFString
+    guard let destination = CGImageDestinationCreateWithData(output, type, 1, nil) else {
+      return nil
+    }
+    let destinationOptions = [kCGImageDestinationLossyCompressionQuality: 0.92] as CFDictionary
+    CGImageDestinationAddImage(destination, image, hasAlpha ? nil : destinationOptions)
+    guard CGImageDestinationFinalize(destination) else {
+      return nil
+    }
+    return output as Data
   }
 
   private func moveToTrash(arguments: Any?, result: FlutterResult) {

@@ -20,7 +20,7 @@ import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
 import '../../data/services/raster_image_transform_service.dart';
 import '../../data/services/slideshow_settings_store.dart';
-import '../../domain/constants/supported_image_extensions.dart';
+import '../../data/platform_image_formats.dart';
 import '../../domain/entities/image_sort_order.dart';
 import '../../domain/entities/recent_folder.dart';
 import '../../domain/entities/slideshow_settings.dart';
@@ -1147,7 +1147,7 @@ class _ViewerScreenState extends State<ViewerScreen>
   Widget _buildEmptyState() {
     return ViewerEmptyState(
       isBootstrapping: _controller.state.isBootstrapping || _isPickingFile,
-      supportedExtensions: supportedImageExtensions,
+      supportedExtensions: platformImageExtensions,
       title: context.l10n.emptyStateTitle,
       description: context.l10n.emptyStateDescription,
       openImageLabel: context.l10n.openImage,

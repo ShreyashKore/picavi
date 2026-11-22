@@ -48,6 +48,22 @@ void main() {
     ]);
   });
 
+  test('lists HEIC/TIFF/AVIF only where the system can decode them', () async {
+    await writeImage('a.heic');
+    await writeImage('b.tiff');
+    await writeImage('c.avif');
+    await writeImage('d.jpg');
+
+    final names = await namesFor(const ImageSortOrder());
+
+    expect(
+      names,
+      Platform.isMacOS
+          ? <String>['a.heic', 'b.tiff', 'c.avif', 'd.jpg']
+          : <String>['d.jpg'],
+    );
+  });
+
   test('sorts by size and by modified date in both directions', () async {
     final now = DateTime(2026, 1, 1);
     await writeImage('a.png', bytes: 30, modified: now);

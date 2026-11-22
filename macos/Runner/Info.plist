@@ -9,13 +9,18 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>avif</string>
 				<string>bmp</string>
 				<string>gif</string>
+				<string>heic</string>
+				<string>heif</string>
 				<string>ico</string>
 				<string>jpeg</string>
 				<string>jpg</string>
 				<string>png</string>
 				<string>svg</string>
+				<string>tif</string>
+				<string>tiff</string>
 				<string>webp</string>
 			</array>
 			<key>CFBundleTypeName</key>
@@ -33,6 +38,10 @@
 				<string>public.jpeg</string>
 				<string>public.png</string>
 				<string>public.svg-image</string>
+				<string>public.heic</string>
+				<string>public.heif</string>
+				<string>public.avif</string>
+				<string>public.tiff</string>
 			</array>
 		</dict>
 	</array>
