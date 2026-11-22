@@ -14,6 +14,8 @@ Open Image Viewer / Picavi desktop viewer.
 - Drop images or folders onto the window to open them.
 - Picasa-style editor (`E`): crop with print-size presets, straighten, red-eye, I'm Feeling Lucky, auto contrast and colour, tuning sliders (fill light, highlights, shadows, colour temperature) and effects (B&W, sepia, warmify, saturation, sharpen, soft focus, glow, film grain, vignette), with undo / redo / revert.
 - Edits never touch your originals: they are kept in a hidden `.picavi.json` file in the folder (like Picasa's `.picasa.ini`) and follow images you rename, move or copy in Picavi.
+- Star photos (`S`), add captions and tags, and hide photos from the library — saved in the same `.picavi.json`, so they travel with the folder.
+- Library (`L`): add the folders where you keep photos and browse everything by month, folder, album or star; search names, captions, tags, cameras and dates; make albums; find exact duplicates and move extra copies to the Trash. The catalog and thumbnails are kept in the app's support folder; your files stay where they are.
 - Export edited copies as JPEG or PNG at a chosen size and quality; apply quick fixes or export a whole selection at once.
 - Sorts the folder by name (natural order, so `IMG_2` comes before `IMG_10`), date modified, file size or type — ascending or descending, remembered between launches.
 - Refreshes the thumbnail strip automatically when images are added to or removed from the folder.
@@ -40,6 +42,8 @@ Press `?` in the viewer to see these in the app.
 | `⌘S` / `Ctrl+S` | Save rotation to the file |
 | `I` | Show / hide image info |
 | `E` | Edit image |
+| `S` | Star / remove star |
+| `L` | Open the library |
 | `F2` | Rename |
 | `Delete` / `⌫` | Move to Trash / Recycle Bin |
 | `⌘C` / `Ctrl+C` | Copy image |
@@ -47,6 +51,15 @@ Press `?` in the viewer to see these in the app.
 | `⌘`/`Ctrl`-click, `Shift`-click | Add to / extend selection |
 | `?` | Show keyboard shortcuts |
 | `Esc` | Clear selection, stop slideshow, leave full screen, or close |
+
+### In the library
+
+| Keys | Action |
+|---|---|
+| Click, `⌘`/`Ctrl`-click, `Shift`-click | Select photos |
+| Double-click, `Enter` | Open in the viewer |
+| `⌘A` / `Ctrl+A` | Select all |
+| `Esc` | Clear selection, or go back |
 
 ### In the editor
 

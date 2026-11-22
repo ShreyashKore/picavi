@@ -50,16 +50,16 @@ falls into one of those three buckets.
 ### 4. Library / organiser (the biggest gap)
 | Gap | Notes |
 |---|---|
-| Watched folders + indexer | Scan chosen roots in the background into a local catalog |
-| Folder tree sidebar | Browse all indexed folders without the open dialog |
-| Grid / lightbox view | Full thumbnail grid with size slider, not just a rail |
-| Timeline | Group by date taken (year → month → day) |
-| Search | By filename, folder, date, camera, caption, tag |
-| Star / favourite, tags, captions | Ideally written to XMP so other apps see them |
-| Albums | Virtual collections across folders |
-| Hide folders / images | Exclude from library |
-| Duplicate finder | Hash + perceptual-hash matching |
-| Disk thumbnail cache | Needed once libraries get big |
+| Watched folders + indexer | ✅ Done in Phase 3 (rescans on open; no live watching yet) |
+| Folder tree sidebar | ✅ |
+| Grid / lightbox view | ✅ With size slider |
+| Timeline | ✅ Grouped by month; year/day zoom levels still to do |
+| Search | ✅ Name, folder, date, camera, caption, tag |
+| Star / favourite, tags, captions | ✅ In the `.picavi.json` sidecar; XMP write-back still to do |
+| Albums | ✅ |
+| Hide folders / images | ✅ |
+| Duplicate finder | ✅ Exact (byte-identical); similar-looking (perceptual hash) still to do |
+| Disk thumbnail cache | ✅ |
 
 ### 5. Advanced (Picasa's "wow" features)
 | Gap | Notes |
@@ -142,21 +142,46 @@ architecture choices, so the decisions are called out up front.
     images get them back). Renames done outside Picavi orphan their edits.
   - Export options are remembered only until Picavi quits.
 
-### Phase 3 — Library (v2.0, ~8–10 weeks) — architecture shift
-- New feature module `lib/library/`.
-- Local catalog DB (SQLite via `drift` or `sqflite_common_ffi`) + background
-  indexer isolate + disk thumbnail cache.
-- Watched-folder settings, folder tree sidebar, grid view, timeline.
-- Stars, tags, captions (XMP write-back optional), albums, hide, search.
-- Duplicate finder.
-- The current viewer becomes the "open one image" mode *and* the detail view of the library.
+### Phase 3 — Library (v2.0) — ✅ done
+- ✅ New feature module `lib/library/`, opt-in: Picavi stays a plain viewer
+  until you add a folder to the library.
+- ✅ Catalog in SQLite via the `sqlite3` package (decision 2: plain SQL, no
+  codegen; SQLite is bundled by its build hook on every platform). The catalog
+  is a rebuildable cache in the app support folder; only albums live solely
+  there.
+- ✅ Stars, captions, tags and the hidden flag live in the per-folder
+  `.picavi.json` next to the edits (one `PicaviSidecarStore` owns the file), so
+  they travel with the photos like Picasa's `.picasa.ini`. Viewer: `S` to star,
+  Caption and tags…, Hide from library.
+- ✅ Indexer in background isolates: skips hidden folders and links, reads
+  EXIF date and camera only for new/changed files and only the first 256 KB.
+- ✅ Disk thumbnail cache (360 px JPEG, keyed by path + size + mtime + edits).
+- ✅ Library screen (`L`): All photos by month, Starred, albums, folder tree,
+  search, size slider, selection bar (star, album, hide), show hidden,
+  rescan; double-click opens the photo in the viewer with its folder.
+- ✅ Albums (create, rename, delete, add/remove) and an exact duplicate finder
+  that only ever moves extra copies to the Trash.
+- Deferred / not done:
+  - Not tried by hand in the running app yet — covered by unit and widget tests.
+  - No live folder watching for the library: it rescans when opened or on
+    Rescan. Changes made in the viewer reach the library on the next scan.
+  - XMP write-back of stars/captions/tags; similar-looking duplicates
+    (perceptual hash); timeline year/day levels; library multi-select file
+    actions (copy/move/trash/export) — use the viewer for those for now.
+  - Album entries for photos moved or renamed outside Picavi are dropped.
+  - The thumbnail cache is never pruned (Settings has no "clear" yet).
+  - HEIC/AVIF/TIFF dates come from the file date unless their EXIF sits in
+    the first 256 KB.
+  - Catalog queries run on the UI isolate (fast for tens of thousands of
+    photos; move to a worker isolate if libraries get much bigger).
 
 ### Phase 4 — Advanced (v2.x)
 - Places (map + GPS), People (faces, macOS first), collage, print,
   import from device, share sheet, video playback, movie export.
 
-## Decisions needed before Phase 2/3
+## Decisions
 1. ~~**Sidecar format**~~ — decided: JSON (`.picavi.json`); XMP later if needed.
-2. **Catalog DB** — `drift` (typed, codegen) vs. raw `sqflite_common_ffi`.
+2. ~~**Catalog DB**~~ — decided: `sqlite3` package, plain SQL.
 3. **Platform priority** — macOS-first native features, or parity on all three each release?
-4. **Scope of "library"** — opt-in watched folders, or keep Picavi a pure viewer and stop at Phase 2?
+   (Phase 3 is all Dart, so it works the same everywhere.)
+4. ~~**Scope of "library"**~~ — decided: opt-in watched folders.

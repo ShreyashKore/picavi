@@ -59,6 +59,15 @@ lib/
                      RenderingQuickFixService
     presentation/    EditorController + EditorState, EditorScreen, crop overlay, side panel,
                      export options dialog
+  library/           photo library feature module (opt-in watched folders)
+    domain/          PhotoInfo (star/caption/tags/hidden), CatalogImage, LibraryQuery, Album;
+                     CatalogRepository, PhotoInfoRepository, LibrarySettingsRepository,
+                     LibraryIndexer, DuplicateFinder
+    data/            SqliteCatalogRepository (sqlite3), FileSystemLibraryIndexer (isolates),
+                     ThumbnailCache + CachedThumbnailImage, HashingDuplicateFinder,
+                     SidecarPhotoInfoRepository, LibraryServices (opens it all)
+    presentation/    LibraryController + LibraryState, LibraryScreen, DuplicatesScreen,
+                     sidebar, grid, folder tree
 ```
 
 - **State:** plain `ChangeNotifier` + immutable `ViewerState`; no state-management
@@ -88,6 +97,10 @@ lib/
   rename). Operation coordinates are normalised (0–1) to the image at that step.
   Viewer rename/move/copy carry edits along. Only Export writes edited pixels, to
   new files that never overwrite.
+- Sidecar is the source of truth, the catalog a cache: `PicaviSidecarStore`
+  (`lib/core/sidecar/`) owns `.picavi.json`; each feature owns its fields of an
+  image's entry (`edits`; `starred`/`caption`/`tags`/`hidden`) and keeps unknown
+  ones. The SQLite catalog is rebuildable by re-indexing, except albums.
 - One pixel pipeline: preview, viewer display (`EditedImageProvider`) and export
   all run `applyEdits` (`editor/data/pipeline/edit_pipeline.dart`) in an isolate.
   A new operation goes there plus its JSON in `EditOperation`.
