@@ -46,7 +46,7 @@ lib/
     images/            SystemDecodedImage (ImageProvider backed by macOS ImageIO)
     l10n/              BuildContext.l10n extension
   l10n/                .arb source files + generated/ AppLocalizations (do not hand-edit generated/)
-  viewer/              the one feature module
+  viewer/              viewer feature module
     domain/            entities (GalleryImage, ImageMetadata, ImageSortOrder, SlideshowSettings),
                        repository/service interfaces (ImageRepository, ImagePickerService,
                        FileOperationsService, ImageTransformService), constants
@@ -57,6 +57,17 @@ lib/
                        platformImageExtensions
     presentation/      controllers/ (ViewerController: ChangeNotifier), models/ (ViewerState,
                        ViewerNotice), screens/ (ViewerScreen, SettingsScreen), widgets/
+  editor/              non-destructive editor feature module
+    domain/            EditOperation (sealed: crop, rotate, straighten, levels, tune, effect,
+                       red-eye), ImageEdits, RgbaImage, ExportOptions; interfaces
+                       ImageEditRepository, ImagePixelSource, EditRenderService,
+                       ImageExportService, QuickFixService
+    data/              pipeline/edit_pipeline.dart (pure-Dart pixel ops, shared by preview and
+                       export), SidecarImageEditRepository (.picavi.json), FlutterImagePixelSource,
+                       IsolateEditRenderService, EditedImageProvider, RasterImageExportService,
+                       RenderingQuickFixService
+    presentation/      EditorController + EditorState, EditorScreen, crop overlay, side panel,
+                       export options dialog
 ```
 
 ### State management
@@ -70,7 +81,8 @@ controller and wires it to the UI.
 ### Dependency injection
 Manual constructor injection. `ViewerController` takes `ImageRepository`,
 `ImagePickerService`, `FileOperationsService`, `ImageTransformService` and
-`NativeFileChannelService` (plus an `evictImage` callback); concrete `data/`
+`NativeFileChannelService`, plus optional editor services (`ImageEditRepository`,
+`QuickFixService`, `ImageExportService`) and an `evictImage` callback; concrete `data/`
 implementations are constructed in `ViewerScreen`. Tests pass fakes — keep new
 dependencies behind a `domain/` interface so they stay swappable.
 
@@ -96,6 +108,15 @@ dependencies behind a `domain/` interface so they stay swappable.
   Recycle Bin (`FileOperationsService.moveToTrash`); copy/move never overwrite.
 - **Writing image files** (`RasterImageTransformService`) goes through a temp
   file + rename, and JPEG rotation only edits the EXIF orientation value.
+- **Edits are non-destructive.** The editor never writes to the original: edits
+  are an ordered list of `EditOperation`s stored per folder in a hidden
+  `.picavi.json` sidecar (`SidecarImageEditRepository`, written via temp file +
+  rename). Coordinates in operations are normalised (0–1) to the image as it is
+  at that step. Rename/move/copy in the viewer carry edits along. Edited copies
+  are produced only by Export, which never overwrites.
+- **One pixel pipeline.** Preview, viewer display (`EditedImageProvider`) and
+  export all run `applyEdits` from `editor/data/pipeline/edit_pipeline.dart`
+  (in an isolate). Add a new operation there plus its JSON in `EditOperation`.
 
 ## Localization (i18n)
 

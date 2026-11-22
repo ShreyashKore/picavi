@@ -12,6 +12,9 @@ Open Image Viewer / Picavi desktop viewer.
 - File actions: rename, copy or move to a folder, move to Trash / Recycle Bin, copy image, show in Finder / Explorer, open with another app.
 - Select several images (⌘/Ctrl-click, Shift-click, ⌘/Ctrl+A) to copy, move or trash them together.
 - Drop images or folders onto the window to open them.
+- Picasa-style editor (`E`): crop with print-size presets, straighten, red-eye, I'm Feeling Lucky, auto contrast and colour, tuning sliders (fill light, highlights, shadows, colour temperature) and effects (B&W, sepia, warmify, saturation, sharpen, soft focus, glow, film grain, vignette), with undo / redo / revert.
+- Edits never touch your originals: they are kept in a hidden `.picavi.json` file in the folder (like Picasa's `.picasa.ini`) and follow images you rename, move or copy in Picavi.
+- Export edited copies as JPEG or PNG at a chosen size and quality; apply quick fixes or export a whole selection at once.
 - Sorts the folder by name (natural order, so `IMG_2` comes before `IMG_10`), date modified, file size or type — ascending or descending, remembered between launches.
 - Refreshes the thumbnail strip automatically when images are added to or removed from the folder.
 - Remembers recent folders and can reopen the last image on launch.
@@ -36,6 +39,7 @@ Press `?` in the viewer to see these in the app.
 | `R` / `Shift+R` | Rotate right / left |
 | `⌘S` / `Ctrl+S` | Save rotation to the file |
 | `I` | Show / hide image info |
+| `E` | Edit image |
 | `F2` | Rename |
 | `Delete` / `⌫` | Move to Trash / Recycle Bin |
 | `⌘C` / `Ctrl+C` | Copy image |
@@ -43,6 +47,15 @@ Press `?` in the viewer to see these in the app.
 | `⌘`/`Ctrl`-click, `Shift`-click | Add to / extend selection |
 | `?` | Show keyboard shortcuts |
 | `Esc` | Clear selection, stop slideshow, leave full screen, or close |
+
+### In the editor
+
+| Keys | Action |
+|---|---|
+| `⌘Z` / `Ctrl+Z` | Undo |
+| `⇧⌘Z` / `Ctrl+Shift+Z`, `Ctrl+Y` | Redo |
+| `Enter` | Apply the open tool |
+| `Esc` | Cancel the open tool, or close the editor |
 
 ## Supported image extensions
 

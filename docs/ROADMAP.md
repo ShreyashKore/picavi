@@ -38,14 +38,14 @@ falls into one of those three buckets.
 ### 3. Editing (Picasa's "Basic Fixes / Tuning / Effects")
 | Gap | Notes |
 |---|---|
-| Crop & straighten | With aspect presets (4×6, 5×7, 16:9, square) |
-| One-click fixes | "I'm Feeling Lucky", auto-contrast, auto-colour, red-eye |
-| Tuning sliders | Fill light, highlights, shadows, colour temperature |
-| Effects | B&W, sepia, sharpen, warmify, film grain, tint, saturation, soft focus, glow, focal B&W, graduated tint |
+| Crop & straighten | ✅ Done in Phase 2 (free, original, square, 4×6, 5×7, 8×10, 16:9) |
+| One-click fixes | ✅ I'm Feeling Lucky, auto contrast, auto colour, red-eye |
+| Tuning sliders | ✅ Fill light, highlights, shadows, colour temperature (no neutral-colour picker yet) |
+| Effects | ✅ B&W, sepia, warmify, saturation, sharpen, soft focus, glow, film grain, vignette; tint, focal B&W, graduated tint still to do |
 | Text / retouch | Caption text overlay, spot-heal |
-| Non-destructive edits + Revert | Picasa stored edits in `.picasa.ini` and never touched the original until "Save" |
-| Export | Save-as with resize, quality, format; batch export |
-| Batch edit | Apply rotate/fix/effect to a selection |
+| Non-destructive edits + Revert | ✅ `.picavi.json` sidecar, undo/redo/revert |
+| Export | ✅ JPEG/PNG, size, quality; batch export of a selection |
+| Batch edit | ✅ Quick fixes and Remove edits on a selection |
 
 ### 4. Library / organiser (the biggest gap)
 | Gap | Notes |
@@ -114,13 +114,33 @@ architecture choices, so the decisions are called out up front.
   - Slideshow fade transition is the existing image cross-fade; no transition
     choices.
 
-### Phase 2 — Editor (v1.2, ~6 weeks)
-- New feature module `lib/editor/` (domain/data/presentation).
-- Edit model = ordered list of operations, serialised to a sidecar
-  (`.picavi.json` per folder, analogous to `.picasa.ini`) → non-destructive + Revert.
-- Preview via `ColorFilter`/shaders on the GPU; final render in an isolate
-  (`package:image`).
-- Order: crop/straighten → auto-fix → tuning sliders → effects → red-eye → export/batch.
+### Phase 2 — Editor (v1.2) — ✅ done
+- ✅ New feature module `lib/editor/` (domain/data/presentation).
+- ✅ Edit model = ordered list of operations in a per-folder `.picavi.json`
+  sidecar (decision 1: **JSON**, Picasa-style; XMP can be added later as an
+  export of the same model). Originals are never written.
+- ✅ One pure-Dart pixel pipeline in a background isolate, used for the editor
+  preview (2048 px), the viewer and thumbnails, and full-size export — so what
+  you see is what you export. (Chosen over GPU shaders: one implementation,
+  fully unit-tested, same on every platform.)
+- ✅ Editor: crop with presets, straighten with grid, red-eye, rotate, I'm
+  Feeling Lucky / auto contrast / auto colour, tuning, nine effects,
+  undo/redo/revert, Esc/Enter/⌘Z shortcuts.
+- ✅ Viewer shows edited images (badge on thumbnails); rename/move/copy carry
+  edits; saving a rotation of an edited image becomes a rotate edit.
+- ✅ Export (JPEG/PNG, size, quality, camera EXIF kept, never overwrites) for
+  one image or a selection; quick fixes and Remove edits on a selection.
+- Deferred / not done:
+  - Not tried by hand in the running app yet — covered by unit and widget tests.
+  - Edited images are shown at up to 2560 px in the viewer, so 1:1 zoom on an
+    edited photo is slightly soft; export is full size.
+  - Film grain and blur-based effects scale with resolution, so they look a
+    little different between preview and full-size export.
+  - Tint, focal B&W, graduated tint, neutral-colour picker, text overlay,
+    retouch/spot-heal, slider for re-editing an applied tuning step.
+  - Edits of images moved to the Trash stay in the sidecar (harmless; restored
+    images get them back). Renames done outside Picavi orphan their edits.
+  - Export options are remembered only until Picavi quits.
 
 ### Phase 3 — Library (v2.0, ~8–10 weeks) — architecture shift
 - New feature module `lib/library/`.
@@ -136,7 +156,7 @@ architecture choices, so the decisions are called out up front.
   import from device, share sheet, video playback, movie export.
 
 ## Decisions needed before Phase 2/3
-1. **Sidecar format** — Picavi-only JSON vs. XMP (interoperable, more work).
+1. ~~**Sidecar format**~~ — decided: JSON (`.picavi.json`); XMP later if needed.
 2. **Catalog DB** — `drift` (typed, codegen) vs. raw `sqflite_common_ffi`.
 3. **Platform priority** — macOS-first native features, or parity on all three each release?
 4. **Scope of "library"** — opt-in watched folders, or keep Picavi a pure viewer and stop at Phase 2?

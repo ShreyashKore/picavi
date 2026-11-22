@@ -41,13 +41,24 @@ lib/
                      theme/, widgets/ (AppImage), images/ (SystemDecodedImage),
                      l10n/ (context.l10n extension)
   l10n/              .arb sources + generated/ (do NOT hand-edit generated/)
-  viewer/            the single feature module
+  viewer/            viewer feature module
     domain/          entities, repository/service interfaces (ImageRepository, ImagePickerService,
                      FileOperationsService, ImageTransformService), image extension constants
     data/            FileSystemImageRepository, DesktopImagePickerService, DesktopFileOperationsService,
                      RasterImageTransformService, SlideshowSettingsStore, NativeFileChannelService
     presentation/    controllers/ (ViewerController), models/ (ViewerState, ViewerNotice),
                      screens/, widgets/
+  editor/            non-destructive editor feature module
+    domain/          EditOperation (sealed: crop, rotate, straighten, levels, tune, effect,
+                     red-eye), ImageEdits, RgbaImage, ExportOptions; interfaces
+                     ImageEditRepository, ImagePixelSource, EditRenderService,
+                     ImageExportService, QuickFixService
+    data/            pipeline/edit_pipeline.dart (pure-Dart pixel ops shared by preview and
+                     export), SidecarImageEditRepository (.picavi.json), FlutterImagePixelSource,
+                     IsolateEditRenderService, EditedImageProvider, RasterImageExportService,
+                     RenderingQuickFixService
+    presentation/    EditorController + EditorState, EditorScreen, crop overlay, side panel,
+                     export options dialog
 ```
 
 - **State:** plain `ChangeNotifier` + immutable `ViewerState`; no state-management
@@ -72,6 +83,14 @@ lib/
   Use `platformImageExtensions`; keep README, `Info.plist` and Swift lists in sync.
 - Never delete permanently: removal goes to the system Trash / Recycle Bin;
   copy/move never overwrite. Image rewrites use temp file + rename.
+- Edits are non-destructive: an ordered list of `EditOperation`s per image in a
+  hidden per-folder `.picavi.json` (`SidecarImageEditRepository`, temp file +
+  rename). Operation coordinates are normalised (0–1) to the image at that step.
+  Viewer rename/move/copy carry edits along. Only Export writes edited pixels, to
+  new files that never overwrite.
+- One pixel pipeline: preview, viewer display (`EditedImageProvider`) and export
+  all run `applyEdits` (`editor/data/pipeline/edit_pipeline.dart`) in an isolate.
+  A new operation goes there plus its JSON in `EditOperation`.
 
 ## Localization
 
