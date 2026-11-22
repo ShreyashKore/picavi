@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../domain/constants/supported_image_extensions.dart';
 import '../../domain/services/image_picker_service.dart';
@@ -64,5 +65,28 @@ class DesktopImagePickerService implements ImagePickerService {
     }
 
     return initialDirectory;
+  }
+
+  @override
+  Future<String?> pickDirectory({
+    required String initialDirectory,
+    required DirectoryAccessTexts texts,
+  }) async {
+    if (Platform.isMacOS) {
+      return _nativeChannel.authorizeDirectoryAccess(
+        initialDirectory: initialDirectory,
+        texts: texts,
+      );
+    }
+
+    try {
+      return await getDirectoryPath(
+        initialDirectory: initialDirectory,
+        confirmButtonText: texts.prompt,
+      );
+    } catch (error) {
+      debugPrint('Unable to pick a folder: $error');
+      return null;
+    }
   }
 }

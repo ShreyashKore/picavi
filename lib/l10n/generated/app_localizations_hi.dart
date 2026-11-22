@@ -283,4 +283,223 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get closeLabel => 'बंद करें';
+
+  @override
+  String get moreActionsTooltip => 'और क्रियाएँ';
+
+  @override
+  String get renameAction => 'नाम बदलें…';
+
+  @override
+  String get renameDialogTitle => 'छवि का नाम बदलें';
+
+  @override
+  String get renameFieldLabel => 'फ़ाइल का नाम';
+
+  @override
+  String get renameConfirm => 'नाम बदलें';
+
+  @override
+  String get cancelLabel => 'रद्द करें';
+
+  @override
+  String get renameErrorExists => 'इस नाम की फ़ाइल पहले से मौजूद है।';
+
+  @override
+  String get renameErrorInvalid =>
+      'यह नाम इस्तेमाल नहीं हो सकता। / \\ : * ? \" < > | और शुरुआती बिंदु से बचें।';
+
+  @override
+  String get renameErrorFailed => 'छवि का नाम नहीं बदला जा सका।';
+
+  @override
+  String copyToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ फ़ोल्डर में कॉपी करें…',
+      one: 'फ़ोल्डर में कॉपी करें…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ फ़ोल्डर में ले जाएँ…',
+      one: 'फ़ोल्डर में ले जाएँ…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get copyHerePrompt => 'यहाँ कॉपी करें';
+
+  @override
+  String get moveHerePrompt => 'यहाँ ले जाएँ';
+
+  @override
+  String get chooseDestinationMessage => 'छवियों के लिए एक फ़ोल्डर चुनें।';
+
+  @override
+  String get copyImageAction => 'छवि कॉपी करें';
+
+  @override
+  String get revealInFinderAction => 'Finder में दिखाएँ';
+
+  @override
+  String get revealInExplorerAction => 'फ़ाइल एक्सप्लोरर में दिखाएँ';
+
+  @override
+  String get revealInFileManagerAction => 'फ़ोल्डर में दिखाएँ';
+
+  @override
+  String get openWithAction => 'इसके साथ खोलें…';
+
+  @override
+  String get openWithPrompt => 'खोलें';
+
+  @override
+  String get trashName => 'ट्रैश';
+
+  @override
+  String get recycleBinName => 'रीसायकल बिन';
+
+  @override
+  String moveToTrashAction(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ $bin में ले जाएँ',
+      one: '$bin में ले जाएँ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmTitle(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ $bin में ले जाएँ?',
+      one: 'यह छवि $bin में ले जाएँ?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmMessage(String bin) {
+    return 'आप छवियों को $bin से वापस ला सकते हैं।';
+  }
+
+  @override
+  String movedToTrashNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ $bin में ले जाई गईं',
+      one: '1 छवि $bin में ले जाई गई',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashFailedNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ $bin में नहीं ले जाई जा सकीं',
+      one: '1 छवि $bin में नहीं ले जाई जा सकी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ कॉपी की गईं',
+      one: '1 छवि कॉपी की गई',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String movedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ ले जाई गईं',
+      one: '1 छवि ले जाई गई',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copyFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ कॉपी नहीं हो सकीं',
+      one: '1 छवि कॉपी नहीं हो सकी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ नहीं ले जाई जा सकीं',
+      one: '1 छवि नहीं ले जाई जा सकी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imageCopiedNotice => 'छवि क्लिपबोर्ड पर कॉपी की गई';
+
+  @override
+  String get clipboardFailedNotice => 'छवि क्लिपबोर्ड पर कॉपी नहीं हो सकी';
+
+  @override
+  String get revealFailedNotice => 'छवि उसके फ़ोल्डर में नहीं दिखाई जा सकी';
+
+  @override
+  String get openWithFailedNotice => 'छवि उस ऐप में नहीं खुल सकी';
+
+  @override
+  String selectionCount(int count) {
+    return '$count चयनित';
+  }
+
+  @override
+  String get clearSelectionTooltip => 'चयन हटाएँ';
+
+  @override
+  String get shortcutRename => 'छवि का नाम बदलें';
+
+  @override
+  String shortcutTrash(String bin) {
+    return '$bin में ले जाएँ';
+  }
+
+  @override
+  String get shortcutCopyImage => 'छवि कॉपी करें';
+
+  @override
+  String get shortcutSelectAll => 'सभी छवियाँ चुनें';
+
+  @override
+  String get shortcutSelect => 'चयन में जोड़ें / बढ़ाएँ';
+
+  @override
+  String get shortcutEscape => 'चयन हटाएँ, फ़ुल स्क्रीन छोड़ें या बंद करें';
+
+  @override
+  String get clickLabel => 'क्लिक';
 }

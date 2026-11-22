@@ -284,4 +284,223 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get closeLabel => 'बंद करा';
+
+  @override
+  String get moreActionsTooltip => 'अधिक क्रिया';
+
+  @override
+  String get renameAction => 'नाव बदला…';
+
+  @override
+  String get renameDialogTitle => 'प्रतिमेचे नाव बदला';
+
+  @override
+  String get renameFieldLabel => 'फाइलचे नाव';
+
+  @override
+  String get renameConfirm => 'नाव बदला';
+
+  @override
+  String get cancelLabel => 'रद्द करा';
+
+  @override
+  String get renameErrorExists => 'या नावाची फाइल आधीच आहे.';
+
+  @override
+  String get renameErrorInvalid =>
+      'हे नाव वापरता येणार नाही. / \\ : * ? \" < > | आणि सुरुवातीचा बिंदू टाळा.';
+
+  @override
+  String get renameErrorFailed => 'प्रतिमेचे नाव बदलता आले नाही.';
+
+  @override
+  String copyToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा फोल्डरमध्ये कॉपी करा…',
+      one: 'फोल्डरमध्ये कॉपी करा…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा फोल्डरमध्ये हलवा…',
+      one: 'फोल्डरमध्ये हलवा…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get copyHerePrompt => 'येथे कॉपी करा';
+
+  @override
+  String get moveHerePrompt => 'येथे हलवा';
+
+  @override
+  String get chooseDestinationMessage => 'प्रतिमांसाठी फोल्डर निवडा.';
+
+  @override
+  String get copyImageAction => 'प्रतिमा कॉपी करा';
+
+  @override
+  String get revealInFinderAction => 'Finder मध्ये दाखवा';
+
+  @override
+  String get revealInExplorerAction => 'फाइल एक्सप्लोररमध्ये दाखवा';
+
+  @override
+  String get revealInFileManagerAction => 'फोल्डरमध्ये दाखवा';
+
+  @override
+  String get openWithAction => 'यासह उघडा…';
+
+  @override
+  String get openWithPrompt => 'उघडा';
+
+  @override
+  String get trashName => 'कचरापेटी';
+
+  @override
+  String get recycleBinName => 'रीसायकल बिन';
+
+  @override
+  String moveToTrashAction(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा $bin मध्ये हलवा',
+      one: '$bin मध्ये हलवा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmTitle(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा $bin मध्ये हलवायच्या?',
+      one: 'ही प्रतिमा $bin मध्ये हलवायची?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmMessage(String bin) {
+    return 'तुम्ही प्रतिमा $bin मधून परत आणू शकता.';
+  }
+
+  @override
+  String movedToTrashNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा $bin मध्ये हलवल्या',
+      one: '1 प्रतिमा $bin मध्ये हलवली',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashFailedNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा $bin मध्ये हलवता आल्या नाहीत',
+      one: '1 प्रतिमा $bin मध्ये हलवता आली नाही',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा कॉपी केल्या',
+      one: '1 प्रतिमा कॉपी केली',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String movedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा हलवल्या',
+      one: '1 प्रतिमा हलवली',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copyFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा कॉपी करता आल्या नाहीत',
+      one: '1 प्रतिमा कॉपी करता आली नाही',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा हलवता आल्या नाहीत',
+      one: '1 प्रतिमा हलवता आली नाही',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imageCopiedNotice => 'प्रतिमा क्लिपबोर्डवर कॉपी केली';
+
+  @override
+  String get clipboardFailedNotice => 'प्रतिमा क्लिपबोर्डवर कॉपी करता आली नाही';
+
+  @override
+  String get revealFailedNotice => 'प्रतिमा तिच्या फोल्डरमध्ये दाखवता आली नाही';
+
+  @override
+  String get openWithFailedNotice => 'प्रतिमा त्या ॲपमध्ये उघडता आली नाही';
+
+  @override
+  String selectionCount(int count) {
+    return '$count निवडल्या';
+  }
+
+  @override
+  String get clearSelectionTooltip => 'निवड काढा';
+
+  @override
+  String get shortcutRename => 'प्रतिमेचे नाव बदला';
+
+  @override
+  String shortcutTrash(String bin) {
+    return '$bin मध्ये हलवा';
+  }
+
+  @override
+  String get shortcutCopyImage => 'प्रतिमा कॉपी करा';
+
+  @override
+  String get shortcutSelectAll => 'सर्व प्रतिमा निवडा';
+
+  @override
+  String get shortcutSelect => 'निवडीत जोडा / वाढवा';
+
+  @override
+  String get shortcutEscape => 'निवड काढा, पूर्ण स्क्रीन सोडा किंवा बंद करा';
+
+  @override
+  String get clickLabel => 'क्लिक';
 }

@@ -14,6 +14,7 @@ class ViewerThumbnailRail extends StatelessWidget {
     required this.scrollController,
     required this.onTap,
     required this.onScrollImageChange,
+    this.selectedPaths = const <String>{},
     this.topInset = 0,
   });
 
@@ -23,6 +24,7 @@ class ViewerThumbnailRail extends StatelessWidget {
   final ScrollController scrollController;
   final ValueChanged<int> onTap;
   final ValueChanged<int> onScrollImageChange;
+  final Set<String> selectedPaths;
   final double topInset;
 
   void _handlePointerSignal(PointerSignalEvent event) {
@@ -66,6 +68,7 @@ class ViewerThumbnailRail extends StatelessWidget {
               itemCount: images.length,
               itemBuilder: (context, index) {
                 final isSelected = index == currentIndex;
+                final isPicked = selectedPaths.contains(images[index].path);
                 final borderRadius = BorderRadius.circular(4);
 
                 return Padding(
@@ -96,6 +99,18 @@ class ViewerThumbnailRail extends StatelessWidget {
                               ]
                             : const [],
                       ),
+                      foregroundDecoration: isPicked
+                          ? BoxDecoration(
+                              borderRadius: borderRadius,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.28),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2,
+                              ),
+                            )
+                          : null,
                       child: ClipRRect(
                         borderRadius: borderRadius,
                         child: AppImage.file(

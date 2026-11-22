@@ -597,6 +597,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get closeLabel;
+
+  /// Tooltip for the menu with file actions.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get moreActionsTooltip;
+
+  /// Menu item that renames the current image.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename…'**
+  String get renameAction;
+
+  /// Title of the rename dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename image'**
+  String get renameDialogTitle;
+
+  /// Label of the file name field in the rename dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'File name'**
+  String get renameFieldLabel;
+
+  /// Confirm button in the rename dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get renameConfirm;
+
+  /// Generic cancel button.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelLabel;
+
+  /// Rename error: target name is taken.
+  ///
+  /// In en, this message translates to:
+  /// **'A file with that name already exists.'**
+  String get renameErrorExists;
+
+  /// Rename error: name has forbidden characters.
+  ///
+  /// In en, this message translates to:
+  /// **'That name can\'t be used. Avoid / \\ : * ? \" < > | and a leading dot.'**
+  String get renameErrorInvalid;
+
+  /// Rename error: generic failure.
+  ///
+  /// In en, this message translates to:
+  /// **'The image couldn\'t be renamed.'**
+  String get renameErrorFailed;
+
+  /// Menu item: copy images to another folder.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Copy to folder…} other{Copy {count} images to folder…}}'**
+  String copyToFolderAction(int count);
+
+  /// Menu item: move images to another folder.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Move to folder…} other{Move {count} images to folder…}}'**
+  String moveToFolderAction(int count);
+
+  /// Confirm button of the folder picker when copying.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy here'**
+  String get copyHerePrompt;
+
+  /// Confirm button of the folder picker when moving.
+  ///
+  /// In en, this message translates to:
+  /// **'Move here'**
+  String get moveHerePrompt;
+
+  /// Message in the folder picker for copy/move.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a folder for the images.'**
+  String get chooseDestinationMessage;
+
+  /// Menu item: copy the image to the clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy image'**
+  String get copyImageAction;
+
+  /// Menu item (macOS): show the file in Finder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Finder'**
+  String get revealInFinderAction;
+
+  /// Menu item (Windows): show the file in File Explorer.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in File Explorer'**
+  String get revealInExplorerAction;
+
+  /// Menu item (Linux): show the file in the file manager.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in folder'**
+  String get revealInFileManagerAction;
+
+  /// Menu item: open the image in another app.
+  ///
+  /// In en, this message translates to:
+  /// **'Open with…'**
+  String get openWithAction;
+
+  /// Confirm button of the app picker for Open with.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openWithPrompt;
+
+  /// Name of the macOS/Linux trash, used inside other messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get trashName;
+
+  /// Name of the Windows Recycle Bin, used inside other messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Recycle Bin'**
+  String get recycleBinName;
+
+  /// Menu item: move images to the trash. {bin} is trashName or recycleBinName.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Move to {bin}} other{Move {count} images to {bin}}}'**
+  String moveToTrashAction(int count, String bin);
+
+  /// Title of the confirmation before moving to the trash.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Move this image to the {bin}?} other{Move {count} images to the {bin}?}}'**
+  String trashConfirmTitle(int count, String bin);
+
+  /// Body of the confirmation before moving to the trash.
+  ///
+  /// In en, this message translates to:
+  /// **'You can restore images from the {bin}.'**
+  String trashConfirmMessage(String bin);
+
+  /// Snackbar after moving images to the trash.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Moved 1 image to the {bin}} other{Moved {count} images to the {bin}}}'**
+  String movedToTrashNotice(int count, String bin);
+
+  /// Snackbar when some images could not be moved to the trash.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 image couldn\'t be moved to the {bin}} other{{count} images couldn\'t be moved to the {bin}}}'**
+  String trashFailedNotice(int count, String bin);
+
+  /// Snackbar after copying images to a folder.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Copied 1 image} other{Copied {count} images}}'**
+  String copiedNotice(int count);
+
+  /// Snackbar after moving images to a folder.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Moved 1 image} other{Moved {count} images}}'**
+  String movedNotice(int count);
+
+  /// Snackbar when some images could not be copied.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 image couldn\'t be copied} other{{count} images couldn\'t be copied}}'**
+  String copyFailedNotice(int count);
+
+  /// Snackbar when some images could not be moved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 image couldn\'t be moved} other{{count} images couldn\'t be moved}}'**
+  String moveFailedNotice(int count);
+
+  /// Snackbar after copying the image to the clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Image copied to the clipboard'**
+  String get imageCopiedNotice;
+
+  /// Snackbar when copying to the clipboard failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t copy the image to the clipboard'**
+  String get clipboardFailedNotice;
+
+  /// Snackbar when showing the file in its folder failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t show the image in its folder'**
+  String get revealFailedNotice;
+
+  /// Snackbar when opening in another app failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the image in that app'**
+  String get openWithFailedNotice;
+
+  /// Label showing how many images are selected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String selectionCount(int count);
+
+  /// Tooltip for the button that clears the selection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get clearSelectionTooltip;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename image'**
+  String get shortcutRename;
+
+  /// Shortcut description. {bin} is trashName or recycleBinName.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to {bin}'**
+  String shortcutTrash(String bin);
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy image'**
+  String get shortcutCopyImage;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all images'**
+  String get shortcutSelectAll;
+
+  /// Shortcut description for modifier-clicking thumbnails.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to / extend selection'**
+  String get shortcutSelect;
+
+  /// Shortcut description for Esc.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection, leave full screen, or close'**
+  String get shortcutEscape;
+
+  /// Word for a mouse click, shown on keycaps like "⌘ Click".
+  ///
+  /// In en, this message translates to:
+  /// **'Click'**
+  String get clickLabel;
 }
 
 class _AppLocalizationsDelegate

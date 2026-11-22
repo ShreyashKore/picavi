@@ -283,4 +283,223 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get closeLabel => 'إغلاق';
+
+  @override
+  String get moreActionsTooltip => 'إجراءات أخرى';
+
+  @override
+  String get renameAction => 'إعادة تسمية…';
+
+  @override
+  String get renameDialogTitle => 'إعادة تسمية الصورة';
+
+  @override
+  String get renameFieldLabel => 'اسم الملف';
+
+  @override
+  String get renameConfirm => 'إعادة تسمية';
+
+  @override
+  String get cancelLabel => 'إلغاء';
+
+  @override
+  String get renameErrorExists => 'يوجد ملف بهذا الاسم بالفعل.';
+
+  @override
+  String get renameErrorInvalid =>
+      'لا يمكن استخدام هذا الاسم. تجنّب / \\ : * ? \" < > | والنقطة في البداية.';
+
+  @override
+  String get renameErrorFailed => 'تعذّرت إعادة تسمية الصورة.';
+
+  @override
+  String copyToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'نسخ $count صور إلى مجلد…',
+      one: 'نسخ إلى مجلد…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'نقل $count صور إلى مجلد…',
+      one: 'نقل إلى مجلد…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get copyHerePrompt => 'نسخ هنا';
+
+  @override
+  String get moveHerePrompt => 'نقل هنا';
+
+  @override
+  String get chooseDestinationMessage => 'اختر مجلدًا للصور.';
+
+  @override
+  String get copyImageAction => 'نسخ الصورة';
+
+  @override
+  String get revealInFinderAction => 'إظهار في Finder';
+
+  @override
+  String get revealInExplorerAction => 'إظهار في مستكشف الملفات';
+
+  @override
+  String get revealInFileManagerAction => 'إظهار في المجلد';
+
+  @override
+  String get openWithAction => 'فتح باستخدام…';
+
+  @override
+  String get openWithPrompt => 'فتح';
+
+  @override
+  String get trashName => 'سلة المهملات';
+
+  @override
+  String get recycleBinName => 'سلة المحذوفات';
+
+  @override
+  String moveToTrashAction(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'نقل $count صور إلى $bin',
+      one: 'نقل إلى $bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmTitle(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'نقل $count صور إلى $bin؟',
+      one: 'نقل هذه الصورة إلى $bin؟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmMessage(String bin) {
+    return 'يمكنك استعادة الصور من $bin.';
+  }
+
+  @override
+  String movedToTrashNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم نقل $count صور إلى $bin',
+      one: 'تم نقل صورة واحدة إلى $bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashFailedNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تعذّر نقل $count صور إلى $bin',
+      one: 'تعذّر نقل صورة واحدة إلى $bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم نسخ $count صور',
+      one: 'تم نسخ صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String movedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم نقل $count صور',
+      one: 'تم نقل صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copyFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تعذّر نسخ $count صور',
+      one: 'تعذّر نسخ صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تعذّر نقل $count صور',
+      one: 'تعذّر نقل صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imageCopiedNotice => 'تم نسخ الصورة إلى الحافظة';
+
+  @override
+  String get clipboardFailedNotice => 'تعذّر نسخ الصورة إلى الحافظة';
+
+  @override
+  String get revealFailedNotice => 'تعذّر إظهار الصورة في مجلدها';
+
+  @override
+  String get openWithFailedNotice => 'تعذّر فتح الصورة في هذا التطبيق';
+
+  @override
+  String selectionCount(int count) {
+    return '$count محددة';
+  }
+
+  @override
+  String get clearSelectionTooltip => 'مسح التحديد';
+
+  @override
+  String get shortcutRename => 'إعادة تسمية الصورة';
+
+  @override
+  String shortcutTrash(String bin) {
+    return 'نقل إلى $bin';
+  }
+
+  @override
+  String get shortcutCopyImage => 'نسخ الصورة';
+
+  @override
+  String get shortcutSelectAll => 'تحديد كل الصور';
+
+  @override
+  String get shortcutSelect => 'إضافة إلى التحديد / توسيعه';
+
+  @override
+  String get shortcutEscape => 'مسح التحديد أو الخروج من ملء الشاشة أو الإغلاق';
+
+  @override
+  String get clickLabel => 'نقرة';
 }

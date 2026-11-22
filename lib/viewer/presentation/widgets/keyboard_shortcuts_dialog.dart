@@ -1,29 +1,53 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../core/l10n/l10n_extensions.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import 'viewer_actions_menu.dart';
 
 /// One row in the shortcuts dialog: the keys and what they do.
 class _ShortcutEntry {
-  const _ShortcutEntry(this.keys, this.describe);
+  const _ShortcutEntry(this.keys, this.describe, {this.appendClick = false});
 
   final List<String> keys;
   final String Function(AppLocalizations l10n) describe;
+
+  /// Replaces the "·" placeholder in [keys] with the localized "Click".
+  final bool appendClick;
+
+  List<String> labels(AppLocalizations l10n) => appendClick
+      ? keys.map((key) => key.replaceAll('·', l10n.clickLabel)).toList()
+      : keys;
 }
 
 /// Keep in sync with `_ViewerScreenState._handleKeyEvent`.
-final List<_ShortcutEntry> _shortcuts = <_ShortcutEntry>[
-  _ShortcutEntry(['→', '←'], (l10n) => l10n.shortcutNextPrevious),
-  _ShortcutEntry(['Home', 'End'], (l10n) => l10n.shortcutFirstLast),
-  _ShortcutEntry(['Space'], (l10n) => l10n.shortcutPlayPause),
-  _ShortcutEntry(['+', '−'], (l10n) => l10n.shortcutZoom),
-  _ShortcutEntry(['1'], (l10n) => l10n.shortcutActualSize),
-  _ShortcutEntry(['0'], (l10n) => l10n.shortcutFit),
-  _ShortcutEntry(['R', '⇧R'], (l10n) => l10n.shortcutRotate),
-  _ShortcutEntry(['I'], (l10n) => l10n.shortcutInfo),
-  _ShortcutEntry(['?'], (l10n) => l10n.shortcutHelp),
-  _ShortcutEntry(['Esc'], (l10n) => l10n.shortcutClose),
-];
+List<_ShortcutEntry> _shortcutsForPlatform() {
+  final command = Platform.isMacOS ? '⌘' : 'Ctrl+';
+  return <_ShortcutEntry>[
+    _ShortcutEntry(['→', '←'], (l10n) => l10n.shortcutNextPrevious),
+    _ShortcutEntry(['Home', 'End'], (l10n) => l10n.shortcutFirstLast),
+    _ShortcutEntry(['Space'], (l10n) => l10n.shortcutPlayPause),
+    _ShortcutEntry(['+', '−'], (l10n) => l10n.shortcutZoom),
+    _ShortcutEntry(['1'], (l10n) => l10n.shortcutActualSize),
+    _ShortcutEntry(['0'], (l10n) => l10n.shortcutFit),
+    _ShortcutEntry(['R', '⇧R'], (l10n) => l10n.shortcutRotate),
+    _ShortcutEntry(['I'], (l10n) => l10n.shortcutInfo),
+    _ShortcutEntry(['F2'], (l10n) => l10n.shortcutRename),
+    _ShortcutEntry([
+      Platform.isMacOS ? '⌫' : 'Delete',
+    ], (l10n) => l10n.shortcutTrash(trashNameFor(l10n))),
+    _ShortcutEntry(['${command}C'], (l10n) => l10n.shortcutCopyImage),
+    _ShortcutEntry(['${command}A'], (l10n) => l10n.shortcutSelectAll),
+    _ShortcutEntry(
+      ['$command ·', '⇧ ·'],
+      (l10n) => l10n.shortcutSelect,
+      appendClick: true,
+    ),
+    _ShortcutEntry(['?'], (l10n) => l10n.shortcutHelp),
+    _ShortcutEntry(['Esc'], (l10n) => l10n.shortcutEscape),
+  ];
+}
 
 Future<void> showKeyboardShortcutsDialog(BuildContext context) {
   return showDialog<void>(
@@ -48,18 +72,19 @@ class KeyboardShortcutsDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final shortcut in _shortcuts)
+              for (final shortcut in _shortcutsForPlatform())
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Row(
                     children: [
                       SizedBox(
-                        width: 120,
+                        width: 150,
                         child: Wrap(
                           spacing: 4,
                           runSpacing: 4,
                           children: [
-                            for (final key in shortcut.keys) _KeyCap(key),
+                            for (final key in shortcut.labels(l10n))
+                              _KeyCap(key),
                           ],
                         ),
                       ),

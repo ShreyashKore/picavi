@@ -245,5 +245,258 @@
   "closeLabel": "Close",
   "@closeLabel": {
     "description": "Generic close button label."
+  },
+  "moreActionsTooltip": "More actions",
+  "@moreActionsTooltip": {
+    "description": "Tooltip for the menu with file actions."
+  },
+  "renameAction": "Rename…",
+  "@renameAction": {
+    "description": "Menu item that renames the current image."
+  },
+  "renameDialogTitle": "Rename image",
+  "@renameDialogTitle": {
+    "description": "Title of the rename dialog."
+  },
+  "renameFieldLabel": "File name",
+  "@renameFieldLabel": {
+    "description": "Label of the file name field in the rename dialog."
+  },
+  "renameConfirm": "Rename",
+  "@renameConfirm": {
+    "description": "Confirm button in the rename dialog."
+  },
+  "cancelLabel": "Cancel",
+  "@cancelLabel": {
+    "description": "Generic cancel button."
+  },
+  "renameErrorExists": "A file with that name already exists.",
+  "@renameErrorExists": {
+    "description": "Rename error: target name is taken."
+  },
+  "renameErrorInvalid": "That name can't be used. Avoid / \\ : * ? \" < > | and a leading dot.",
+  "@renameErrorInvalid": {
+    "description": "Rename error: name has forbidden characters."
+  },
+  "renameErrorFailed": "The image couldn't be renamed.",
+  "@renameErrorFailed": {
+    "description": "Rename error: generic failure."
+  },
+  "copyToFolderAction": "{count, plural, =1{Copy to folder…} other{Copy {count} images to folder…}}",
+  "@copyToFolderAction": {
+    "description": "Menu item: copy images to another folder.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "moveToFolderAction": "{count, plural, =1{Move to folder…} other{Move {count} images to folder…}}",
+  "@moveToFolderAction": {
+    "description": "Menu item: move images to another folder.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "copyHerePrompt": "Copy here",
+  "@copyHerePrompt": {
+    "description": "Confirm button of the folder picker when copying."
+  },
+  "moveHerePrompt": "Move here",
+  "@moveHerePrompt": {
+    "description": "Confirm button of the folder picker when moving."
+  },
+  "chooseDestinationMessage": "Choose a folder for the images.",
+  "@chooseDestinationMessage": {
+    "description": "Message in the folder picker for copy/move."
+  },
+  "copyImageAction": "Copy image",
+  "@copyImageAction": {
+    "description": "Menu item: copy the image to the clipboard."
+  },
+  "revealInFinderAction": "Show in Finder",
+  "@revealInFinderAction": {
+    "description": "Menu item (macOS): show the file in Finder."
+  },
+  "revealInExplorerAction": "Show in File Explorer",
+  "@revealInExplorerAction": {
+    "description": "Menu item (Windows): show the file in File Explorer."
+  },
+  "revealInFileManagerAction": "Show in folder",
+  "@revealInFileManagerAction": {
+    "description": "Menu item (Linux): show the file in the file manager."
+  },
+  "openWithAction": "Open with…",
+  "@openWithAction": {
+    "description": "Menu item: open the image in another app."
+  },
+  "openWithPrompt": "Open",
+  "@openWithPrompt": {
+    "description": "Confirm button of the app picker for Open with."
+  },
+  "trashName": "Trash",
+  "@trashName": {
+    "description": "Name of the macOS/Linux trash, used inside other messages."
+  },
+  "recycleBinName": "Recycle Bin",
+  "@recycleBinName": {
+    "description": "Name of the Windows Recycle Bin, used inside other messages."
+  },
+  "moveToTrashAction": "{count, plural, =1{Move to {bin}} other{Move {count} images to {bin}}}",
+  "@moveToTrashAction": {
+    "description": "Menu item: move images to the trash. {bin} is trashName or recycleBinName.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "bin": {
+        "type": "String"
+      }
+    }
+  },
+  "trashConfirmTitle": "{count, plural, =1{Move this image to the {bin}?} other{Move {count} images to the {bin}?}}",
+  "@trashConfirmTitle": {
+    "description": "Title of the confirmation before moving to the trash.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "bin": {
+        "type": "String"
+      }
+    }
+  },
+  "trashConfirmMessage": "You can restore images from the {bin}.",
+  "@trashConfirmMessage": {
+    "description": "Body of the confirmation before moving to the trash.",
+    "placeholders": {
+      "bin": {
+        "type": "String"
+      }
+    }
+  },
+  "movedToTrashNotice": "{count, plural, =1{Moved 1 image to the {bin}} other{Moved {count} images to the {bin}}}",
+  "@movedToTrashNotice": {
+    "description": "Snackbar after moving images to the trash.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "bin": {
+        "type": "String"
+      }
+    }
+  },
+  "trashFailedNotice": "{count, plural, =1{1 image couldn't be moved to the {bin}} other{{count} images couldn't be moved to the {bin}}}",
+  "@trashFailedNotice": {
+    "description": "Snackbar when some images could not be moved to the trash.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "bin": {
+        "type": "String"
+      }
+    }
+  },
+  "copiedNotice": "{count, plural, =1{Copied 1 image} other{Copied {count} images}}",
+  "@copiedNotice": {
+    "description": "Snackbar after copying images to a folder.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "movedNotice": "{count, plural, =1{Moved 1 image} other{Moved {count} images}}",
+  "@movedNotice": {
+    "description": "Snackbar after moving images to a folder.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "copyFailedNotice": "{count, plural, =1{1 image couldn't be copied} other{{count} images couldn't be copied}}",
+  "@copyFailedNotice": {
+    "description": "Snackbar when some images could not be copied.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "moveFailedNotice": "{count, plural, =1{1 image couldn't be moved} other{{count} images couldn't be moved}}",
+  "@moveFailedNotice": {
+    "description": "Snackbar when some images could not be moved.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageCopiedNotice": "Image copied to the clipboard",
+  "@imageCopiedNotice": {
+    "description": "Snackbar after copying the image to the clipboard."
+  },
+  "clipboardFailedNotice": "Couldn't copy the image to the clipboard",
+  "@clipboardFailedNotice": {
+    "description": "Snackbar when copying to the clipboard failed."
+  },
+  "revealFailedNotice": "Couldn't show the image in its folder",
+  "@revealFailedNotice": {
+    "description": "Snackbar when showing the file in its folder failed."
+  },
+  "openWithFailedNotice": "Couldn't open the image in that app",
+  "@openWithFailedNotice": {
+    "description": "Snackbar when opening in another app failed."
+  },
+  "selectionCount": "{count} selected",
+  "@selectionCount": {
+    "description": "Label showing how many images are selected.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearSelectionTooltip": "Clear selection",
+  "@clearSelectionTooltip": {
+    "description": "Tooltip for the button that clears the selection."
+  },
+  "shortcutRename": "Rename image",
+  "@shortcutRename": {
+    "description": "Shortcut description."
+  },
+  "shortcutTrash": "Move to {bin}",
+  "@shortcutTrash": {
+    "description": "Shortcut description. {bin} is trashName or recycleBinName.",
+    "placeholders": {
+      "bin": {
+        "type": "String"
+      }
+    }
+  },
+  "shortcutCopyImage": "Copy image",
+  "@shortcutCopyImage": {
+    "description": "Shortcut description."
+  },
+  "shortcutSelectAll": "Select all images",
+  "@shortcutSelectAll": {
+    "description": "Shortcut description."
+  },
+  "shortcutSelect": "Add to / extend selection",
+  "@shortcutSelect": {
+    "description": "Shortcut description for modifier-clicking thumbnails."
+  },
+  "shortcutEscape": "Clear selection, leave full screen, or close",
+  "@shortcutEscape": {
+    "description": "Shortcut description for Esc."
+  },
+  "clickLabel": "Click",
+  "@clickLabel": {
+    "description": "Word for a mouse click, shown on keycaps like \"⌘ Click\"."
   }
 }

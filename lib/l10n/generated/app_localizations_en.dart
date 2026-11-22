@@ -284,4 +284,224 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get closeLabel => 'Close';
+
+  @override
+  String get moreActionsTooltip => 'More actions';
+
+  @override
+  String get renameAction => 'Rename…';
+
+  @override
+  String get renameDialogTitle => 'Rename image';
+
+  @override
+  String get renameFieldLabel => 'File name';
+
+  @override
+  String get renameConfirm => 'Rename';
+
+  @override
+  String get cancelLabel => 'Cancel';
+
+  @override
+  String get renameErrorExists => 'A file with that name already exists.';
+
+  @override
+  String get renameErrorInvalid =>
+      'That name can\'t be used. Avoid / \\ : * ? \" < > | and a leading dot.';
+
+  @override
+  String get renameErrorFailed => 'The image couldn\'t be renamed.';
+
+  @override
+  String copyToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Copy $count images to folder…',
+      one: 'Copy to folder…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Move $count images to folder…',
+      one: 'Move to folder…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get copyHerePrompt => 'Copy here';
+
+  @override
+  String get moveHerePrompt => 'Move here';
+
+  @override
+  String get chooseDestinationMessage => 'Choose a folder for the images.';
+
+  @override
+  String get copyImageAction => 'Copy image';
+
+  @override
+  String get revealInFinderAction => 'Show in Finder';
+
+  @override
+  String get revealInExplorerAction => 'Show in File Explorer';
+
+  @override
+  String get revealInFileManagerAction => 'Show in folder';
+
+  @override
+  String get openWithAction => 'Open with…';
+
+  @override
+  String get openWithPrompt => 'Open';
+
+  @override
+  String get trashName => 'Trash';
+
+  @override
+  String get recycleBinName => 'Recycle Bin';
+
+  @override
+  String moveToTrashAction(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Move $count images to $bin',
+      one: 'Move to $bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmTitle(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Move $count images to the $bin?',
+      one: 'Move this image to the $bin?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmMessage(String bin) {
+    return 'You can restore images from the $bin.';
+  }
+
+  @override
+  String movedToTrashNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Moved $count images to the $bin',
+      one: 'Moved 1 image to the $bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashFailedNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count images couldn\'t be moved to the $bin',
+      one: '1 image couldn\'t be moved to the $bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Copied $count images',
+      one: 'Copied 1 image',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String movedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Moved $count images',
+      one: 'Moved 1 image',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copyFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count images couldn\'t be copied',
+      one: '1 image couldn\'t be copied',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count images couldn\'t be moved',
+      one: '1 image couldn\'t be moved',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imageCopiedNotice => 'Image copied to the clipboard';
+
+  @override
+  String get clipboardFailedNotice =>
+      'Couldn\'t copy the image to the clipboard';
+
+  @override
+  String get revealFailedNotice => 'Couldn\'t show the image in its folder';
+
+  @override
+  String get openWithFailedNotice => 'Couldn\'t open the image in that app';
+
+  @override
+  String selectionCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get clearSelectionTooltip => 'Clear selection';
+
+  @override
+  String get shortcutRename => 'Rename image';
+
+  @override
+  String shortcutTrash(String bin) {
+    return 'Move to $bin';
+  }
+
+  @override
+  String get shortcutCopyImage => 'Copy image';
+
+  @override
+  String get shortcutSelectAll => 'Select all images';
+
+  @override
+  String get shortcutSelect => 'Add to / extend selection';
+
+  @override
+  String get shortcutEscape => 'Clear selection, leave full screen, or close';
+
+  @override
+  String get clickLabel => 'Click';
 }

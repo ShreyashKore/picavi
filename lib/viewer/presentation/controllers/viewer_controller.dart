@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
@@ -8,6 +9,7 @@ import '../../data/services/native_file_channel_service.dart';
 import '../../domain/entities/gallery_image.dart';
 import '../../domain/entities/image_sort_order.dart';
 import '../../domain/repositories/image_repository.dart';
+import '../../domain/services/file_operations_service.dart';
 import '../../domain/services/image_picker_service.dart';
 import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
@@ -17,10 +19,12 @@ class ViewerController extends ChangeNotifier {
     required ImageRepository imageRepository,
     required ImagePickerService imagePickerService,
     required NativeFileChannelService nativeFileChannelService,
+    required FileOperationsService fileOperationsService,
     Duration folderRefreshDebounce = const Duration(milliseconds: 400),
   }) : _imageRepository = imageRepository,
        _imagePickerService = imagePickerService,
        _nativeFileChannelService = nativeFileChannelService,
+       _fileOperations = fileOperationsService,
        _folderRefreshDebounce = folderRefreshDebounce;
 
   static const List<int> _permissionDeniedErrorCodes = [1, 13];
@@ -28,6 +32,7 @@ class ViewerController extends ChangeNotifier {
   final ImageRepository _imageRepository;
   final ImagePickerService _imagePickerService;
   final NativeFileChannelService _nativeFileChannelService;
+  final FileOperationsService _fileOperations;
   final Duration _folderRefreshDebounce;
 
   ViewerState _state = const ViewerState.initial();
@@ -171,6 +176,259 @@ class ViewerController extends ChangeNotifier {
     _replaceImagesKeepingSelection(sorted, currentPath);
   }
 
+  // ---------------------------------------------------------------------------
+  // Selection
+
+  /// Adds or removes the image at [index] from the selection. The first
+  /// toggle also selects the image currently on screen, like Finder.
+  void toggleSelection(int index) {
+    if (!_state.hasImages || index < 0 || index >= _state.images.length) {
+      return;
+    }
+
+    final next = _state.hasSelection
+        ? Set<String>.of(_state.selectedPaths)
+        : <String>{_state.currentImage.path};
+    final path = _state.images[index].path;
+    if (!next.remove(path)) {
+      next.add(path);
+    }
+    _setState(_state.copyWith(selectedPaths: next));
+  }
+
+  /// Selects every image between the current one and [index], inclusive.
+  void selectRange(int index) {
+    if (!_state.hasImages || index < 0 || index >= _state.images.length) {
+      return;
+    }
+
+    final start = math.min(_state.currentIndex, index);
+    final end = math.max(_state.currentIndex, index);
+    _setState(
+      _state.copyWith(
+        selectedPaths: _state.images
+            .sublist(start, end + 1)
+            .map((image) => image.path)
+            .toSet(),
+      ),
+    );
+  }
+
+  void selectAll() {
+    if (!_state.hasImages) {
+      return;
+    }
+    _setState(
+      _state.copyWith(
+        selectedPaths: _state.images.map((image) => image.path).toSet(),
+      ),
+    );
+  }
+
+  void clearSelection() {
+    if (!_state.hasSelection) {
+      return;
+    }
+    _setState(_state.copyWith(selectedPaths: const <String>{}));
+  }
+
+  // ---------------------------------------------------------------------------
+  // File actions
+
+  /// Moves the selected images (or the current one) to the system Trash.
+  Future<void> trashTargets() async {
+    final targets = _state.actionTargets;
+    if (targets.isEmpty) {
+      return;
+    }
+
+    final trashed = <String>[];
+    for (final path in targets) {
+      if (await _fileOperations.moveToTrash(path)) {
+        trashed.add(path);
+      }
+    }
+
+    _removeFromGallery(trashed);
+    final failures = targets.length - trashed.length;
+    if (failures > 0) {
+      _pushNotice(ViewerNoticeType.trashFailed, count: failures);
+    } else {
+      _pushNotice(ViewerNoticeType.movedToTrash, count: trashed.length);
+    }
+  }
+
+  /// Renames the current image. Returns the reason on failure, or null.
+  Future<FileOperationError?> renameCurrent(String newFileName) async {
+    if (!_state.hasImages) {
+      return FileOperationError.notFound;
+    }
+
+    final oldPath = _state.currentImage.path;
+    try {
+      final newPath = await _fileOperations.rename(oldPath, newFileName);
+      if (newPath == oldPath || !_state.hasImages) {
+        return null;
+      }
+
+      _galleryGeneration += 1;
+      final images = _state.images
+          .map(
+            (image) =>
+                image.path == oldPath ? GalleryImage(path: newPath) : image,
+          )
+          .toList(growable: false);
+      final selection = _state.selectedPaths
+          .map((path) => path == oldPath ? newPath : path)
+          .toSet();
+      _setState(_state.copyWith(images: images, selectedPaths: selection));
+      return null;
+    } on FileOperationException catch (error) {
+      return error.error;
+    } catch (error) {
+      debugPrint('Unable to rename $oldPath: $error');
+      return FileOperationError.failed;
+    }
+  }
+
+  /// Asks for a folder and copies the selected images (or the current one)
+  /// into it.
+  Future<void> copyTargetsToFolder({
+    required DirectoryAccessTexts pickerTexts,
+  }) async {
+    final targets = _state.actionTargets;
+    final destination = await _pickDestination(targets, pickerTexts);
+    if (destination == null) {
+      return;
+    }
+
+    final copied = await _fileOperations.copyTo(targets, destination);
+    if (copied.length < targets.length) {
+      _pushNotice(
+        ViewerNoticeType.copyFailed,
+        count: targets.length - copied.length,
+      );
+    } else {
+      _pushNotice(ViewerNoticeType.copied, count: copied.length);
+    }
+  }
+
+  /// Asks for a folder and moves the selected images (or the current one)
+  /// into it, removing them from this gallery.
+  Future<void> moveTargetsToFolder({
+    required DirectoryAccessTexts pickerTexts,
+  }) async {
+    final targets = _state.actionTargets;
+    final destination = await _pickDestination(targets, pickerTexts);
+    if (destination == null) {
+      return;
+    }
+
+    final moved = await _fileOperations.moveTo(targets, destination);
+    _removeFromGallery(moved);
+    if (moved.length < targets.length) {
+      _pushNotice(
+        ViewerNoticeType.moveFailed,
+        count: targets.length - moved.length,
+      );
+    } else {
+      _pushNotice(ViewerNoticeType.moved, count: moved.length);
+    }
+  }
+
+  Future<void> revealCurrent() async {
+    if (!_state.hasImages) {
+      return;
+    }
+    if (!await _fileOperations.reveal(_state.currentImage.path)) {
+      _pushNotice(ViewerNoticeType.revealFailed);
+    }
+  }
+
+  Future<void> copyCurrentImageToClipboard() async {
+    if (!_state.hasImages) {
+      return;
+    }
+    final copied = await _fileOperations.copyImageToClipboard(
+      _state.currentImage.path,
+    );
+    _pushNotice(
+      copied
+          ? ViewerNoticeType.imageCopiedToClipboard
+          : ViewerNoticeType.clipboardFailed,
+    );
+  }
+
+  Future<void> openCurrentWith({required String prompt}) async {
+    if (!_state.hasImages) {
+      return;
+    }
+    if (!await _fileOperations.openWith(
+      _state.currentImage.path,
+      prompt: prompt,
+    )) {
+      _pushNotice(ViewerNoticeType.openWithFailed);
+    }
+  }
+
+  Future<String?> _pickDestination(
+    List<String> targets,
+    DirectoryAccessTexts pickerTexts,
+  ) async {
+    if (targets.isEmpty) {
+      return null;
+    }
+
+    final destination = await _imagePickerService.pickDirectory(
+      initialDirectory: preferredPickerDirectory(),
+      texts: pickerTexts,
+    );
+    return destination == null || destination.isEmpty ? null : destination;
+  }
+
+  /// Drops [removedPaths] from the gallery, keeping the viewer on the image
+  /// that followed the current one when the current one was removed.
+  void _removeFromGallery(List<String> removedPaths) {
+    if (removedPaths.isEmpty || !_state.hasImages) {
+      return;
+    }
+
+    final removed = removedPaths.toSet();
+    final remaining = _state.images
+        .where((image) => !removed.contains(image.path))
+        .toList(growable: false);
+    final selection = _state.selectedPaths.difference(removed);
+    _galleryGeneration += 1;
+
+    if (remaining.isEmpty) {
+      _stopWatchingDirectory();
+      _setState(
+        _state.copyWith(
+          images: const <GalleryImage>[],
+          currentIndex: 0,
+          selectedPaths: const <String>{},
+        ),
+      );
+      return;
+    }
+
+    final removedBeforeCurrent = _state.images
+        .take(_state.currentIndex)
+        .where((image) => removed.contains(image.path))
+        .length;
+    final nextIndex = (_state.currentIndex - removedBeforeCurrent).clamp(
+      0,
+      remaining.length - 1,
+    );
+    _setState(
+      _state.copyWith(
+        images: remaining,
+        currentIndex: nextIndex,
+        selectedPaths: selection,
+      ),
+    );
+  }
+
   void clearNotice() {
     if (_state.notice == null) {
       return;
@@ -299,6 +557,7 @@ class ViewerController extends ChangeNotifier {
         images: images,
         currentDirectory: currentDirectory,
         currentIndex: selectedIndex,
+        selectedPaths: const <String>{},
       ),
     );
     _watchDirectory(currentDirectory);
@@ -384,7 +643,11 @@ class ViewerController extends ChangeNotifier {
     if (images.isEmpty) {
       _stopWatchingDirectory();
       _setState(
-        _state.copyWith(images: const <GalleryImage>[], currentIndex: 0),
+        _state.copyWith(
+          images: const <GalleryImage>[],
+          currentIndex: 0,
+          selectedPaths: const <String>{},
+        ),
       );
       return;
     }
@@ -398,14 +661,21 @@ class ViewerController extends ChangeNotifier {
         ? matchIndex
         : _state.currentIndex.clamp(0, images.length - 1);
 
-    _setState(_state.copyWith(images: images, currentIndex: nextIndex));
+    final remainingPaths = images.map((image) => image.path).toSet();
+    _setState(
+      _state.copyWith(
+        images: images,
+        currentIndex: nextIndex,
+        selectedPaths: _state.selectedPaths.intersection(remainingPaths),
+      ),
+    );
   }
 
-  void _pushNotice(ViewerNoticeType type) {
+  void _pushNotice(ViewerNoticeType type, {int count = 0}) {
     _noticeCounter += 1;
     _setState(
       _state.copyWith(
-        notice: ViewerNotice(id: _noticeCounter, type: type),
+        notice: ViewerNotice(id: _noticeCounter, type: type, count: count),
       ),
     );
   }

@@ -268,4 +268,222 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get closeLabel => '关闭';
+
+  @override
+  String get moreActionsTooltip => '更多操作';
+
+  @override
+  String get renameAction => '重命名…';
+
+  @override
+  String get renameDialogTitle => '重命名图片';
+
+  @override
+  String get renameFieldLabel => '文件名';
+
+  @override
+  String get renameConfirm => '重命名';
+
+  @override
+  String get cancelLabel => '取消';
+
+  @override
+  String get renameErrorExists => '已存在同名文件。';
+
+  @override
+  String get renameErrorInvalid => '无法使用该名称。请避免 / \\ : * ? \" < > | 以及开头的点。';
+
+  @override
+  String get renameErrorFailed => '无法重命名该图片。';
+
+  @override
+  String copyToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '将 $count 张图片复制到文件夹…',
+      one: '复制到文件夹…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveToFolderAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '将 $count 张图片移动到文件夹…',
+      one: '移动到文件夹…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get copyHerePrompt => '复制到此处';
+
+  @override
+  String get moveHerePrompt => '移动到此处';
+
+  @override
+  String get chooseDestinationMessage => '为图片选择一个文件夹。';
+
+  @override
+  String get copyImageAction => '复制图片';
+
+  @override
+  String get revealInFinderAction => '在访达中显示';
+
+  @override
+  String get revealInExplorerAction => '在文件资源管理器中显示';
+
+  @override
+  String get revealInFileManagerAction => '在文件夹中显示';
+
+  @override
+  String get openWithAction => '打开方式…';
+
+  @override
+  String get openWithPrompt => '打开';
+
+  @override
+  String get trashName => '废纸篓';
+
+  @override
+  String get recycleBinName => '回收站';
+
+  @override
+  String moveToTrashAction(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '将 $count 张图片移到$bin',
+      one: '移到$bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmTitle(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '将 $count 张图片移到$bin？',
+      one: '将此图片移到$bin？',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashConfirmMessage(String bin) {
+    return '你可以从$bin中恢复图片。';
+  }
+
+  @override
+  String movedToTrashNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已将 $count 张图片移到$bin',
+      one: '已将 1 张图片移到$bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trashFailedNotice(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '有 $count 张图片无法移到$bin',
+      one: '有 1 张图片无法移到$bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已复制 $count 张图片',
+      one: '已复制 1 张图片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String movedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已移动 $count 张图片',
+      one: '已移动 1 张图片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copyFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '有 $count 张图片无法复制',
+      one: '有 1 张图片无法复制',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String moveFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '有 $count 张图片无法移动',
+      one: '有 1 张图片无法移动',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imageCopiedNotice => '图片已复制到剪贴板';
+
+  @override
+  String get clipboardFailedNotice => '无法将图片复制到剪贴板';
+
+  @override
+  String get revealFailedNotice => '无法在文件夹中显示该图片';
+
+  @override
+  String get openWithFailedNotice => '无法在该应用中打开图片';
+
+  @override
+  String selectionCount(int count) {
+    return '已选择 $count 张';
+  }
+
+  @override
+  String get clearSelectionTooltip => '清除选择';
+
+  @override
+  String get shortcutRename => '重命名图片';
+
+  @override
+  String shortcutTrash(String bin) {
+    return '移到$bin';
+  }
+
+  @override
+  String get shortcutCopyImage => '复制图片';
+
+  @override
+  String get shortcutSelectAll => '全选图片';
+
+  @override
+  String get shortcutSelect => '添加到 / 扩展选择';
+
+  @override
+  String get shortcutEscape => '清除选择、退出全屏或关闭';
+
+  @override
+  String get clickLabel => '点击';
 }

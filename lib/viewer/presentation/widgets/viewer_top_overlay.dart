@@ -14,6 +14,9 @@ class ViewerTopOverlay extends StatelessWidget {
     required this.sortOrder,
     required this.onSortOrderChanged,
     required this.onShowShortcuts,
+    required this.actionsMenu,
+    this.selectionCount = 0,
+    this.onClearSelection,
   });
 
   final String fileName;
@@ -23,6 +26,9 @@ class ViewerTopOverlay extends StatelessWidget {
   final ImageSortOrder sortOrder;
   final ValueChanged<ImageSortOrder> onSortOrderChanged;
   final VoidCallback onShowShortcuts;
+  final Widget actionsMenu;
+  final int selectionCount;
+  final VoidCallback? onClearSelection;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +77,20 @@ class ViewerTopOverlay extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
+                  if (selectionCount > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: InputChip(
+                        label: Text(
+                          context.l10n.selectionCount(selectionCount),
+                        ),
+                        onDeleted: onClearSelection,
+                        deleteButtonTooltipMessage:
+                            context.l10n.clearSelectionTooltip,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                  actionsMenu,
                   _SortMenuButton(
                     sortOrder: sortOrder,
                     onChanged: onSortOrderChanged,

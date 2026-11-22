@@ -21,4 +21,10 @@ abstract class ImagePickerService {
     required String initialDirectory,
     required DirectoryAccessTexts texts,
   });
+
+  /// Asks the user to choose a folder, e.g. as a copy/move destination.
+  Future<String?> pickDirectory({
+    required String initialDirectory,
+    required DirectoryAccessTexts texts,
+  });
 }

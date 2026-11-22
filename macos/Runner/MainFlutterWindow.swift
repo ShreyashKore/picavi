@@ -1,5 +1,6 @@
 import Cocoa
 import CoreServices
+import UniformTypeIdentifiers
 import FlutterMacOS
 
 class MainFlutterWindow: NSWindow {
@@ -70,6 +71,14 @@ class MainFlutterWindow: NSWindow {
         self.presentImageOpenPanel(arguments: call.arguments, result: result)
       case "authorizeDirectoryAccess":
         self.presentDirectoryAccessPanel(arguments: call.arguments, result: result)
+      case "moveToTrash":
+        self.moveToTrash(arguments: call.arguments, result: result)
+      case "revealInFinder":
+        self.revealInFinder(arguments: call.arguments, result: result)
+      case "copyImageToClipboard":
+        self.copyImageToClipboard(arguments: call.arguments, result: result)
+      case "openWith":
+        self.presentOpenWithPanel(arguments: call.arguments, result: result)
       default:
         result(FlutterMethodNotImplemented)
       }
@@ -127,6 +136,84 @@ class MainFlutterWindow: NSWindow {
 
       self?.startAccessingSecurityScope(for: url)
       result(url.path)
+    }
+  }
+
+  private func fileURL(from arguments: Any?) -> URL? {
+    guard let path = stringValue(forKey: "path", arguments: arguments) else {
+      return nil
+    }
+
+    return URL(fileURLWithPath: path)
+  }
+
+  private func moveToTrash(arguments: Any?, result: FlutterResult) {
+    guard let url = fileURL(from: arguments) else {
+      result(false)
+      return
+    }
+
+    do {
+      try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+      result(true)
+    } catch {
+      result(false)
+    }
+  }
+
+  private func revealInFinder(arguments: Any?, result: FlutterResult) {
+    guard let url = fileURL(from: arguments),
+          FileManager.default.fileExists(atPath: url.path) else {
+      result(false)
+      return
+    }
+
+    NSWorkspace.shared.activateFileViewerSelecting([url])
+    result(true)
+  }
+
+  private func copyImageToClipboard(arguments: Any?, result: FlutterResult) {
+    guard let url = fileURL(from: arguments),
+          let image = NSImage(contentsOf: url) else {
+      result(false)
+      return
+    }
+
+    let pasteboard = NSPasteboard.general
+    pasteboard.clearContents()
+    result(pasteboard.writeObjects([image]))
+  }
+
+  private func presentOpenWithPanel(arguments: Any?, result: @escaping FlutterResult) {
+    guard let fileURL = fileURL(from: arguments) else {
+      result(false)
+      return
+    }
+
+    let panel = NSOpenPanel()
+    panel.canChooseFiles = true
+    panel.canChooseDirectories = false
+    panel.allowsMultipleSelection = false
+    panel.treatsFilePackagesAsDirectories = false
+    panel.allowedContentTypes = [.application]
+    panel.directoryURL = URL(fileURLWithPath: "/Applications", isDirectory: true)
+    panel.prompt = stringValue(forKey: "prompt", arguments: arguments) ?? "Open"
+
+    present(panel: panel) { response in
+      guard response == .OK, let applicationURL = panel.url else {
+        result(false)
+        return
+      }
+
+      NSWorkspace.shared.open(
+        [fileURL],
+        withApplicationAt: applicationURL,
+        configuration: NSWorkspace.OpenConfiguration()
+      ) { _, error in
+        DispatchQueue.main.async {
+          result(error == nil)
+        }
+      }
     }
   }
 

@@ -14,6 +14,7 @@ import '../../../../core/services/default_viewer_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_image.dart';
 import '../../data/repositories/file_system_image_repository.dart';
+import '../../data/services/desktop_file_operations_service.dart';
 import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
 import '../../domain/constants/supported_image_extensions.dart';
@@ -28,6 +29,8 @@ import '../widgets/image_info_overlay.dart';
 import '../widgets/interactive_image_viewer.dart';
 import '../widgets/keyboard_shortcuts_dialog.dart';
 import '../widgets/recent_folders_panel.dart';
+import '../widgets/rename_image_dialog.dart';
+import '../widgets/viewer_actions_menu.dart';
 import '../widgets/viewer_control_bar.dart';
 import '../widgets/viewer_empty_state.dart';
 import '../widgets/viewer_thumbnail_rail.dart';
@@ -93,6 +96,9 @@ class _ViewerScreenState extends State<ViewerScreen>
         nativeChannel: nativeFileChannelService,
       ),
       nativeFileChannelService: nativeFileChannelService,
+      fileOperationsService: DesktopFileOperationsService(
+        nativeChannel: nativeFileChannelService,
+      ),
     )..addListener(_onControllerChanged);
     _imageViewerController = InteractiveImageViewerController()
       ..addListener(_onImageViewerChanged);
@@ -301,6 +307,120 @@ class _ViewerScreenState extends State<ViewerScreen>
 
   Future<void> _showKeyboardShortcuts() async {
     await showKeyboardShortcutsDialog(context);
+    if (mounted) {
+      _viewerFocusNode.requestFocus();
+    }
+  }
+
+  bool get _isCommandPressed {
+    final keyboard = HardwareKeyboard.instance;
+    return Platform.isMacOS
+        ? keyboard.isMetaPressed
+        : keyboard.isControlPressed;
+  }
+
+  void _handleThumbnailTap(int index) {
+    if (_isCommandPressed) {
+      _controller.toggleSelection(index);
+    } else if (HardwareKeyboard.instance.isShiftPressed) {
+      _controller.selectRange(index);
+    } else {
+      _controller.clearSelection();
+      unawaited(_goToIndex(index));
+    }
+    _viewerFocusNode.requestFocus();
+  }
+
+  void _handleEscape() {
+    if (_controller.state.hasSelection) {
+      _controller.clearSelection();
+      return;
+    }
+    _closeApp();
+  }
+
+  Future<void> _handleFileAction(ViewerFileAction action) async {
+    final l10n = context.l10n;
+    DirectoryAccessTexts destinationTexts(String prompt) =>
+        DirectoryAccessTexts(
+          prompt: prompt,
+          message: l10n.chooseDestinationMessage,
+        );
+
+    switch (action) {
+      case ViewerFileAction.rename:
+        await _renameCurrentImage();
+      case ViewerFileAction.copyToFolder:
+        await _controller.copyTargetsToFolder(
+          pickerTexts: destinationTexts(l10n.copyHerePrompt),
+        );
+      case ViewerFileAction.moveToFolder:
+        await _controller.moveTargetsToFolder(
+          pickerTexts: destinationTexts(l10n.moveHerePrompt),
+        );
+      case ViewerFileAction.copyImage:
+        await _controller.copyCurrentImageToClipboard();
+      case ViewerFileAction.reveal:
+        await _controller.revealCurrent();
+      case ViewerFileAction.openWith:
+        await _controller.openCurrentWith(prompt: l10n.openWithPrompt);
+      case ViewerFileAction.moveToTrash:
+        await _confirmAndTrash();
+    }
+
+    if (mounted) {
+      _viewerFocusNode.requestFocus();
+    }
+  }
+
+  Future<void> _renameCurrentImage() async {
+    final state = _controller.state;
+    if (!state.hasImages) {
+      return;
+    }
+
+    _stopSlideshow();
+    await showRenameImageDialog(
+      context,
+      currentFileName: state.currentImage.fileName,
+      onRename: _controller.renameCurrent,
+    );
+    if (mounted) {
+      _viewerFocusNode.requestFocus();
+    }
+  }
+
+  Future<void> _confirmAndTrash() async {
+    final count = _controller.state.actionTargets.length;
+    if (count == 0) {
+      return;
+    }
+
+    _stopSlideshow();
+    final l10n = context.l10n;
+    final binName = trashNameFor(l10n);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.trashConfirmTitle(count, binName)),
+        content: Text(l10n.trashConfirmMessage(binName)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancelLabel),
+          ),
+          FilledButton(
+            autofocus: true,
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.moveToTrashAction(count, binName)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _controller.trashTargets();
+    }
     if (mounted) {
       _viewerFocusNode.requestFocus();
     }
@@ -581,17 +701,33 @@ class _ViewerScreenState extends State<ViewerScreen>
     final messenger = ScaffoldMessenger.maybeOf(context);
     messenger
       ?..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text(_localizedNoticeMessage(notice.type))),
-      );
+      ..showSnackBar(SnackBar(content: Text(_localizedNoticeMessage(notice))));
     _controller.clearNotice();
   }
 
-  String _localizedNoticeMessage(ViewerNoticeType type) {
-    return switch (type) {
-      ViewerNoticeType.folderAccessDenied => context.l10n.folderAccessDenied,
+  String _localizedNoticeMessage(ViewerNotice notice) {
+    final l10n = context.l10n;
+    final binName = trashNameFor(l10n);
+    return switch (notice.type) {
+      ViewerNoticeType.folderAccessDenied => l10n.folderAccessDenied,
       ViewerNoticeType.folderAccessRequestFailed =>
-        context.l10n.folderAccessRequestFailed,
+        l10n.folderAccessRequestFailed,
+      ViewerNoticeType.movedToTrash => l10n.movedToTrashNotice(
+        notice.count,
+        binName,
+      ),
+      ViewerNoticeType.trashFailed => l10n.trashFailedNotice(
+        notice.count,
+        binName,
+      ),
+      ViewerNoticeType.copied => l10n.copiedNotice(notice.count),
+      ViewerNoticeType.moved => l10n.movedNotice(notice.count),
+      ViewerNoticeType.copyFailed => l10n.copyFailedNotice(notice.count),
+      ViewerNoticeType.moveFailed => l10n.moveFailedNotice(notice.count),
+      ViewerNoticeType.imageCopiedToClipboard => l10n.imageCopiedNotice,
+      ViewerNoticeType.clipboardFailed => l10n.clipboardFailedNotice,
+      ViewerNoticeType.revealFailed => l10n.revealFailedNotice,
+      ViewerNoticeType.openWithFailed => l10n.openWithFailedNotice,
     };
   }
 
@@ -705,11 +841,20 @@ class _ViewerScreenState extends State<ViewerScreen>
     }
 
     if (event.logicalKey == LogicalKeyboardKey.escape) {
-      _closeApp();
+      _handleEscape();
       return KeyEventResult.handled;
     }
 
     final keyboard = HardwareKeyboard.instance;
+    if (_isCommandPressed && !keyboard.isAltPressed) {
+      final commandAction = _commandShortcutActionFor(event.logicalKey);
+      if (commandAction == null) {
+        return KeyEventResult.ignored;
+      }
+      commandAction();
+      return KeyEventResult.handled;
+    }
+
     if (keyboard.isMetaPressed ||
         keyboard.isControlPressed ||
         keyboard.isAltPressed) {
@@ -726,6 +871,21 @@ class _ViewerScreenState extends State<ViewerScreen>
 
     action();
     return KeyEventResult.handled;
+  }
+
+  /// Cmd (macOS) / Ctrl (Windows, Linux) shortcuts. Keep in sync with
+  /// `keyboard_shortcuts_dialog.dart`.
+  VoidCallback? _commandShortcutActionFor(LogicalKeyboardKey key) {
+    if (key == LogicalKeyboardKey.keyC) {
+      return () => unawaited(_controller.copyCurrentImageToClipboard());
+    }
+    if (key == LogicalKeyboardKey.keyA) {
+      return _controller.selectAll;
+    }
+    if (key == LogicalKeyboardKey.backspace) {
+      return () => unawaited(_confirmAndTrash());
+    }
+    return null;
   }
 
   /// Single-key viewer shortcuts. Keep in sync with
@@ -767,6 +927,13 @@ class _ViewerScreenState extends State<ViewerScreen>
     if (key == LogicalKeyboardKey.keyI) {
       return _toggleInfoOverlay;
     }
+    if (key == LogicalKeyboardKey.delete ||
+        key == LogicalKeyboardKey.backspace) {
+      return () => unawaited(_confirmAndTrash());
+    }
+    if (key == LogicalKeyboardKey.f2) {
+      return () => unawaited(_renameCurrentImage());
+    }
 
     return null;
   }
@@ -807,7 +974,9 @@ class _ViewerScreenState extends State<ViewerScreen>
     );
 
     return CallbackShortcuts(
-      bindings: {const SingleActivator(LogicalKeyboardKey.escape): _closeApp},
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): _handleEscape,
+      },
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: state.hasImages
@@ -929,7 +1098,8 @@ class _ViewerScreenState extends State<ViewerScreen>
                       currentIndex: state.currentIndex,
                       thumbnailExtent: _thumbnailExtent,
                       scrollController: _thumbnailScrollController,
-                      onTap: (index) => unawaited(_goToIndex(index)),
+                      onTap: _handleThumbnailTap,
+                      selectedPaths: state.selectedPaths,
                       onScrollImageChange: (delta) =>
                           unawaited(_goToRelativeIndex(delta)),
                       topInset: _thumbnailControlsInset,
@@ -976,6 +1146,12 @@ class _ViewerScreenState extends State<ViewerScreen>
       sortOrder: state.sortOrder,
       onSortOrderChanged: (sortOrder) => unawaited(_changeSortOrder(sortOrder)),
       onShowShortcuts: () => unawaited(_showKeyboardShortcuts()),
+      actionsMenu: ViewerActionsMenu(
+        targetCount: state.actionTargets.length,
+        onSelected: (action) => unawaited(_handleFileAction(action)),
+      ),
+      selectionCount: state.selectedPaths.length,
+      onClearSelection: _controller.clearSelection,
     );
   }
 

@@ -114,4 +114,33 @@ class NativeFileChannelService {
       return null;
     }
   }
+
+  Future<bool> moveToTrash(String path) =>
+      _invokeBool('moveToTrash', {'path': path});
+
+  Future<bool> revealInFileManager(String path) =>
+      _invokeBool('revealInFinder', {'path': path});
+
+  Future<bool> copyImageToClipboard(String path) =>
+      _invokeBool('copyImageToClipboard', {'path': path});
+
+  Future<bool> openWith(String path, {required String prompt}) =>
+      _invokeBool('openWith', {'path': path, 'prompt': prompt});
+
+  Future<bool> _invokeBool(
+    String method,
+    Map<String, Object?> arguments,
+  ) async {
+    if (!Platform.isMacOS) {
+      return false;
+    }
+
+    try {
+      return await _channel.invokeMethod<bool>(method, arguments) ?? false;
+    } on MissingPluginException {
+      return false;
+    } on PlatformException {
+      return false;
+    }
+  }
 }
