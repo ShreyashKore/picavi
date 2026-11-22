@@ -899,4 +899,178 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shortcutLibrary => '打开图库';
+
+  @override
+  String get libraryAllPhotos => '所有照片';
+
+  @override
+  String get libraryStarred => '已加星标';
+
+  @override
+  String get libraryAlbums => '相册';
+
+  @override
+  String get libraryFolders => '文件夹';
+
+  @override
+  String get libraryNoAlbums => '还没有相册';
+
+  @override
+  String get libraryNewAlbum => '新建相册';
+
+  @override
+  String get libraryAlbumName => '相册名称';
+
+  @override
+  String get libraryCreate => '创建';
+
+  @override
+  String get libraryRenameAlbum => '重命名相册';
+
+  @override
+  String get libraryDeleteAlbum => '删除相册';
+
+  @override
+  String libraryDeleteAlbumTitle(String name) {
+    return '删除“$name”？';
+  }
+
+  @override
+  String get libraryDeleteAlbumMessage => '其中的照片保留在原处，只删除相册。';
+
+  @override
+  String libraryAlbumCreated(String name) {
+    return '已创建相册“$name”';
+  }
+
+  @override
+  String get libraryAddToAlbum => '添加到相册';
+
+  @override
+  String get libraryRemoveFromAlbum => '从相册中移除';
+
+  @override
+  String libraryAddedToAlbum(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已将 $count 张照片添加到相册',
+      one: '已将 1 张照片添加到相册',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String libraryRemovedFromAlbum(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已从相册中移除 $count 张照片',
+      one: '已从相册中移除 1 张照片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryAddFolder => '添加文件夹…';
+
+  @override
+  String get libraryRemoveFolder => '从图库中移除';
+
+  @override
+  String get libraryRemoveFolderTitle => '要从图库中移除此文件夹吗？';
+
+  @override
+  String libraryRemoveFolderMessage(String path) {
+    return 'Picavi 将不再显示 $path 中的照片。磁盘上的内容不会改变。';
+  }
+
+  @override
+  String get libraryHideFolder => '隐藏文件夹';
+
+  @override
+  String get libraryShowFolder => '显示文件夹';
+
+  @override
+  String get libraryRevealFolder => '在文件管理器中显示';
+
+  @override
+  String get libraryShowHidden => '显示隐藏的照片';
+
+  @override
+  String get libraryHideHidden => '不显示隐藏的照片';
+
+  @override
+  String get libraryRescan => '重新扫描文件夹';
+
+  @override
+  String get libraryThumbnailSize => '缩略图大小';
+
+  @override
+  String get librarySearchHint => '搜索名称、说明、标签、日期…';
+
+  @override
+  String get libraryClearSearch => '清除搜索';
+
+  @override
+  String get libraryEmptyTitle => '创建你的照片图库';
+
+  @override
+  String get libraryEmptyMessage =>
+      '添加你存放照片的文件夹。Picavi 会找到其中的所有照片，按月份排列，并保持列表最新。你的文件保留在原处。';
+
+  @override
+  String libraryScanning(int count) {
+    return '正在查找照片… 已找到 $count 张';
+  }
+
+  @override
+  String get libraryNoMatches => '没有符合搜索条件的照片';
+
+  @override
+  String get libraryNothingHere => '这里没有照片';
+
+  @override
+  String libraryPhotoCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 张照片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryStar => '加星标';
+
+  @override
+  String get libraryUnstar => '取消星标';
+
+  @override
+  String get duplicatesTitle => '查找重复项';
+
+  @override
+  String get duplicatesSearching => '正在比较照片…';
+
+  @override
+  String get duplicatesNone => '未找到重复的照片';
+
+  @override
+  String duplicatesSummary(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 组完全相同的照片。每组保留一份，其余移到$bin。',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get duplicatesKeepOnly => '只保留这张';
+
+  @override
+  String get libraryPickFolderMessage => '选择一个存放照片的文件夹，其子文件夹也会包含在内。';
+
+  @override
+  String get libraryOpenFailed => '无法打开图库';
 }

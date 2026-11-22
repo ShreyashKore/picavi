@@ -933,4 +933,184 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shortcutLibrary => 'Open the library';
+
+  @override
+  String get libraryAllPhotos => 'All photos';
+
+  @override
+  String get libraryStarred => 'Starred';
+
+  @override
+  String get libraryAlbums => 'Albums';
+
+  @override
+  String get libraryFolders => 'Folders';
+
+  @override
+  String get libraryNoAlbums => 'No albums yet';
+
+  @override
+  String get libraryNewAlbum => 'New album';
+
+  @override
+  String get libraryAlbumName => 'Album name';
+
+  @override
+  String get libraryCreate => 'Create';
+
+  @override
+  String get libraryRenameAlbum => 'Rename album';
+
+  @override
+  String get libraryDeleteAlbum => 'Delete album';
+
+  @override
+  String libraryDeleteAlbumTitle(String name) {
+    return 'Delete “$name”?';
+  }
+
+  @override
+  String get libraryDeleteAlbumMessage =>
+      'The photos in it stay where they are; only the album goes.';
+
+  @override
+  String libraryAlbumCreated(String name) {
+    return 'Created album “$name”';
+  }
+
+  @override
+  String get libraryAddToAlbum => 'Add to album';
+
+  @override
+  String get libraryRemoveFromAlbum => 'Remove from album';
+
+  @override
+  String libraryAddedToAlbum(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Added $count photos to the album',
+      one: 'Added 1 photo to the album',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String libraryRemovedFromAlbum(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Removed $count photos from the album',
+      one: 'Removed 1 photo from the album',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryAddFolder => 'Add folder…';
+
+  @override
+  String get libraryRemoveFolder => 'Remove from library';
+
+  @override
+  String get libraryRemoveFolderTitle => 'Remove this folder from the library?';
+
+  @override
+  String libraryRemoveFolderMessage(String path) {
+    return 'Picavi will stop showing photos from $path. Nothing on disk is changed.';
+  }
+
+  @override
+  String get libraryHideFolder => 'Hide folder';
+
+  @override
+  String get libraryShowFolder => 'Show folder';
+
+  @override
+  String get libraryRevealFolder => 'Show in file manager';
+
+  @override
+  String get libraryShowHidden => 'Show hidden photos';
+
+  @override
+  String get libraryHideHidden => 'Don\'t show hidden photos';
+
+  @override
+  String get libraryRescan => 'Scan folders again';
+
+  @override
+  String get libraryThumbnailSize => 'Thumbnail size';
+
+  @override
+  String get librarySearchHint => 'Search names, captions, tags, dates…';
+
+  @override
+  String get libraryClearSearch => 'Clear search';
+
+  @override
+  String get libraryEmptyTitle => 'Build your photo library';
+
+  @override
+  String get libraryEmptyMessage =>
+      'Add the folders where you keep photos. Picavi finds every photo inside them, sorts them by month, and keeps the list up to date. Your files stay where they are.';
+
+  @override
+  String libraryScanning(int count) {
+    return 'Looking for photos… $count found';
+  }
+
+  @override
+  String get libraryNoMatches => 'No photos match your search';
+
+  @override
+  String get libraryNothingHere => 'No photos here';
+
+  @override
+  String libraryPhotoCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryStar => 'Star';
+
+  @override
+  String get libraryUnstar => 'Remove star';
+
+  @override
+  String get duplicatesTitle => 'Find duplicates';
+
+  @override
+  String get duplicatesSearching => 'Comparing photos…';
+
+  @override
+  String get duplicatesNone => 'No duplicate photos found';
+
+  @override
+  String duplicatesSummary(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count sets of identical photos. Keep one copy of each and move the others to the $bin.',
+      one:
+          '1 set of identical photos. Keep one copy and move the others to the $bin.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get duplicatesKeepOnly => 'Keep only this';
+
+  @override
+  String get libraryPickFolderMessage =>
+      'Choose a folder that holds photos. Its sub-folders are included.';
+
+  @override
+  String get libraryOpenFailed => 'Couldn\'t open the library';
 }

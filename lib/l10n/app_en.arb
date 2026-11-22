@@ -1006,5 +1006,228 @@
   "shortcutLibrary": "Open the library",
   "@shortcutLibrary": {
     "description": "Keyboard shortcuts list: open the library."
+  },
+  "libraryAllPhotos": "All photos",
+  "@libraryAllPhotos": {
+    "description": "Library sidebar: every photo, by month."
+  },
+  "libraryStarred": "Starred",
+  "@libraryStarred": {
+    "description": "Library sidebar: starred photos."
+  },
+  "libraryAlbums": "Albums",
+  "@libraryAlbums": {
+    "description": "Library sidebar heading for albums."
+  },
+  "libraryFolders": "Folders",
+  "@libraryFolders": {
+    "description": "Library sidebar heading for folders."
+  },
+  "libraryNoAlbums": "No albums yet",
+  "@libraryNoAlbums": {
+    "description": "Shown under Albums when there are none."
+  },
+  "libraryNewAlbum": "New album",
+  "@libraryNewAlbum": {
+    "description": "Button and dialog title: create an album."
+  },
+  "libraryAlbumName": "Album name",
+  "@libraryAlbumName": {
+    "description": "Field label for an album name."
+  },
+  "libraryCreate": "Create",
+  "@libraryCreate": {
+    "description": "Button that creates something."
+  },
+  "libraryRenameAlbum": "Rename album",
+  "@libraryRenameAlbum": {
+    "description": "Menu item and dialog title: rename an album."
+  },
+  "libraryDeleteAlbum": "Delete album",
+  "@libraryDeleteAlbum": {
+    "description": "Menu item: delete an album."
+  },
+  "libraryDeleteAlbumTitle": "Delete “{name}”?",
+  "@libraryDeleteAlbumTitle": {
+    "description": "Confirmation title before deleting an album.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryDeleteAlbumMessage": "The photos in it stay where they are; only the album goes.",
+  "@libraryDeleteAlbumMessage": {
+    "description": "Explains that deleting an album keeps the photos."
+  },
+  "libraryAlbumCreated": "Created album “{name}”",
+  "@libraryAlbumCreated": {
+    "description": "Notice after creating an album.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryAddToAlbum": "Add to album",
+  "@libraryAddToAlbum": {
+    "description": "Button that adds the selected photos to an album."
+  },
+  "libraryRemoveFromAlbum": "Remove from album",
+  "@libraryRemoveFromAlbum": {
+    "description": "Button that removes the selected photos from the open album."
+  },
+  "libraryAddedToAlbum": "{count, plural, =1{Added 1 photo to the album} other{Added {count} photos to the album}}",
+  "@libraryAddedToAlbum": {
+    "description": "Notice after adding photos to an album.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryRemovedFromAlbum": "{count, plural, =1{Removed 1 photo from the album} other{Removed {count} photos from the album}}",
+  "@libraryRemovedFromAlbum": {
+    "description": "Notice after removing photos from an album.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryAddFolder": "Add folder…",
+  "@libraryAddFolder": {
+    "description": "Button that adds a watched folder to the library."
+  },
+  "libraryRemoveFolder": "Remove from library",
+  "@libraryRemoveFolder": {
+    "description": "Menu item that stops watching a folder."
+  },
+  "libraryRemoveFolderTitle": "Remove this folder from the library?",
+  "@libraryRemoveFolderTitle": {
+    "description": "Confirmation title before removing a watched folder."
+  },
+  "libraryRemoveFolderMessage": "Picavi will stop showing photos from {path}. Nothing on disk is changed.",
+  "@libraryRemoveFolderMessage": {
+    "description": "Explains that removing a folder keeps the files.",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryHideFolder": "Hide folder",
+  "@libraryHideFolder": {
+    "description": "Menu item that hides a folder from the library."
+  },
+  "libraryShowFolder": "Show folder",
+  "@libraryShowFolder": {
+    "description": "Menu item that shows a hidden folder again."
+  },
+  "libraryRevealFolder": "Show in file manager",
+  "@libraryRevealFolder": {
+    "description": "Menu item that opens a folder in the file manager."
+  },
+  "libraryShowHidden": "Show hidden photos",
+  "@libraryShowHidden": {
+    "description": "Tooltip: also show hidden photos and folders."
+  },
+  "libraryHideHidden": "Don't show hidden photos",
+  "@libraryHideHidden": {
+    "description": "Tooltip: stop showing hidden photos and folders."
+  },
+  "libraryRescan": "Scan folders again",
+  "@libraryRescan": {
+    "description": "Tooltip: scan the watched folders again."
+  },
+  "libraryThumbnailSize": "Thumbnail size",
+  "@libraryThumbnailSize": {
+    "description": "Tooltip on the thumbnail size slider."
+  },
+  "librarySearchHint": "Search names, captions, tags, dates…",
+  "@librarySearchHint": {
+    "description": "Hint in the library search box."
+  },
+  "libraryClearSearch": "Clear search",
+  "@libraryClearSearch": {
+    "description": "Tooltip: clear the search box."
+  },
+  "libraryEmptyTitle": "Build your photo library",
+  "@libraryEmptyTitle": {
+    "description": "Library empty state title."
+  },
+  "libraryEmptyMessage": "Add the folders where you keep photos. Picavi finds every photo inside them, sorts them by month, and keeps the list up to date. Your files stay where they are.",
+  "@libraryEmptyMessage": {
+    "description": "Library empty state explanation."
+  },
+  "libraryScanning": "Looking for photos… {count} found",
+  "@libraryScanning": {
+    "description": "Shown while the first scan has found photos but none are listed yet.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNoMatches": "No photos match your search",
+  "@libraryNoMatches": {
+    "description": "Shown when a search finds nothing."
+  },
+  "libraryNothingHere": "No photos here",
+  "@libraryNothingHere": {
+    "description": "Shown when the chosen folder, album or filter has no photos."
+  },
+  "libraryPhotoCount": "{count, plural, =1{1 photo} other{{count} photos}}",
+  "@libraryPhotoCount": {
+    "description": "Number of photos in a month section.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryStar": "Star",
+  "@libraryStar": {
+    "description": "Selection bar button: star photos."
+  },
+  "libraryUnstar": "Remove star",
+  "@libraryUnstar": {
+    "description": "Selection bar button: remove stars."
+  },
+  "duplicatesTitle": "Find duplicates",
+  "@duplicatesTitle": {
+    "description": "Title of the duplicate finder."
+  },
+  "duplicatesSearching": "Comparing photos…",
+  "@duplicatesSearching": {
+    "description": "Shown while comparing files."
+  },
+  "duplicatesNone": "No duplicate photos found",
+  "@duplicatesNone": {
+    "description": "Shown when no duplicates were found."
+  },
+  "duplicatesSummary": "{count, plural, =1{1 set of identical photos. Keep one copy and move the others to the {bin}.} other{{count} sets of identical photos. Keep one copy of each and move the others to the {bin}.}}",
+  "@duplicatesSummary": {
+    "description": "Explains the list of duplicate groups.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "bin": {
+        "type": "String"
+      }
+    }
+  },
+  "duplicatesKeepOnly": "Keep only this",
+  "@duplicatesKeepOnly": {
+    "description": "Button: keep this copy, move the other copies to the Trash."
+  },
+  "libraryPickFolderMessage": "Choose a folder that holds photos. Its sub-folders are included.",
+  "@libraryPickFolderMessage": {
+    "description": "Folder picker message when adding a library folder."
+  },
+  "libraryOpenFailed": "Couldn't open the library",
+  "@libraryOpenFailed": {
+    "description": "Shown when the library database cannot be opened."
   }
 }

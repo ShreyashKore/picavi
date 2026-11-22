@@ -23,7 +23,9 @@ import '../../../editor/domain/entities/image_edits.dart';
 import '../../../editor/domain/services/quick_fix_service.dart';
 import '../../../editor/presentation/screens/editor_screen.dart';
 import '../../../editor/presentation/widgets/export_options_dialog.dart';
+import '../../../library/data/library_services.dart';
 import '../../../library/data/repositories/sidecar_photo_info_repository.dart';
+import '../../../library/presentation/screens/library_screen.dart';
 import '../../data/repositories/file_system_image_repository.dart';
 import '../../data/services/desktop_file_operations_service.dart';
 import '../../data/services/desktop_image_picker_service.dart';
@@ -76,6 +78,8 @@ class _ViewerScreenState extends State<ViewerScreen>
   final SidecarImageEditRepository _editRepository =
       SidecarImageEditRepository();
   static const FlutterImagePixelSource _pixelSource = FlutterImagePixelSource();
+  late final DesktopFileOperationsService _fileOperations;
+  Future<LibraryServices>? _libraryServices;
   late final AppPreferencesService _appPreferencesService;
   late final DefaultViewerService _defaultViewerService;
   late final InteractiveImageViewerController _imageViewerController;
@@ -120,7 +124,7 @@ class _ViewerScreenState extends State<ViewerScreen>
         nativeChannel: nativeFileChannelService,
       ),
       nativeFileChannelService: nativeFileChannelService,
-      fileOperationsService: DesktopFileOperationsService(
+      fileOperationsService: _fileOperations = DesktopFileOperationsService(
         nativeChannel: nativeFileChannelService,
       ),
       imageTransformService: RasterImageTransformService(),
@@ -190,6 +194,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       ..dispose();
     _thumbnailScrollController.dispose();
     _viewerFocusNode.dispose();
+    unawaited(_libraryServices?.then((services) => services.close()));
     super.dispose();
   }
 
@@ -520,6 +525,53 @@ class _ViewerScreenState extends State<ViewerScreen>
       _controller.setEdits(path, edits);
     }
     if (mounted) {
+      _viewerFocusNode.requestFocus();
+    }
+  }
+
+  Future<void> _openLibrary() async {
+    _stopSlideshow();
+    LibraryServices services;
+    try {
+      services = await (_libraryServices ??= LibraryServices.open(
+        preferences: _appPreferencesService,
+        fileOperations: _fileOperations,
+      ));
+    } catch (error) {
+      debugPrint('Unable to open the library: $error');
+      _libraryServices = null;
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.libraryOpenFailed)));
+      }
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+    final path = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (context) => LibraryScreen(
+          services: services,
+          pickFolder: () => _controller.pickFolder(
+            DirectoryAccessTexts(
+              prompt: context.l10n.libraryAddFolder,
+              message: context.l10n.libraryPickFolderMessage,
+            ),
+          ),
+        ),
+      ),
+    );
+    if (path != null) {
+      await _controller.handleOpenPaths([
+        path,
+      ], directoryAccessTexts: _directoryAccessTexts);
+    } else if (_controller.state.hasImages) {
+      // Stars or captions may have changed in the library.
+      await _controller.reloadSidecarData();
+    }
+    if (mounted && _controller.state.hasImages) {
       _viewerFocusNode.requestFocus();
     }
   }
@@ -1186,6 +1238,9 @@ class _ViewerScreenState extends State<ViewerScreen>
     if (key == LogicalKeyboardKey.keyS) {
       return () => unawaited(_controller.toggleStarTargets());
     }
+    if (key == LogicalKeyboardKey.keyL) {
+      return () => unawaited(_openLibrary());
+    }
     if (key == LogicalKeyboardKey.delete ||
         key == LogicalKeyboardKey.backspace) {
       return () => unawaited(_confirmAndTrash());
@@ -1288,6 +1343,8 @@ class _ViewerScreenState extends State<ViewerScreen>
       tipsText: context.l10n.tipsText,
       onOpenImage: _pickAndOpenImage,
       onOpenSettings: _openSettings,
+      libraryLabel: context.l10n.libraryTitle,
+      onOpenLibrary: () => unawaited(_openLibrary()),
       recentFolders: _showRecentFoldersEnabled && _recentFolders.isNotEmpty
           ? RecentFoldersPanel(
               folders: _recentFolders,
@@ -1487,6 +1544,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       onClearSelection: _controller.clearSelection,
       isStarred: state.photoInfoFor(state.currentImage.path).starred,
       onToggleStar: () => unawaited(_controller.toggleStarTargets()),
+      onOpenLibrary: () => unawaited(_openLibrary()),
     );
   }
 

@@ -1503,6 +1503,276 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open the library'**
   String get shortcutLibrary;
+
+  /// Library sidebar: every photo, by month.
+  ///
+  /// In en, this message translates to:
+  /// **'All photos'**
+  String get libraryAllPhotos;
+
+  /// Library sidebar: starred photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Starred'**
+  String get libraryStarred;
+
+  /// Library sidebar heading for albums.
+  ///
+  /// In en, this message translates to:
+  /// **'Albums'**
+  String get libraryAlbums;
+
+  /// Library sidebar heading for folders.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get libraryFolders;
+
+  /// Shown under Albums when there are none.
+  ///
+  /// In en, this message translates to:
+  /// **'No albums yet'**
+  String get libraryNoAlbums;
+
+  /// Button and dialog title: create an album.
+  ///
+  /// In en, this message translates to:
+  /// **'New album'**
+  String get libraryNewAlbum;
+
+  /// Field label for an album name.
+  ///
+  /// In en, this message translates to:
+  /// **'Album name'**
+  String get libraryAlbumName;
+
+  /// Button that creates something.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get libraryCreate;
+
+  /// Menu item and dialog title: rename an album.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename album'**
+  String get libraryRenameAlbum;
+
+  /// Menu item: delete an album.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete album'**
+  String get libraryDeleteAlbum;
+
+  /// Confirmation title before deleting an album.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{name}”?'**
+  String libraryDeleteAlbumTitle(String name);
+
+  /// Explains that deleting an album keeps the photos.
+  ///
+  /// In en, this message translates to:
+  /// **'The photos in it stay where they are; only the album goes.'**
+  String get libraryDeleteAlbumMessage;
+
+  /// Notice after creating an album.
+  ///
+  /// In en, this message translates to:
+  /// **'Created album “{name}”'**
+  String libraryAlbumCreated(String name);
+
+  /// Button that adds the selected photos to an album.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to album'**
+  String get libraryAddToAlbum;
+
+  /// Button that removes the selected photos from the open album.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from album'**
+  String get libraryRemoveFromAlbum;
+
+  /// Notice after adding photos to an album.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Added 1 photo to the album} other{Added {count} photos to the album}}'**
+  String libraryAddedToAlbum(int count);
+
+  /// Notice after removing photos from an album.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Removed 1 photo from the album} other{Removed {count} photos from the album}}'**
+  String libraryRemovedFromAlbum(int count);
+
+  /// Button that adds a watched folder to the library.
+  ///
+  /// In en, this message translates to:
+  /// **'Add folder…'**
+  String get libraryAddFolder;
+
+  /// Menu item that stops watching a folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from library'**
+  String get libraryRemoveFolder;
+
+  /// Confirmation title before removing a watched folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this folder from the library?'**
+  String get libraryRemoveFolderTitle;
+
+  /// Explains that removing a folder keeps the files.
+  ///
+  /// In en, this message translates to:
+  /// **'Picavi will stop showing photos from {path}. Nothing on disk is changed.'**
+  String libraryRemoveFolderMessage(String path);
+
+  /// Menu item that hides a folder from the library.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide folder'**
+  String get libraryHideFolder;
+
+  /// Menu item that shows a hidden folder again.
+  ///
+  /// In en, this message translates to:
+  /// **'Show folder'**
+  String get libraryShowFolder;
+
+  /// Menu item that opens a folder in the file manager.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in file manager'**
+  String get libraryRevealFolder;
+
+  /// Tooltip: also show hidden photos and folders.
+  ///
+  /// In en, this message translates to:
+  /// **'Show hidden photos'**
+  String get libraryShowHidden;
+
+  /// Tooltip: stop showing hidden photos and folders.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t show hidden photos'**
+  String get libraryHideHidden;
+
+  /// Tooltip: scan the watched folders again.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan folders again'**
+  String get libraryRescan;
+
+  /// Tooltip on the thumbnail size slider.
+  ///
+  /// In en, this message translates to:
+  /// **'Thumbnail size'**
+  String get libraryThumbnailSize;
+
+  /// Hint in the library search box.
+  ///
+  /// In en, this message translates to:
+  /// **'Search names, captions, tags, dates…'**
+  String get librarySearchHint;
+
+  /// Tooltip: clear the search box.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get libraryClearSearch;
+
+  /// Library empty state title.
+  ///
+  /// In en, this message translates to:
+  /// **'Build your photo library'**
+  String get libraryEmptyTitle;
+
+  /// Library empty state explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the folders where you keep photos. Picavi finds every photo inside them, sorts them by month, and keeps the list up to date. Your files stay where they are.'**
+  String get libraryEmptyMessage;
+
+  /// Shown while the first scan has found photos but none are listed yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for photos… {count} found'**
+  String libraryScanning(int count);
+
+  /// Shown when a search finds nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos match your search'**
+  String get libraryNoMatches;
+
+  /// Shown when the chosen folder, album or filter has no photos.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos here'**
+  String get libraryNothingHere;
+
+  /// Number of photos in a month section.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 photo} other{{count} photos}}'**
+  String libraryPhotoCount(int count);
+
+  /// Selection bar button: star photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Star'**
+  String get libraryStar;
+
+  /// Selection bar button: remove stars.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove star'**
+  String get libraryUnstar;
+
+  /// Title of the duplicate finder.
+  ///
+  /// In en, this message translates to:
+  /// **'Find duplicates'**
+  String get duplicatesTitle;
+
+  /// Shown while comparing files.
+  ///
+  /// In en, this message translates to:
+  /// **'Comparing photos…'**
+  String get duplicatesSearching;
+
+  /// Shown when no duplicates were found.
+  ///
+  /// In en, this message translates to:
+  /// **'No duplicate photos found'**
+  String get duplicatesNone;
+
+  /// Explains the list of duplicate groups.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 set of identical photos. Keep one copy and move the others to the {bin}.} other{{count} sets of identical photos. Keep one copy of each and move the others to the {bin}.}}'**
+  String duplicatesSummary(int count, String bin);
+
+  /// Button: keep this copy, move the other copies to the Trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep only this'**
+  String get duplicatesKeepOnly;
+
+  /// Folder picker message when adding a library folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a folder that holds photos. Its sub-folders are included.'**
+  String get libraryPickFolderMessage;
+
+  /// Shown when the library database cannot be opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the library'**
+  String get libraryOpenFailed;
 }
 
 class _AppLocalizationsDelegate

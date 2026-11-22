@@ -932,4 +932,183 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get shortcutLibrary => 'लाइब्रेरी खोलें';
+
+  @override
+  String get libraryAllPhotos => 'सभी फ़ोटो';
+
+  @override
+  String get libraryStarred => 'स्टार लगी';
+
+  @override
+  String get libraryAlbums => 'एल्बम';
+
+  @override
+  String get libraryFolders => 'फ़ोल्डर';
+
+  @override
+  String get libraryNoAlbums => 'अभी कोई एल्बम नहीं';
+
+  @override
+  String get libraryNewAlbum => 'नया एल्बम';
+
+  @override
+  String get libraryAlbumName => 'एल्बम का नाम';
+
+  @override
+  String get libraryCreate => 'बनाएँ';
+
+  @override
+  String get libraryRenameAlbum => 'एल्बम का नाम बदलें';
+
+  @override
+  String get libraryDeleteAlbum => 'एल्बम हटाएँ';
+
+  @override
+  String libraryDeleteAlbumTitle(String name) {
+    return '“$name” हटाएँ?';
+  }
+
+  @override
+  String get libraryDeleteAlbumMessage =>
+      'इसकी फ़ोटो जहाँ हैं वहीं रहेंगी; केवल एल्बम हटेगा।';
+
+  @override
+  String libraryAlbumCreated(String name) {
+    return 'एल्बम “$name” बनाया गया';
+  }
+
+  @override
+  String get libraryAddToAlbum => 'एल्बम में जोड़ें';
+
+  @override
+  String get libraryRemoveFromAlbum => 'एल्बम से हटाएँ';
+
+  @override
+  String libraryAddedToAlbum(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोटो एल्बम में जोड़ी गईं',
+      one: '1 फ़ोटो एल्बम में जोड़ी गई',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String libraryRemovedFromAlbum(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोटो एल्बम से हटाई गईं',
+      one: '1 फ़ोटो एल्बम से हटाई गई',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryAddFolder => 'फ़ोल्डर जोड़ें…';
+
+  @override
+  String get libraryRemoveFolder => 'लाइब्रेरी से हटाएँ';
+
+  @override
+  String get libraryRemoveFolderTitle => 'इस फ़ोल्डर को लाइब्रेरी से हटाएँ?';
+
+  @override
+  String libraryRemoveFolderMessage(String path) {
+    return 'Picavi $path की फ़ोटो दिखाना बंद कर देगा। डिस्क पर कुछ नहीं बदलेगा।';
+  }
+
+  @override
+  String get libraryHideFolder => 'फ़ोल्डर छिपाएँ';
+
+  @override
+  String get libraryShowFolder => 'फ़ोल्डर दिखाएँ';
+
+  @override
+  String get libraryRevealFolder => 'फ़ाइल मैनेजर में दिखाएँ';
+
+  @override
+  String get libraryShowHidden => 'छिपी फ़ोटो दिखाएँ';
+
+  @override
+  String get libraryHideHidden => 'छिपी फ़ोटो न दिखाएँ';
+
+  @override
+  String get libraryRescan => 'फ़ोल्डर फिर से स्कैन करें';
+
+  @override
+  String get libraryThumbnailSize => 'थंबनेल का आकार';
+
+  @override
+  String get librarySearchHint => 'नाम, कैप्शन, टैग, तारीखें खोजें…';
+
+  @override
+  String get libraryClearSearch => 'खोज साफ़ करें';
+
+  @override
+  String get libraryEmptyTitle => 'अपनी फ़ोटो लाइब्रेरी बनाएँ';
+
+  @override
+  String get libraryEmptyMessage =>
+      'वे फ़ोल्डर जोड़ें जिनमें आप फ़ोटो रखते हैं। Picavi उनमें हर फ़ोटो ढूँढकर महीने के अनुसार लगाता है और सूची अपडेट रखता है। आपकी फ़ाइलें जहाँ हैं वहीं रहती हैं।';
+
+  @override
+  String libraryScanning(int count) {
+    return 'फ़ोटो खोजी जा रही हैं… $count मिलीं';
+  }
+
+  @override
+  String get libraryNoMatches => 'आपकी खोज से कोई फ़ोटो मेल नहीं खाती';
+
+  @override
+  String get libraryNothingHere => 'यहाँ कोई फ़ोटो नहीं';
+
+  @override
+  String libraryPhotoCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोटो',
+      one: '1 फ़ोटो',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryStar => 'स्टार लगाएँ';
+
+  @override
+  String get libraryUnstar => 'स्टार हटाएँ';
+
+  @override
+  String get duplicatesTitle => 'डुप्लिकेट खोजें';
+
+  @override
+  String get duplicatesSearching => 'फ़ोटो की तुलना हो रही है…';
+
+  @override
+  String get duplicatesNone => 'कोई डुप्लिकेट फ़ोटो नहीं मिली';
+
+  @override
+  String duplicatesSummary(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'एक जैसी फ़ोटो के $count समूह। हर एक की एक प्रति रखें और बाकी को $bin में भेजें।',
+      one: 'एक जैसी फ़ोटो का 1 समूह। एक प्रति रखें और बाकी को $bin में भेजें।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get duplicatesKeepOnly => 'केवल इसे रखें';
+
+  @override
+  String get libraryPickFolderMessage =>
+      'फ़ोटो वाला फ़ोल्डर चुनें। इसके उप-फ़ोल्डर भी शामिल होंगे।';
+
+  @override
+  String get libraryOpenFailed => 'लाइब्रेरी नहीं खुल सकी';
 }

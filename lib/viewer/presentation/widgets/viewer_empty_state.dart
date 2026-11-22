@@ -15,6 +15,8 @@ class ViewerEmptyState extends StatelessWidget {
     required this.onOpenImage,
     required this.onOpenSettings,
     this.recentFolders,
+    this.libraryLabel,
+    this.onOpenLibrary,
   });
 
   final bool isBootstrapping;
@@ -26,6 +28,8 @@ class ViewerEmptyState extends StatelessWidget {
   final String tipsText;
   final VoidCallback onOpenImage;
   final VoidCallback onOpenSettings;
+  final String? libraryLabel;
+  final VoidCallback? onOpenLibrary;
 
   /// Optional recent-folders section rendered below the welcome card.
   final Widget? recentFolders;
@@ -107,6 +111,12 @@ class ViewerEmptyState extends StatelessWidget {
                                 icon: const Icon(Icons.photo_library_outlined),
                                 label: Text(openImageLabel),
                               ),
+                              if (onOpenLibrary != null && libraryLabel != null)
+                                OutlinedButton.icon(
+                                  onPressed: onOpenLibrary,
+                                  icon: const Icon(Icons.collections_outlined),
+                                  label: Text(libraryLabel!),
+                                ),
                               OutlinedButton.icon(
                                 onPressed: onOpenSettings,
                                 icon: const Icon(Icons.settings_outlined),

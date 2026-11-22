@@ -930,4 +930,185 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shortcutLibrary => 'فتح المكتبة';
+
+  @override
+  String get libraryAllPhotos => 'كل الصور';
+
+  @override
+  String get libraryStarred => 'المميّزة بنجمة';
+
+  @override
+  String get libraryAlbums => 'الألبومات';
+
+  @override
+  String get libraryFolders => 'المجلدات';
+
+  @override
+  String get libraryNoAlbums => 'لا توجد ألبومات بعد';
+
+  @override
+  String get libraryNewAlbum => 'ألبوم جديد';
+
+  @override
+  String get libraryAlbumName => 'اسم الألبوم';
+
+  @override
+  String get libraryCreate => 'إنشاء';
+
+  @override
+  String get libraryRenameAlbum => 'إعادة تسمية الألبوم';
+
+  @override
+  String get libraryDeleteAlbum => 'حذف الألبوم';
+
+  @override
+  String libraryDeleteAlbumTitle(String name) {
+    return 'حذف «$name»؟';
+  }
+
+  @override
+  String get libraryDeleteAlbumMessage =>
+      'تبقى الصور في مكانها؛ يُحذف الألبوم فقط.';
+
+  @override
+  String libraryAlbumCreated(String name) {
+    return 'تم إنشاء الألبوم «$name»';
+  }
+
+  @override
+  String get libraryAddToAlbum => 'إضافة إلى ألبوم';
+
+  @override
+  String get libraryRemoveFromAlbum => 'إزالة من الألبوم';
+
+  @override
+  String libraryAddedToAlbum(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تمت إضافة $count صور إلى الألبوم',
+      one: 'تمت إضافة صورة واحدة إلى الألبوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String libraryRemovedFromAlbum(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تمت إزالة $count صور من الألبوم',
+      one: 'تمت إزالة صورة واحدة من الألبوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryAddFolder => 'إضافة مجلد…';
+
+  @override
+  String get libraryRemoveFolder => 'إزالة من المكتبة';
+
+  @override
+  String get libraryRemoveFolderTitle => 'إزالة هذا المجلد من المكتبة؟';
+
+  @override
+  String libraryRemoveFolderMessage(String path) {
+    return 'سيتوقف Picavi عن عرض الصور من $path. لن يتغير أي شيء على القرص.';
+  }
+
+  @override
+  String get libraryHideFolder => 'إخفاء المجلد';
+
+  @override
+  String get libraryShowFolder => 'إظهار المجلد';
+
+  @override
+  String get libraryRevealFolder => 'إظهار في مدير الملفات';
+
+  @override
+  String get libraryShowHidden => 'إظهار الصور المخفية';
+
+  @override
+  String get libraryHideHidden => 'عدم إظهار الصور المخفية';
+
+  @override
+  String get libraryRescan => 'إعادة فحص المجلدات';
+
+  @override
+  String get libraryThumbnailSize => 'حجم الصور المصغّرة';
+
+  @override
+  String get librarySearchHint =>
+      'ابحث في الأسماء والتعليقات والوسوم والتواريخ…';
+
+  @override
+  String get libraryClearSearch => 'مسح البحث';
+
+  @override
+  String get libraryEmptyTitle => 'أنشئ مكتبة صورك';
+
+  @override
+  String get libraryEmptyMessage =>
+      'أضف المجلدات التي تحفظ فيها صورك. يعثر Picavi على كل الصور فيها ويرتبها حسب الشهر ويُبقي القائمة محدّثة. تبقى ملفاتك في مكانها.';
+
+  @override
+  String libraryScanning(int count) {
+    return 'جارٍ البحث عن الصور… تم العثور على $count';
+  }
+
+  @override
+  String get libraryNoMatches => 'لا توجد صور تطابق بحثك';
+
+  @override
+  String get libraryNothingHere => 'لا توجد صور هنا';
+
+  @override
+  String libraryPhotoCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count صور',
+      one: 'صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryStar => 'تمييز بنجمة';
+
+  @override
+  String get libraryUnstar => 'إزالة النجمة';
+
+  @override
+  String get duplicatesTitle => 'البحث عن التكرارات';
+
+  @override
+  String get duplicatesSearching => 'جارٍ مقارنة الصور…';
+
+  @override
+  String get duplicatesNone => 'لم يتم العثور على صور مكررة';
+
+  @override
+  String duplicatesSummary(int count, String bin) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count مجموعات من الصور المتطابقة. احتفظ بنسخة واحدة من كل مجموعة وانقل الباقي إلى $bin.',
+      one:
+          'مجموعة واحدة من الصور المتطابقة. احتفظ بنسخة واحدة وانقل الباقي إلى $bin.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get duplicatesKeepOnly => 'الاحتفاظ بهذه فقط';
+
+  @override
+  String get libraryPickFolderMessage =>
+      'اختر مجلدًا يحتوي على صور. ستُضمَّن مجلداته الفرعية.';
+
+  @override
+  String get libraryOpenFailed => 'تعذّر فتح المكتبة';
 }

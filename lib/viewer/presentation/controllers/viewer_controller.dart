@@ -641,6 +641,15 @@ class ViewerController extends ChangeNotifier {
     _setState(_state.copyWith(edits: edits, photoInfo: info));
   }
 
+  /// Re-reads edits, stars and captions of the current folder, e.g. after
+  /// the library changed them.
+  Future<void> reloadSidecarData() async {
+    final directory = _state.currentDirectory;
+    if (directory != null) {
+      await _loadEdits(directory);
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Stars, captions, tags
 
