@@ -561,4 +561,22 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get dropToOpen => 'उघडण्यासाठी सोडा';
+
+  @override
+  String get saveRotationTooltip => 'फिरवणे जतन करा';
+
+  @override
+  String get rotationSavedNotice => 'फिरवणे जतन केले';
+
+  @override
+  String rotationUnsupportedNotice(String format) {
+    return '$format प्रतिमांसाठी फिरवणे अजून जतन करता येत नाही';
+  }
+
+  @override
+  String get rotationSaveFailedNotice =>
+      'फिरवणे जतन करता आले नाही. मूळ फाइल बदललेली नाही.';
+
+  @override
+  String get shortcutSaveRotation => 'फिरवणे फाइलमध्ये जतन करा';
 }

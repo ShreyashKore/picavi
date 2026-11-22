@@ -11,6 +11,7 @@ import '../../domain/entities/image_sort_order.dart';
 import '../../domain/repositories/image_repository.dart';
 import '../../domain/services/file_operations_service.dart';
 import '../../domain/services/image_picker_service.dart';
+import '../../domain/services/image_transform_service.dart';
 import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
 
@@ -20,11 +21,15 @@ class ViewerController extends ChangeNotifier {
     required ImagePickerService imagePickerService,
     required NativeFileChannelService nativeFileChannelService,
     required FileOperationsService fileOperationsService,
+    required ImageTransformService imageTransformService,
+    Future<void> Function(String path)? evictImage,
     Duration folderRefreshDebounce = const Duration(milliseconds: 400),
   }) : _imageRepository = imageRepository,
        _imagePickerService = imagePickerService,
        _nativeFileChannelService = nativeFileChannelService,
        _fileOperations = fileOperationsService,
+       _imageTransforms = imageTransformService,
+       _evictImage = evictImage,
        _folderRefreshDebounce = folderRefreshDebounce;
 
   static const List<int> _permissionDeniedErrorCodes = [1, 13];
@@ -33,6 +38,10 @@ class ViewerController extends ChangeNotifier {
   final ImagePickerService _imagePickerService;
   final NativeFileChannelService _nativeFileChannelService;
   final FileOperationsService _fileOperations;
+  final ImageTransformService _imageTransforms;
+
+  /// Drops cached decodes of a file that was rewritten on disk.
+  final Future<void> Function(String path)? _evictImage;
   final Duration _folderRefreshDebounce;
 
   ViewerState _state = const ViewerState.initial();
@@ -371,6 +380,40 @@ class ViewerController extends ChangeNotifier {
     }
   }
 
+  /// Writes [quarterTurnsClockwise] of rotation into the current image file.
+  /// On success the image's revision is bumped so views reload it.
+  Future<RotationSaveResult> saveCurrentRotation(
+    int quarterTurnsClockwise,
+  ) async {
+    if (!_state.hasImages || quarterTurnsClockwise % 4 == 0) {
+      return RotationSaveResult.saved;
+    }
+
+    final path = _state.currentImage.path;
+    final result = await _imageTransforms.saveRotation(
+      path,
+      quarterTurnsClockwise,
+    );
+
+    switch (result) {
+      case RotationSaveResult.saved:
+        await _evictImage?.call(path);
+        final images = _state.images
+            .map((image) => image.path == path ? image.nextRevision() : image)
+            .toList(growable: false);
+        _setState(_state.copyWith(images: images));
+        _pushNotice(ViewerNoticeType.rotationSaved);
+      case RotationSaveResult.unsupportedFormat:
+        _pushNotice(
+          ViewerNoticeType.rotationUnsupported,
+          detail: p.extension(path).replaceFirst('.', '').toUpperCase(),
+        );
+      case RotationSaveResult.failed:
+        _pushNotice(ViewerNoticeType.rotationSaveFailed);
+    }
+    return result;
+  }
+
   Future<String?> _pickDestination(
     List<String> targets,
     DirectoryAccessTexts pickerTexts,
@@ -671,11 +714,16 @@ class ViewerController extends ChangeNotifier {
     );
   }
 
-  void _pushNotice(ViewerNoticeType type, {int count = 0}) {
+  void _pushNotice(ViewerNoticeType type, {int count = 0, String? detail}) {
     _noticeCounter += 1;
     _setState(
       _state.copyWith(
-        notice: ViewerNotice(id: _noticeCounter, type: type, count: count),
+        notice: ViewerNotice(
+          id: _noticeCounter,
+          type: type,
+          count: count,
+          detail: detail,
+        ),
       ),
     );
   }

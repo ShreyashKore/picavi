@@ -560,4 +560,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get dropToOpen => 'खोलने के लिए छोड़ें';
+
+  @override
+  String get saveRotationTooltip => 'घुमाव सहेजें';
+
+  @override
+  String get rotationSavedNotice => 'घुमाव सहेजा गया';
+
+  @override
+  String rotationUnsupportedNotice(String format) {
+    return '$format छवियों के लिए घुमाव अभी सहेजा नहीं जा सकता';
+  }
+
+  @override
+  String get rotationSaveFailedNotice =>
+      'घुमाव सहेजा नहीं जा सका। मूल फ़ाइल नहीं बदली।';
+
+  @override
+  String get shortcutSaveRotation => 'घुमाव फ़ाइल में सहेजें';
 }

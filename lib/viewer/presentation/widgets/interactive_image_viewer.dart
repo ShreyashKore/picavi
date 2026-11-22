@@ -165,6 +165,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
   AppImageInfo? _imageInfo;
   Object? _lastError;
   int _imageResolveToken = 0;
+  bool _resetWhenNextImageResolves = false;
   double _zoomFactor = 1;
   Offset _offset = Offset.zero;
   double _rotationAngle = 0;
@@ -208,7 +209,17 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
     }
     if (oldWidget.image.providerIdentity != widget.image.providerIdentity) {
       _lastError = null;
-      _animateResetTransform(notify: false);
+      final isSameFileReloaded =
+          oldWidget.image.filePath != null &&
+          oldWidget.image.filePath == widget.image.filePath;
+      if (isSameFileReloaded) {
+        // The file was rewritten (e.g. its rotation saved): keep the current
+        // view until the new pixels arrive, then reset without animating so
+        // the image doesn't visibly spin back first.
+        _resetWhenNextImageResolves = true;
+      } else {
+        _animateResetTransform(notify: false);
+      }
       _resolveImage();
     }
   }
@@ -231,6 +242,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
       }
 
       setState(() {
+        _applyPendingInstantReset();
         _lastError = null;
         _displayedImage = nextImage;
         _imageInfo = imageInfo;
@@ -244,12 +256,27 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
       }
 
       setState(() {
+        _applyPendingInstantReset();
         _lastError = exception;
         _displayedImage = nextImage;
         _imageInfo = null;
       });
       _notifyController();
     }
+  }
+
+  void _applyPendingInstantReset() {
+    if (!_resetWhenNextImageResolves) {
+      return;
+    }
+    _resetWhenNextImageResolves = false;
+    _transformAnimationController.stop();
+    _gestureStartFocalPoint = null;
+    _isDragging = false;
+    _zoomFactor = 1;
+    _offset = Offset.zero;
+    _rotationAngle = 0;
+    _rotationQuarterTurns = 0;
   }
 
   InteractiveImageViewerValue _currentValue() {

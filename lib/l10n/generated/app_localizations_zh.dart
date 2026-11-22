@@ -536,4 +536,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dropToOpen => '松开以打开';
+
+  @override
+  String get saveRotationTooltip => '保存旋转';
+
+  @override
+  String get rotationSavedNotice => '旋转已保存';
+
+  @override
+  String rotationUnsupportedNotice(String format) {
+    return '暂不支持保存 $format 图片的旋转';
+  }
+
+  @override
+  String get rotationSaveFailedNotice => '无法保存旋转，原文件未更改。';
+
+  @override
+  String get shortcutSaveRotation => '将旋转保存到文件';
 }

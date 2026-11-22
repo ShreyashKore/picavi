@@ -152,5 +152,10 @@
   "fitWindowTooltip": "适应窗口",
   "shortcutFullScreen": "开启 / 关闭全屏",
   "shortcutFitFill": "适应 / 填满窗口",
-  "dropToOpen": "松开以打开"
+  "dropToOpen": "松开以打开",
+  "saveRotationTooltip": "保存旋转",
+  "rotationSavedNotice": "旋转已保存",
+  "rotationUnsupportedNotice": "暂不支持保存 {format} 图片的旋转",
+  "rotationSaveFailedNotice": "无法保存旋转，原文件未更改。",
+  "shortcutSaveRotation": "将旋转保存到文件"
 }

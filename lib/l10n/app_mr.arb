@@ -152,5 +152,10 @@
   "fitWindowTooltip": "विंडोमध्ये बसवा",
   "shortcutFullScreen": "पूर्ण स्क्रीन चालू / बंद",
   "shortcutFitFill": "विंडोमध्ये बसवा / भरा",
-  "dropToOpen": "उघडण्यासाठी सोडा"
+  "dropToOpen": "उघडण्यासाठी सोडा",
+  "saveRotationTooltip": "फिरवणे जतन करा",
+  "rotationSavedNotice": "फिरवणे जतन केले",
+  "rotationUnsupportedNotice": "{format} प्रतिमांसाठी फिरवणे अजून जतन करता येत नाही",
+  "rotationSaveFailedNotice": "फिरवणे जतन करता आले नाही. मूळ फाइल बदललेली नाही.",
+  "shortcutSaveRotation": "फिरवणे फाइलमध्ये जतन करा"
 }

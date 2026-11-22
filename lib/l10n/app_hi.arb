@@ -152,5 +152,10 @@
   "fitWindowTooltip": "विंडो में फ़िट करें",
   "shortcutFullScreen": "फ़ुल स्क्रीन चालू / बंद",
   "shortcutFitFill": "विंडो में फ़िट / भरें",
-  "dropToOpen": "खोलने के लिए छोड़ें"
+  "dropToOpen": "खोलने के लिए छोड़ें",
+  "saveRotationTooltip": "घुमाव सहेजें",
+  "rotationSavedNotice": "घुमाव सहेजा गया",
+  "rotationUnsupportedNotice": "{format} छवियों के लिए घुमाव अभी सहेजा नहीं जा सकता",
+  "rotationSaveFailedNotice": "घुमाव सहेजा नहीं जा सका। मूल फ़ाइल नहीं बदली।",
+  "shortcutSaveRotation": "घुमाव फ़ाइल में सहेजें"
 }

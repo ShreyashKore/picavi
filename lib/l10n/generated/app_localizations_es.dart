@@ -567,4 +567,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dropToOpen => 'Suelta para abrir';
+
+  @override
+  String get saveRotationTooltip => 'Guardar rotación';
+
+  @override
+  String get rotationSavedNotice => 'Rotación guardada';
+
+  @override
+  String rotationUnsupportedNotice(String format) {
+    return 'Todavía no se puede guardar la rotación de imágenes $format';
+  }
+
+  @override
+  String get rotationSaveFailedNotice =>
+      'No se pudo guardar la rotación. El archivo original no ha cambiado.';
+
+  @override
+  String get shortcutSaveRotation => 'Guardar la rotación en el archivo';
 }

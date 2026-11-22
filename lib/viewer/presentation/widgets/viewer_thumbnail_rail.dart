@@ -25,6 +25,9 @@ class ViewerThumbnailRail extends StatelessWidget {
   final ValueChanged<int> onTap;
   final ValueChanged<int> onScrollImageChange;
   final Set<String> selectedPaths;
+
+  /// Decode width for thumbnails; also used to evict them from the cache.
+  static const int cacheWidth = 220;
   final double topInset;
 
   void _handlePointerSignal(PointerSignalEvent event) {
@@ -116,7 +119,8 @@ class ViewerThumbnailRail extends StatelessWidget {
                         child: AppImage.file(
                           images[index].path,
                           fit: BoxFit.cover,
-                          cacheWidth: 220,
+                          revision: images[index].revision,
+                          cacheWidth: cacheWidth,
                           errorBuilder: (_, _, _) => const ColoredBox(
                             color: AppColors.brokenImage,
                             child: Center(

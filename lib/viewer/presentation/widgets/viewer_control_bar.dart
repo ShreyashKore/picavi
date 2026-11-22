@@ -22,6 +22,7 @@ class ViewerControlBar extends StatelessWidget {
     required this.onToggleFitFill,
     required this.isFullScreen,
     required this.onToggleFullScreen,
+    this.onSaveRotation,
   });
 
   final bool canNavigate;
@@ -40,6 +41,9 @@ class ViewerControlBar extends StatelessWidget {
   final VoidCallback onToggleFitFill;
   final bool isFullScreen;
   final VoidCallback onToggleFullScreen;
+
+  /// Shown only while the image is rotated.
+  final VoidCallback? onSaveRotation;
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +99,12 @@ class ViewerControlBar extends StatelessWidget {
                 icon: Icons.rotate_90_degrees_cw_outlined,
                 onPressed: onRotateRight,
               ),
+              if (onSaveRotation != null)
+                _ControlButton(
+                  tooltip: l10n.saveRotationTooltip,
+                  icon: Icons.save_outlined,
+                  onPressed: onSaveRotation,
+                ),
               _ControlButton(
                 tooltip: showInfo
                     ? l10n.hideImageInfoTooltip

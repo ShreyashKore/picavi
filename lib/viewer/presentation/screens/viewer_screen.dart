@@ -18,6 +18,7 @@ import '../../data/repositories/file_system_image_repository.dart';
 import '../../data/services/desktop_file_operations_service.dart';
 import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
+import '../../data/services/raster_image_transform_service.dart';
 import '../../data/services/slideshow_settings_store.dart';
 import '../../domain/constants/supported_image_extensions.dart';
 import '../../domain/entities/image_sort_order.dart';
@@ -107,6 +108,11 @@ class _ViewerScreenState extends State<ViewerScreen>
       nativeFileChannelService: nativeFileChannelService,
       fileOperationsService: DesktopFileOperationsService(
         nativeChannel: nativeFileChannelService,
+      ),
+      imageTransformService: RasterImageTransformService(),
+      evictImage: (path) => AppImage.evictFile(
+        path,
+        cacheWidths: const [ViewerThumbnailRail.cacheWidth],
       ),
     )..addListener(_onControllerChanged);
     _imageViewerController = InteractiveImageViewerController()
@@ -497,6 +503,15 @@ class _ViewerScreenState extends State<ViewerScreen>
     }
   }
 
+  Future<void> _saveRotation() async {
+    final turns = _imageViewerController.value.rotationQuarterTurns;
+    if (turns % 4 == 0 || !_controller.state.hasImages) {
+      return;
+    }
+    _stopSlideshow();
+    await _controller.saveCurrentRotation(turns);
+  }
+
   void _toggleInfoOverlay() {
     setState(() {
       _showInfoOverlay = !_showInfoOverlay;
@@ -801,6 +816,11 @@ class _ViewerScreenState extends State<ViewerScreen>
       ViewerNoticeType.clipboardFailed => l10n.clipboardFailedNotice,
       ViewerNoticeType.revealFailed => l10n.revealFailedNotice,
       ViewerNoticeType.openWithFailed => l10n.openWithFailedNotice,
+      ViewerNoticeType.rotationSaved => l10n.rotationSavedNotice,
+      ViewerNoticeType.rotationUnsupported => l10n.rotationUnsupportedNotice(
+        notice.detail ?? '',
+      ),
+      ViewerNoticeType.rotationSaveFailed => l10n.rotationSaveFailedNotice,
     };
   }
 
@@ -992,6 +1012,9 @@ class _ViewerScreenState extends State<ViewerScreen>
     if (key == LogicalKeyboardKey.backspace) {
       return () => unawaited(_confirmAndTrash());
     }
+    if (key == LogicalKeyboardKey.keyS) {
+      return () => unawaited(_saveRotation());
+    }
     return null;
   }
 
@@ -1160,6 +1183,7 @@ class _ViewerScreenState extends State<ViewerScreen>
               controller: _imageViewerController,
               image: AppImage.file(
                 state.currentImage.path,
+                revision: state.currentImage.revision,
                 fit: BoxFit.contain,
                 filterQuality: FilterQuality.high,
                 errorBuilder: (_, _, _) => const SizedBox.expand(),
@@ -1253,6 +1277,9 @@ class _ViewerScreenState extends State<ViewerScreen>
                     onToggleFitFill: _imageViewerController.toggleFitFill,
                     isFullScreen: _isFullScreen,
                     onToggleFullScreen: _toggleFullScreen,
+                    onSaveRotation: imageViewState.rotationQuarterTurns % 4 != 0
+                        ? () => unawaited(_saveRotation())
+                        : null,
                     showInfo: _showInfoOverlay,
                   ),
               ],

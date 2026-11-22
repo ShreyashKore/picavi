@@ -68,6 +68,42 @@ void main() {
       expect(controller.value.isFillingViewport, isFalse);
     });
 
+    testWidgets('reloading the same file resets rotation without spinning', (
+      tester,
+    ) async {
+      final controller = InteractiveImageViewerController();
+      AppImage revisionOf(int revision) => AppImage(
+        image: null,
+        filePath: '/photos/a.jpg',
+        revision: revision,
+        svgBytesLoader: SvgStringLoader(
+          _svgMarkup(const Color(0xFF1E88E5), width: 40, height: 20),
+        ),
+      );
+
+      await _pumpViewer(tester, controller: controller, image: revisionOf(0));
+      await tester.pump(const Duration(milliseconds: 50));
+      controller.rotateRight();
+      await tester.pumpAndSettle();
+      expect(controller.value.rotationQuarterTurns, 1);
+
+      await _pumpViewer(tester, controller: controller, image: revisionOf(1));
+      for (
+        var i = 0;
+        i < 20 && controller.value.rotationQuarterTurns != 0;
+        i++
+      ) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump();
+      }
+
+      expect(controller.value.rotationQuarterTurns, 0);
+      // Reset is immediate: nothing left to animate.
+      expect(tester.hasRunningAnimations, isFalse);
+    });
+
     testWidgets('rotation commands animate toward quarter turns', (
       tester,
     ) async {

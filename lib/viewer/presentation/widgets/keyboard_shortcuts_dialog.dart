@@ -34,6 +34,7 @@ List<_ShortcutEntry> _shortcutsForPlatform() {
     _ShortcutEntry(['F', 'F11'], (l10n) => l10n.shortcutFullScreen),
     _ShortcutEntry(['R', '⇧R'], (l10n) => l10n.shortcutRotate),
     _ShortcutEntry(['I'], (l10n) => l10n.shortcutInfo),
+    _ShortcutEntry(['${command}S'], (l10n) => l10n.shortcutSaveRotation),
     _ShortcutEntry(['F2'], (l10n) => l10n.shortcutRename),
     _ShortcutEntry([
       Platform.isMacOS ? '⌫' : 'Delete',

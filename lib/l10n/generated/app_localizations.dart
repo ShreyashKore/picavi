@@ -957,6 +957,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Drop to open'**
   String get dropToOpen;
+
+  /// Tooltip for the button that writes the current rotation into the file.
+  ///
+  /// In en, this message translates to:
+  /// **'Save rotation'**
+  String get saveRotationTooltip;
+
+  /// Snackbar after the rotation was written to the file.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotation saved'**
+  String get rotationSavedNotice;
+
+  /// Snackbar when the format cannot be rotated on disk. {format} is like PNG or WEBP.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotation can\'t be saved for {format} images yet'**
+  String rotationUnsupportedNotice(String format);
+
+  /// Snackbar when writing the rotation failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the rotation. The original file is unchanged.'**
+  String get rotationSaveFailedNotice;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Save rotation to the file'**
+  String get shortcutSaveRotation;
 }
 
 class _AppLocalizationsDelegate

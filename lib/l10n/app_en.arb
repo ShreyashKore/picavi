@@ -567,5 +567,30 @@
   "dropToOpen": "Drop to open",
   "@dropToOpen": {
     "description": "Shown while files are dragged over the window."
+  },
+  "saveRotationTooltip": "Save rotation",
+  "@saveRotationTooltip": {
+    "description": "Tooltip for the button that writes the current rotation into the file."
+  },
+  "rotationSavedNotice": "Rotation saved",
+  "@rotationSavedNotice": {
+    "description": "Snackbar after the rotation was written to the file."
+  },
+  "rotationUnsupportedNotice": "Rotation can't be saved for {format} images yet",
+  "@rotationUnsupportedNotice": {
+    "description": "Snackbar when the format cannot be rotated on disk. {format} is like PNG or WEBP.",
+    "placeholders": {
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "rotationSaveFailedNotice": "Couldn't save the rotation. The original file is unchanged.",
+  "@rotationSaveFailedNotice": {
+    "description": "Snackbar when writing the rotation failed."
+  },
+  "shortcutSaveRotation": "Save rotation to the file",
+  "@shortcutSaveRotation": {
+    "description": "Shortcut description."
   }
 }

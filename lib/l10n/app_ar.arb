@@ -152,5 +152,10 @@
   "fitWindowTooltip": "ملاءمة النافذة",
   "shortcutFullScreen": "تشغيل / إيقاف ملء الشاشة",
   "shortcutFitFill": "ملاءمة / ملء النافذة",
-  "dropToOpen": "أفلت للفتح"
+  "dropToOpen": "أفلت للفتح",
+  "saveRotationTooltip": "حفظ التدوير",
+  "rotationSavedNotice": "تم حفظ التدوير",
+  "rotationUnsupportedNotice": "لا يمكن حفظ التدوير لصور {format} بعد",
+  "rotationSaveFailedNotice": "تعذّر حفظ التدوير. لم يتغيّر الملف الأصلي.",
+  "shortcutSaveRotation": "حفظ التدوير في الملف"
 }

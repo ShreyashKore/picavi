@@ -8,6 +8,7 @@ import 'package:oiv/viewer/domain/entities/image_sort_order.dart';
 import 'package:oiv/viewer/domain/repositories/image_repository.dart';
 import 'package:oiv/viewer/domain/services/file_operations_service.dart';
 import 'package:oiv/viewer/domain/services/image_picker_service.dart';
+import 'package:oiv/viewer/domain/services/image_transform_service.dart';
 import 'package:oiv/viewer/presentation/controllers/viewer_controller.dart';
 import 'package:oiv/viewer/presentation/models/viewer_notice.dart';
 
@@ -38,6 +39,7 @@ void main() {
             pendingFiles: const <String>['/images/explicit.png'],
           ),
           fileOperationsService: _FakeFileOperations(),
+          imageTransformService: _FakeImageTransforms(),
         );
 
         await controller.bootstrap(
@@ -72,6 +74,7 @@ void main() {
           imagePickerService: _FakeImagePickerService(),
           nativeFileChannelService: _FakeNativeFileChannelService(),
           fileOperationsService: _FakeFileOperations(),
+          imageTransformService: _FakeImageTransforms(),
         );
 
         await controller.bootstrap(
@@ -388,6 +391,63 @@ void main() {
       );
     });
   });
+
+  group('ViewerController rotation saving', () {
+    const ab = <String>['/images/a.png', '/images/b.webp'];
+
+    test('saves, evicts the cache, then bumps the revision', () async {
+      final fixture = await _openFolder(ab, open: '/images/a.png');
+
+      final result = await fixture.controller.saveCurrentRotation(1);
+
+      expect(result, RotationSaveResult.saved);
+      expect(fixture.transforms.calls, [('/images/a.png', 1)]);
+      expect(fixture.evicted, ['/images/a.png']);
+      expect(fixture.controller.state.currentImage.revision, 1);
+      expect(fixture.controller.state.images[1].revision, 0);
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.rotationSaved,
+      );
+    });
+
+    test('no rotation means nothing to save', () async {
+      final fixture = await _openFolder(ab, open: '/images/a.png');
+
+      await fixture.controller.saveCurrentRotation(4);
+
+      expect(fixture.transforms.calls, isEmpty);
+      expect(fixture.controller.state.notice, isNull);
+    });
+
+    test('names the format when it is unsupported', () async {
+      final fixture = await _openFolder(ab, open: '/images/b.webp');
+      fixture.transforms.result = RotationSaveResult.unsupportedFormat;
+
+      await fixture.controller.saveCurrentRotation(2);
+
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.rotationUnsupported,
+      );
+      expect(fixture.controller.state.notice?.detail, 'WEBP');
+      expect(fixture.evicted, isEmpty);
+      expect(fixture.controller.state.currentImage.revision, 0);
+    });
+
+    test('reports failures without touching the gallery', () async {
+      final fixture = await _openFolder(ab, open: '/images/a.png');
+      fixture.transforms.result = RotationSaveResult.failed;
+
+      await fixture.controller.saveCurrentRotation(1);
+
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.rotationSaveFailed,
+      );
+      expect(fixture.controller.state.currentImage.revision, 0);
+    });
+  });
 }
 
 const DirectoryAccessTexts _texts = DirectoryAccessTexts(
@@ -401,12 +461,16 @@ class _FolderFixture {
     this.repository,
     this.fileOperations,
     this.picker,
+    this.transforms,
+    this.evicted,
   );
 
   final ViewerController controller;
   final _FakeImageRepository repository;
   final _FakeFileOperations fileOperations;
   final _FakeImagePickerService picker;
+  final _FakeImageTransforms transforms;
+  final List<String> evicted;
 
   List<String> get paths =>
       controller.state.images.map((image) => image.path).toList();
@@ -439,6 +503,8 @@ Future<_FolderFixture> _openFolder(
 }) async {
   final picker = _FakeImagePickerService();
   final fileOperations = _FakeFileOperations();
+  final transforms = _FakeImageTransforms();
+  final evicted = <String>[];
   final repository = _FakeImageRepository(
     supportedImages: paths.toSet(),
     directoryImages: <String, List<GalleryImage>>{},
@@ -448,6 +514,8 @@ Future<_FolderFixture> _openFolder(
     imagePickerService: picker,
     nativeFileChannelService: _FakeNativeFileChannelService(),
     fileOperationsService: fileOperations,
+    imageTransformService: transforms,
+    evictImage: (path) async => evicted.add(path),
     folderRefreshDebounce: const Duration(milliseconds: 5),
   );
   if (sortOrder != null) {
@@ -460,7 +528,14 @@ Future<_FolderFixture> _openFolder(
       message: 'Read images in the current folder',
     ),
   );
-  return _FolderFixture(controller, repository, fileOperations, picker);
+  return _FolderFixture(
+    controller,
+    repository,
+    fileOperations,
+    picker,
+    transforms,
+    evicted,
+  );
 }
 
 class _FakeImageRepository implements ImageRepository {
@@ -621,4 +696,18 @@ class _FakeFileOperations implements FileOperationsService {
   @override
   Future<bool> openWith(String path, {required String prompt}) async =>
       !failingPaths.contains(path);
+}
+
+class _FakeImageTransforms implements ImageTransformService {
+  RotationSaveResult result = RotationSaveResult.saved;
+  final List<(String, int)> calls = <(String, int)>[];
+
+  @override
+  bool canSaveRotation(String path) => true;
+
+  @override
+  Future<RotationSaveResult> saveRotation(String path, int turns) async {
+    calls.add((path, turns));
+    return result;
+  }
 }

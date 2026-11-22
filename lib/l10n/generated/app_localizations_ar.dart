@@ -559,4 +559,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dropToOpen => 'أفلت للفتح';
+
+  @override
+  String get saveRotationTooltip => 'حفظ التدوير';
+
+  @override
+  String get rotationSavedNotice => 'تم حفظ التدوير';
+
+  @override
+  String rotationUnsupportedNotice(String format) {
+    return 'لا يمكن حفظ التدوير لصور $format بعد';
+  }
+
+  @override
+  String get rotationSaveFailedNotice =>
+      'تعذّر حفظ التدوير. لم يتغيّر الملف الأصلي.';
+
+  @override
+  String get shortcutSaveRotation => 'حفظ التدوير في الملف';
 }

@@ -152,5 +152,10 @@
   "fitWindowTooltip": "Ajustar a la ventana",
   "shortcutFullScreen": "Activar / desactivar pantalla completa",
   "shortcutFitFill": "Ajustar / rellenar ventana",
-  "dropToOpen": "Suelta para abrir"
+  "dropToOpen": "Suelta para abrir",
+  "saveRotationTooltip": "Guardar rotación",
+  "rotationSavedNotice": "Rotación guardada",
+  "rotationUnsupportedNotice": "Todavía no se puede guardar la rotación de imágenes {format}",
+  "rotationSaveFailedNotice": "No se pudo guardar la rotación. El archivo original no ha cambiado.",
+  "shortcutSaveRotation": "Guardar la rotación en el archivo"
 }

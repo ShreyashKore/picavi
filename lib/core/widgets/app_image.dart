@@ -10,6 +10,7 @@ class AppImage extends StatelessWidget {
     super.key,
     required this.image,
     this.svgBytesLoader,
+    this.revision = 0,
     this.width,
     this.height,
     this.fit,
@@ -36,6 +37,7 @@ class AppImage extends StatelessWidget {
   AppImage.file(
     String path, {
     super.key,
+    this.revision = 0,
     this.width,
     this.height,
     this.fit,
@@ -65,6 +67,7 @@ class AppImage extends StatelessWidget {
     super.key,
     this.bundle,
     this.package,
+    this.revision = 0,
     this.width,
     this.height,
     this.fit,
@@ -95,6 +98,9 @@ class AppImage extends StatelessWidget {
            : AssetImage(assetName, bundle: bundle, package: package);
 
   final ImageProvider? image;
+
+  /// Changes when the file at [filePath] was rewritten, forcing a reload.
+  final int revision;
   final BytesLoader? svgBytesLoader;
   final double? width;
   final double? height;
@@ -130,6 +136,7 @@ class AppImage extends StatelessWidget {
     height,
     assetName,
     filePath,
+    revision,
   );
 
   ImageProvider get imageProvider {
@@ -223,6 +230,19 @@ class AppImage extends StatelessWidget {
       errorBuilder: errorBuilder,
       opacity: opacity,
     );
+  }
+
+  /// Drops cached decodes of the file at [path] (full size and the given
+  /// thumbnail widths) so the next build reads it from disk again.
+  static Future<void> evictFile(
+    String path, {
+    Iterable<int> cacheWidths = const <int>[],
+  }) async {
+    final provider = FileImage(File(path));
+    await provider.evict();
+    for (final width in cacheWidths) {
+      await ResizeImage(provider, width: width).evict();
+    }
   }
 
   static bool _isSvgPath(String path) {
