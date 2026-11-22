@@ -38,11 +38,14 @@ lib/
   main.dart          window setup (window_manager + screen_retriever), arg/startup-path resolution
   app.dart           MaterialApp, dark theme, localization delegates
   core/              cross-feature: services/ (AppPreferencesService, DefaultViewerService),
-                     theme/, widgets/ (AppImage), l10n/ (context.l10n extension)
+                     theme/, widgets/ (AppImage), images/ (SystemDecodedImage),
+                     l10n/ (context.l10n extension)
   l10n/              .arb sources + generated/ (do NOT hand-edit generated/)
   viewer/            the single feature module
-    domain/          entities, repository/service interfaces, supportedImageExtensions
-    data/            FileSystemImageRepository, DesktopImagePickerService, NativeFileChannelService
+    domain/          entities, repository/service interfaces (ImageRepository, ImagePickerService,
+                     FileOperationsService, ImageTransformService), image extension constants
+    data/            FileSystemImageRepository, DesktopImagePickerService, DesktopFileOperationsService,
+                     RasterImageTransformService, SlideshowSettingsStore, NativeFileChannelService
     presentation/    controllers/ (ViewerController), models/ (ViewerState, ViewerNotice),
                      screens/, widgets/
 ```
@@ -63,8 +66,12 @@ lib/
   `MissingPluginException` / `PlatformException`. Only macOS implements the native channel today.
 - No hardcoded user-facing strings — everything goes through localizations.
 - Supported formats live only in
-  `lib/viewer/domain/constants/supported_image_extensions.dart`
-  (`.bmp .gif .ico .jpeg .jpg .png .svg .webp`); keep the README list in sync.
+  `lib/viewer/domain/constants/supported_image_extensions.dart`:
+  `supportedImageExtensions` (Flutter-decoded, all platforms) and
+  `systemDecodedImageExtensions` (`.avif .heic .heif .tif .tiff`, macOS ImageIO only).
+  Use `platformImageExtensions`; keep README, `Info.plist` and Swift lists in sync.
+- Never delete permanently: removal goes to the system Trash / Recycle Bin;
+  copy/move never overwrite. Image rewrites use temp file + rename.
 
 ## Localization
 
@@ -81,7 +88,8 @@ macOS forwards Finder "Open With" events into Flutter via
 `MethodChannel('com.gyanoba.oiv/file_open')`. Dart: `NativeFileChannelService`;
 Swift: `macos/Runner/AppDelegate.swift` + `MainFlutterWindow.swift`. Methods:
 `consumePendingFiles`, `openFiles`, `pickImageFile`, `authorizeDirectoryAccess`,
-`getDefaultViewerStatus`, `setAsDefaultViewer` (folder access uses security-scoped
+`getDefaultViewerStatus`, `setAsDefaultViewer`, `moveToTrash`, `revealInFinder`,
+`copyImageToClipboard`, `openWith`, `decodeImage` (folder access uses security-scoped
 bookmarks). Per-platform "open with" registration: macOS `Info.plist`, Linux
 `linux/oiv.desktop.in`, Windows registry. **Change channel names/payloads on the
 Dart and Swift sides together.**

@@ -16,22 +16,22 @@ falls into one of those three buckets.
 ### 1. Viewer essentials (small, high value)
 | Gap | Notes |
 |---|---|
-| File operations | Delete (to Trash), rename, copy/move to folder, reveal in Finder/Explorer, copy image to clipboard, "Open with…" external editor, set as wallpaper |
-| Persisted rotation | Rotate is view-only; Picasa saved it (lossless JPEG rotate / EXIF orientation) |
-| Slideshow options | Fixed 3 s, no interval setting, shuffle, loop, transitions, or hide-UI mode |
-| Fit modes | Fit / fill / actual size toggle, zoom-to-fit-width; fullscreen toggle (`F`) |
+| File operations | ✅ Done in Phase 1 (set as wallpaper still to do) |
+| Persisted rotation | ✅ Done in Phase 1 (JPEG/PNG/BMP) |
+| Slideshow options | ✅ Interval, shuffle, loop, full screen done; transition choices still to do |
+| Fit modes | ✅ Fit / fill / 1:1 and full screen done |
 | Compare view | Picasa's 2-up side-by-side compare |
-| Drag & drop | Drop a file/folder onto the window to open; drag an image out to other apps |
+| Drag & drop | ✅ Drop in done; dragging out still to do |
 | Folder watching | ✅ Done in Phase 0 |
 | Sort options | ✅ Name, modified, size, type done; date taken still to do |
 | Histogram | Picasa showed a live histogram in the info pane |
 | Shortcut help | ✅ `?` overlay added; still missing file shortcuts like `Del` (Phase 1) |
-| Multi-select ("Picture Tray") | Can't select several images to act on them together |
+| Multi-select ("Picture Tray") | ✅ Done in Phase 1 |
 
 ### 2. Formats
 | Gap | Notes |
 |---|---|
-| HEIC/HEIF, AVIF, TIFF | Very common today (iPhone photos); need native decode (macOS ImageIO) or a plugin |
+| HEIC/HEIF, AVIF, TIFF | ✅ macOS done; Windows/Linux still to do |
 | RAW (CR2/NEF/ARW/DNG) | At least show the embedded JPEG preview |
 | Video | Picasa listed and played videos alongside photos |
 
@@ -94,14 +94,25 @@ architecture choices, so the decisions are called out up front.
 - Deferred: sort by *date taken* (needs EXIF for every file — do it with the
   Phase 3 metadata cache); reloading an image whose file was edited in place.
 
-### Phase 1 — Viewer essentials (v1.1, ~3–4 weeks)
-- `FileOperationsService` interface in `domain/`, impl in `data/`:
-  trash, rename, copy/move, reveal, clipboard, open-with (macOS native channel first).
-- Persist rotation (EXIF orientation write / lossless JPEG transform).
-- Slideshow settings (interval, shuffle, loop, fade transition) in Settings.
-- Fit modes, fullscreen toggle, drag-and-drop in/out.
-- Multi-select in the rail ("tray") — prerequisite for batch actions later.
-- HEIC/TIFF/AVIF via macOS ImageIO over the existing method channel.
+### Phase 1 — Viewer essentials (v1.1) — ✅ done
+- ✅ `FileOperationsService`: move to Trash / Recycle Bin, rename, copy/move to
+  folder, show in Finder/Explorer, copy image, Open with… (macOS via native
+  channel; Windows/Linux via system tools).
+- ✅ Save rotation: lossless for JPEG (EXIF orientation edited in place), PNG/BMP
+  re-encoded losslessly; atomic temp-file + rename.
+- ✅ Slideshow settings: time per image, shuffle, loop, full screen while playing.
+- ✅ Fit / fill toggle, full screen toggle, drop files/folders to open.
+- ✅ Multi-select in the rail (⌘/Ctrl-click, Shift-click, select all).
+- ✅ HEIC/HEIF, AVIF, TIFF on macOS via ImageIO.
+- Deferred / not done:
+  - **Drag images out** of Picavi into other apps (needs a native drag source;
+    `super_drag_and_drop` pulls in a Rust toolchain — decide before adding).
+  - Saving rotation for WebP/GIF/HEIC/TIFF (no lossless writer yet), and JPEGs
+    whose EXIF lacks an orientation tag (left untouched to avoid metadata loss).
+  - HEIC/AVIF/TIFF on **Windows/Linux** (needs WIC / libheif, or `image` for TIFF).
+  - Windows/Linux file actions are written but **untested on those platforms**.
+  - Slideshow fade transition is the existing image cross-fade; no transition
+    choices.
 
 ### Phase 2 — Editor (v1.2, ~6 weeks)
 - New feature module `lib/editor/` (domain/data/presentation).

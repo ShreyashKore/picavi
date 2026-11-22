@@ -42,14 +42,19 @@ lib/
   core/                cross-feature building blocks
     services/          AppPreferencesService (shared_preferences), DefaultViewerService
     theme/             AppTheme, AppColors, AppColorSchemes (dark theme only)
-    widgets/           AppImage (raster + SVG-aware image widget)
+    widgets/           AppImage (raster + SVG + system-decoded image widget)
+    images/            SystemDecodedImage (ImageProvider backed by macOS ImageIO)
     l10n/              BuildContext.l10n extension
   l10n/                .arb source files + generated/ AppLocalizations (do not hand-edit generated/)
   viewer/              the one feature module
-    domain/            entities (GalleryImage, ImageMetadata), repository/service interfaces,
-                       constants (supportedImageExtensions). Pure Dart, no Flutter UI.
+    domain/            entities (GalleryImage, ImageMetadata, ImageSortOrder, SlideshowSettings),
+                       repository/service interfaces (ImageRepository, ImagePickerService,
+                       FileOperationsService, ImageTransformService), constants
+                       (supported/systemDecoded image extensions). Pure Dart, no Flutter UI.
     data/              implementations: FileSystemImageRepository, DesktopImagePickerService,
-                       NativeFileChannelService (platform MethodChannel)
+                       DesktopFileOperationsService, RasterImageTransformService,
+                       SlideshowSettingsStore, NativeFileChannelService (platform MethodChannel),
+                       platformImageExtensions
     presentation/      controllers/ (ViewerController: ChangeNotifier), models/ (ViewerState,
                        ViewerNotice), screens/ (ViewerScreen, SettingsScreen), widgets/
 ```
@@ -64,7 +69,8 @@ controller and wires it to the UI.
 
 ### Dependency injection
 Manual constructor injection. `ViewerController` takes `ImageRepository`,
-`ImagePickerService`, and `NativeFileChannelService` interfaces; concrete `data/`
+`ImagePickerService`, `FileOperationsService`, `ImageTransformService` and
+`NativeFileChannelService` (plus an `evictImage` callback); concrete `data/`
 implementations are constructed in `ViewerScreen`. Tests pass fakes — keep new
 dependencies behind a `domain/` interface so they stay swappable.
 
@@ -80,9 +86,16 @@ dependencies behind a `domain/` interface so they stay swappable.
   the native channel methods.
 - **No hardcoded user-facing strings.** All UI text comes from localizations.
 - **Supported formats** live in one place:
-  [supported_image_extensions.dart](lib/viewer/domain/constants/supported_image_extensions.dart)
-  (`.bmp .gif .ico .jpeg .jpg .png .svg .webp`). This constant is the source of
-  truth; keep the README's list in sync.
+  [supported_image_extensions.dart](lib/viewer/domain/constants/supported_image_extensions.dart).
+  `supportedImageExtensions` (`.bmp .gif .ico .jpeg .jpg .png .svg .webp`) are
+  decoded by Flutter everywhere; `systemDecodedImageExtensions`
+  (`.avif .heic .heif .tif .tiff`) only where the OS decodes them (macOS ImageIO).
+  Use `platformImageExtensions` for "what can this platform open". Keep the
+  README, `macos/Runner/Info.plist` and the Swift `supportedImageExtensions` in sync.
+- **Never delete permanently.** File removal goes through the system Trash /
+  Recycle Bin (`FileOperationsService.moveToTrash`); copy/move never overwrite.
+- **Writing image files** (`RasterImageTransformService`) goes through a temp
+  file + rename, and JPEG rotation only edits the EXIF orientation value.
 
 ## Localization (i18n)
 
@@ -104,7 +117,10 @@ The macOS app forwards Finder "Open With" events into Flutter over a
 native side: [macos/Runner/AppDelegate.swift](macos/Runner/AppDelegate.swift) and
 `MainFlutterWindow.swift`. Channel methods: `consumePendingFiles`, `openFiles`,
 `pickImageFile`, `authorizeDirectoryAccess`, `getDefaultViewerStatus`,
-`setAsDefaultViewer`. macOS uses security-scoped bookmarks for folder access.
+`setAsDefaultViewer`, `moveToTrash`, `revealInFinder`, `copyImageToClipboard`,
+`openWith`, `decodeImage` (used by `SystemDecodedImage`). macOS uses
+security-scoped bookmarks for folder access. On Windows/Linux, file actions use
+system tools from `DesktopFileOperationsService` (paths passed via env/args).
 
 Per-platform "open with" registration: macOS declares image document types in
 `Info.plist`; Linux ships `linux/oiv.desktop.in`; Windows registers an "Open with"
