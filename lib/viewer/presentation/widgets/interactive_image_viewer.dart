@@ -135,6 +135,7 @@ class InteractiveImageViewer extends StatefulWidget {
     this.minZoomFactor,
     this.maxZoomFactor,
     this.imagePadding = EdgeInsets.zero,
+    this.overlayBuilder,
   });
 
   final AppImage image;
@@ -145,6 +146,12 @@ class InteractiveImageViewer extends StatefulWidget {
   final double? minZoomFactor;
   final double? maxZoomFactor;
   final EdgeInsetsGeometry imagePadding;
+
+  /// Builds a layer drawn on top of the image, sized to the image as fitted
+  /// in the viewport and moved with it by zoom, pan and rotation (e.g. Live
+  /// Text). It is not part of the image cross-fade.
+  final Widget Function(BuildContext context, Size fittedImageSize)?
+  overlayBuilder;
 
   @override
   State<InteractiveImageViewer> createState() => _InteractiveImageViewerState();
@@ -826,8 +833,22 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
                                     key: _viewerScaleTransformKey,
                                     scale: _zoomFactor,
                                     child: Center(
-                                      child: _buildAnimatedDisplayedImage(
-                                        fittedImageSize,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          _buildAnimatedDisplayedImage(
+                                            fittedImageSize,
+                                          ),
+                                          if (widget.overlayBuilder
+                                              case final overlayBuilder?)
+                                            SizedBox.fromSize(
+                                              size: fittedImageSize,
+                                              child: overlayBuilder(
+                                                context,
+                                                fittedImageSize,
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     ),
                                   ),

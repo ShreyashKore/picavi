@@ -2,6 +2,7 @@ import Cocoa
 import CoreServices
 import ImageIO
 import UniformTypeIdentifiers
+import Vision
 import FlutterMacOS
 
 class MainFlutterWindow: NSWindow {
@@ -87,6 +88,8 @@ class MainFlutterWindow: NSWindow {
         self.copyImageToClipboard(arguments: call.arguments, result: result)
       case "openWith":
         self.presentOpenWithPanel(arguments: call.arguments, result: result)
+      case "recognizeText":
+        self.recognizeText(arguments: call.arguments, result: result)
       default:
         result(FlutterMethodNotImplemented)
       }
@@ -219,6 +222,63 @@ class MainFlutterWindow: NSWindow {
       return nil
     }
     return output as Data
+  }
+
+  /// Live Text: finds text with Vision and returns lines and words with
+  /// normalized quads (top-left origin) matching the image as displayed.
+  private func recognizeText(arguments: Any?, result: @escaping FlutterResult) {
+    let dictionary = arguments as? [String: Any]
+    let url = fileURL(from: arguments)
+    let rgba = dictionary?["rgba"] as? FlutterStandardTypedData
+    let width = dictionary?["width"] as? Int ?? 0
+    let height = dictionary?["height"] as? Int ?? 0
+
+    DispatchQueue.global(qos: .userInitiated).async {
+      var image: CGImage?
+      if let rgba {
+        image = Self.cgImage(rgba: rgba.data, width: width, height: height)
+      } else if let url {
+        image = Self.cgImageForTextRecognition(url: url)
+      }
+      let lines = image.flatMap { LiveTextRecognizer.recognize(in: $0) }
+      DispatchQueue.main.async {
+        result(lines.map { ["lines": $0] })
+      }
+    }
+  }
+
+  private static func cgImageForTextRecognition(url: URL) -> CGImage? {
+    let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+    guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions) else {
+      return nil
+    }
+    let options = [
+      kCGImageSourceCreateThumbnailFromImageAlways: true,
+      kCGImageSourceCreateThumbnailWithTransform: true,
+      kCGImageSourceShouldCacheImmediately: true,
+      kCGImageSourceThumbnailMaxPixelSize: 4096,
+    ] as CFDictionary
+    return CGImageSourceCreateThumbnailAtIndex(source, 0, options)
+  }
+
+  private static func cgImage(rgba: Data, width: Int, height: Int) -> CGImage? {
+    guard width > 0, height > 0, rgba.count >= width * height * 4,
+          let provider = CGDataProvider(data: rgba as CFData) else {
+      return nil
+    }
+    return CGImage(
+      width: width,
+      height: height,
+      bitsPerComponent: 8,
+      bitsPerPixel: 32,
+      bytesPerRow: width * 4,
+      space: CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue),
+      provider: provider,
+      decode: nil,
+      shouldInterpolate: false,
+      intent: .defaultIntent
+    )
   }
 
   private func moveToTrash(arguments: Any?, result: FlutterResult) {
@@ -400,5 +460,111 @@ class MainFlutterWindow: NSWindow {
     }
 
     return contentTypes
+  }
+}
+
+/// On-device text recognition for Live Text. Quads are flat
+/// `[tlx, tly, trx, try, brx, bry, blx, bly]`, normalized to the image with a
+/// top-left origin. Word ranges are UTF-16 offsets into the line text (what
+/// Dart strings index by).
+enum LiveTextRecognizer {
+  static func recognize(in image: CGImage) -> [[String: Any]]? {
+    let request = VNRecognizeTextRequest()
+    request.recognitionLevel = .accurate
+    request.usesLanguageCorrection = true
+    if #available(macOS 13.0, *) {
+      request.automaticallyDetectsLanguage = true
+    }
+
+    let handler = VNImageRequestHandler(cgImage: image, orientation: .up, options: [:])
+    do {
+      try handler.perform([request])
+    } catch {
+      NSLog("Picavi: text recognition failed: \(error)")
+      return nil
+    }
+
+    return (request.results ?? []).compactMap { observation in
+      guard let candidate = observation.topCandidates(1).first else {
+        return nil
+      }
+      let text = candidate.string
+      guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        return nil
+      }
+
+      let lineQuad = quad(of: observation)
+      let ranges = wordRanges(in: text)
+      let totalLength = max(1, text.utf16.count)
+      let words: [[String: Any]] = ranges.map { range in
+        let start = text.utf16.distance(from: text.startIndex, to: range.lowerBound)
+        let end = text.utf16.distance(from: text.startIndex, to: range.upperBound)
+        var wordQuad: [Double]?
+        if let box = try? candidate.boundingBox(for: range) {
+          let measured = quad(of: box)
+          // Accurate recognition sometimes reports the whole line for every
+          // range; spread the line across its characters instead.
+          if ranges.count == 1 || !isSameQuad(measured, lineQuad) {
+            wordQuad = measured
+          }
+        }
+        return [
+          "start": start,
+          "end": end,
+          "quad": wordQuad ?? interpolate(
+            lineQuad,
+            from: Double(start) / Double(totalLength),
+            to: Double(end) / Double(totalLength)
+          ),
+        ]
+      }
+
+      return ["text": text, "quad": lineQuad, "words": words]
+    }
+  }
+
+  private static func quad(of observation: VNRectangleObservation) -> [Double] {
+    let corners: [CGPoint] = [
+      observation.topLeft, observation.topRight, observation.bottomRight, observation.bottomLeft,
+    ]
+    var values: [Double] = []
+    for corner in corners {
+      values.append(Double(corner.x))
+      values.append(1 - Double(corner.y))
+    }
+    return values
+  }
+
+  /// Runs of non-whitespace characters, so punctuation stays with its word.
+  private static func wordRanges(in text: String) -> [Range<String.Index>] {
+    var ranges: [Range<String.Index>] = []
+    var wordStart: String.Index?
+    var index = text.startIndex
+    while index < text.endIndex {
+      let isSpace = text[index].isWhitespace
+      if isSpace, let start = wordStart {
+        ranges.append(start..<index)
+        wordStart = nil
+      } else if !isSpace, wordStart == nil {
+        wordStart = index
+      }
+      index = text.index(after: index)
+    }
+    if let start = wordStart {
+      ranges.append(start..<text.endIndex)
+    }
+    return ranges
+  }
+
+  private static func isSameQuad(_ a: [Double], _ b: [Double]) -> Bool {
+    zip(a, b).allSatisfy { abs($0 - $1) < 0.002 }
+  }
+
+  private static func interpolate(_ line: [Double], from t0: Double, to t1: Double) -> [Double] {
+    func lerp(_ a: Int, _ b: Int, _ t: Double) -> [Double] {
+      [line[a] + (line[b] - line[a]) * t, line[a + 1] + (line[b + 1] - line[a + 1]) * t]
+    }
+    // Top edge runs TL(0) → TR(2), bottom edge BL(6) → BR(4).
+    return lerp(0, 2, t0) + lerp(0, 2, t1) + lerp(6, 4, t1) + lerp(6, 4, t0)
   }
 }

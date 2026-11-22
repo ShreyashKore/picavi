@@ -173,6 +173,45 @@ void main() {
       expect(find.byKey(firstImageKey), findsNothing);
       expect(find.byKey(secondImageKey), findsOneWidget);
     });
+
+    testWidgets('overlay is sized to the fitted image and zooms with it', (
+      tester,
+    ) async {
+      final controller = InteractiveImageViewerController();
+      final image = _buildSvgImage(
+        const Color(0xFF1E88E5),
+        width: 40,
+        height: 20,
+      );
+      const overlayKey = ValueKey<String>('overlay');
+      Size? fittedSize;
+
+      await _pumpViewer(
+        tester,
+        controller: controller,
+        image: image,
+        overlayBuilder: (context, size) {
+          fittedSize = size;
+          return const SizedBox.expand(key: overlayKey);
+        },
+      );
+      for (var i = 0; i < 20 && controller.value.imageInfo == null; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump();
+      }
+      await tester.pump();
+
+      // A 2:1 image fitted into 320x240.
+      expect(fittedSize, const Size(320, 160));
+      expect(tester.getSize(find.byKey(overlayKey)), const Size(320, 160));
+
+      controller.zoomIn();
+      await tester.pumpAndSettle();
+      final zoomedRect = tester.getRect(find.byKey(overlayKey));
+      expect(zoomedRect.width, closeTo(320 * 1.2, 0.5));
+    });
   });
 }
 
@@ -180,6 +219,7 @@ Future<void> _pumpViewer(
   WidgetTester tester, {
   required InteractiveImageViewerController controller,
   required AppImage image,
+  Widget Function(BuildContext context, Size fittedImageSize)? overlayBuilder,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -188,7 +228,11 @@ Future<void> _pumpViewer(
           child: SizedBox(
             width: 320,
             height: 240,
-            child: InteractiveImageViewer(controller: controller, image: image),
+            child: InteractiveImageViewer(
+              controller: controller,
+              image: image,
+              overlayBuilder: overlayBuilder,
+            ),
           ),
         ),
       ),
