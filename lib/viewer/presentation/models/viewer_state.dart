@@ -1,3 +1,4 @@
+import '../../../editor/domain/entities/image_edits.dart';
 import '../../domain/entities/gallery_image.dart';
 import '../../domain/entities/image_sort_order.dart';
 import 'viewer_notice.dart';
@@ -11,6 +12,8 @@ class ViewerState {
     required this.notice,
     this.sortOrder = const ImageSortOrder(),
     this.selectedPaths = const <String>{},
+    this.edits = const <String, ImageEdits>{},
+    this.isWorking = false,
   });
 
   const ViewerState.initial()
@@ -20,7 +23,9 @@ class ViewerState {
       isBootstrapping = true,
       notice = null,
       sortOrder = const ImageSortOrder(),
-      selectedPaths = const <String>{};
+      selectedPaths = const <String>{},
+      edits = const <String, ImageEdits>{},
+      isWorking = false;
 
   final List<GalleryImage> images;
   final String? currentDirectory;
@@ -32,6 +37,14 @@ class ViewerState {
   /// Images picked with Cmd/Ctrl- or Shift-click. Empty means actions apply
   /// to the current image only.
   final Set<String> selectedPaths;
+
+  /// Non-destructive edits of images in the current folder, by path.
+  final Map<String, ImageEdits> edits;
+
+  /// A batch action (export, quick fix) is running.
+  final bool isWorking;
+
+  ImageEdits editsFor(String path) => edits[path] ?? ImageEdits.none;
 
   bool get hasImages => images.isNotEmpty;
 
@@ -63,6 +76,8 @@ class ViewerState {
     bool clearNotice = false,
     ImageSortOrder? sortOrder,
     Set<String>? selectedPaths,
+    Map<String, ImageEdits>? edits,
+    bool? isWorking,
   }) {
     return ViewerState(
       images: images ?? this.images,
@@ -72,6 +87,8 @@ class ViewerState {
       notice: clearNotice ? null : notice ?? this.notice,
       sortOrder: sortOrder ?? this.sortOrder,
       selectedPaths: selectedPaths ?? this.selectedPaths,
+      edits: edits ?? this.edits,
+      isWorking: isWorking ?? this.isWorking,
     );
   }
 }

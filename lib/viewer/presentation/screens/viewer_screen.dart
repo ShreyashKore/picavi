@@ -14,6 +14,15 @@ import '../../../../core/services/app_preferences_service.dart';
 import '../../../../core/services/default_viewer_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_image.dart';
+import '../../../editor/data/repositories/sidecar_image_edit_repository.dart';
+import '../../../editor/data/services/edited_image_provider.dart';
+import '../../../editor/data/services/flutter_image_pixel_source.dart';
+import '../../../editor/data/services/raster_image_export_service.dart';
+import '../../../editor/data/services/rendering_quick_fix_service.dart';
+import '../../../editor/domain/entities/image_edits.dart';
+import '../../../editor/domain/services/quick_fix_service.dart';
+import '../../../editor/presentation/screens/editor_screen.dart';
+import '../../../editor/presentation/widgets/export_options_dialog.dart';
 import '../../data/repositories/file_system_image_repository.dart';
 import '../../data/services/desktop_file_operations_service.dart';
 import '../../data/services/desktop_image_picker_service.dart';
@@ -62,6 +71,9 @@ class _ViewerScreenState extends State<ViewerScreen>
   );
   late final ImageRepository _imageRepository;
   late final ViewerController _controller;
+  final SidecarImageEditRepository _editRepository =
+      SidecarImageEditRepository();
+  static const FlutterImagePixelSource _pixelSource = FlutterImagePixelSource();
   late final AppPreferencesService _appPreferencesService;
   late final DefaultViewerService _defaultViewerService;
   late final InteractiveImageViewerController _imageViewerController;
@@ -110,6 +122,9 @@ class _ViewerScreenState extends State<ViewerScreen>
         nativeChannel: nativeFileChannelService,
       ),
       imageTransformService: RasterImageTransformService(),
+      editRepository: _editRepository,
+      quickFixService: const RenderingQuickFixService(),
+      exportService: const RasterImageExportService(),
       evictImage: (path) => AppImage.evictFile(
         path,
         cacheWidths: const [ViewerThumbnailRail.cacheWidth],
@@ -425,6 +440,22 @@ class _ViewerScreenState extends State<ViewerScreen>
         );
 
     switch (action) {
+      case ViewerFileAction.edit:
+        await _openEditor();
+      case ViewerFileAction.export:
+        await _exportTargets();
+      case ViewerFileAction.feelingLucky:
+        await _controller.quickFixTargets(QuickFix.feelingLucky);
+      case ViewerFileAction.autoContrast:
+        await _controller.quickFixTargets(QuickFix.autoContrast);
+      case ViewerFileAction.autoColor:
+        await _controller.quickFixTargets(QuickFix.autoColor);
+      case ViewerFileAction.blackAndWhite:
+        await _controller.quickFixTargets(QuickFix.blackAndWhite);
+      case ViewerFileAction.sepia:
+        await _controller.quickFixTargets(QuickFix.sepia);
+      case ViewerFileAction.removeEdits:
+        await _controller.removeEditsFromTargets();
       case ViewerFileAction.rename:
         await _renameCurrentImage();
       case ViewerFileAction.copyToFolder:
@@ -448,6 +479,56 @@ class _ViewerScreenState extends State<ViewerScreen>
     if (mounted) {
       _viewerFocusNode.requestFocus();
     }
+  }
+
+  DirectoryAccessTexts get _exportFolderTexts => DirectoryAccessTexts(
+    prompt: context.l10n.exportChooseFolder,
+    message: context.l10n.chooseDestinationMessage,
+  );
+
+  bool get _canEditCurrent {
+    final state = _controller.state;
+    return state.hasImages && _pixelSource.canEdit(state.currentImage.path);
+  }
+
+  Future<void> _openEditor() async {
+    if (!_canEditCurrent) {
+      return;
+    }
+    _stopSlideshow();
+    final path = _controller.state.currentImage.path;
+    final edits = await Navigator.of(context).push<ImageEdits>(
+      MaterialPageRoute(
+        builder: (context) => EditorScreen(
+          path: path,
+          repository: _editRepository,
+          pixelSource: _pixelSource,
+          pickExportDirectory: () => _controller.pickFolder(_exportFolderTexts),
+        ),
+      ),
+    );
+    if (edits != null) {
+      _controller.setEdits(path, edits);
+    }
+    if (mounted) {
+      _viewerFocusNode.requestFocus();
+    }
+  }
+
+  Future<void> _exportTargets() async {
+    final count = _controller.state.actionTargets.length;
+    if (count == 0) {
+      return;
+    }
+    _stopSlideshow();
+    final options = await showExportOptionsDialog(context, imageCount: count);
+    if (options == null || !mounted) {
+      return;
+    }
+    await _controller.exportTargets(
+      options: options,
+      pickerTexts: _exportFolderTexts,
+    );
   }
 
   Future<void> _renameCurrentImage() async {
@@ -821,6 +902,16 @@ class _ViewerScreenState extends State<ViewerScreen>
         notice.detail ?? '',
       ),
       ViewerNoticeType.rotationSaveFailed => l10n.rotationSaveFailedNotice,
+      ViewerNoticeType.rotationAddedToEdits => l10n.rotationAddedToEditsNotice,
+      ViewerNoticeType.exported => l10n.exportedNotice(notice.count),
+      ViewerNoticeType.exportFailed => l10n.exportFailedNotice(notice.count),
+      ViewerNoticeType.quickFixApplied => l10n.quickFixAppliedNotice(
+        notice.count,
+      ),
+      ViewerNoticeType.quickFixFailed => l10n.quickFixFailedNotice(
+        notice.count,
+      ),
+      ViewerNoticeType.editsRemoved => l10n.editsRemovedNotice(notice.count),
     };
   }
 
@@ -1060,6 +1151,9 @@ class _ViewerScreenState extends State<ViewerScreen>
     if (key == LogicalKeyboardKey.keyI) {
       return _toggleInfoOverlay;
     }
+    if (key == LogicalKeyboardKey.keyE) {
+      return () => unawaited(_openEditor());
+    }
     if (key == LogicalKeyboardKey.delete ||
         key == LogicalKeyboardKey.backspace) {
       return () => unawaited(_confirmAndTrash());
@@ -1086,6 +1180,13 @@ class _ViewerScreenState extends State<ViewerScreen>
         else
           _buildEmptyState(),
         if (state.hasImages) _buildTopOverlay(state),
+        if (state.isWorking)
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: LinearProgressIndicator(minHeight: 2),
+          ),
         Positioned(
           right: 0,
           top: 0,
@@ -1181,13 +1282,7 @@ class _ViewerScreenState extends State<ViewerScreen>
           Positioned.fill(
             child: InteractiveImageViewer(
               controller: _imageViewerController,
-              image: AppImage.file(
-                state.currentImage.path,
-                revision: state.currentImage.revision,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.high,
-                errorBuilder: (_, _, _) => const SizedBox.expand(),
-              ),
+              image: _currentImageWidget(state),
               semanticLabel: state.currentImage.fileName,
               errorBuilder: (context, error) => Center(
                 child: Container(
@@ -1254,6 +1349,7 @@ class _ViewerScreenState extends State<ViewerScreen>
                       scrollController: _thumbnailScrollController,
                       onTap: _handleThumbnailTap,
                       selectedPaths: state.selectedPaths,
+                      edits: state.edits,
                       onScrollImageChange: (delta) =>
                           unawaited(_goToRelativeIndex(delta)),
                       topInset: _thumbnailControlsInset,
@@ -1281,12 +1377,43 @@ class _ViewerScreenState extends State<ViewerScreen>
                         ? () => unawaited(_saveRotation())
                         : null,
                     showInfo: _showInfoOverlay,
+                    onEdit: _canEditCurrent
+                        ? () => unawaited(_openEditor())
+                        : null,
                   ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  /// The current image, with its edits applied when it has any.
+  AppImage _currentImageWidget(ViewerState state) {
+    final image = state.currentImage;
+    final edits = state.editsFor(image.path);
+    if (edits.isEmpty) {
+      return AppImage.file(
+        image.path,
+        revision: image.revision,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.high,
+        errorBuilder: (_, _, _) => const SizedBox.expand(),
+      );
+    }
+    return AppImage(
+      image: EditedImageProvider(
+        image.path,
+        edits,
+        maxDimension: EditedImageProvider.viewerMaxDimension,
+        revision: image.revision,
+      ),
+      filePath: image.path,
+      revision: image.revision,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.high,
+      errorBuilder: (_, _, _) => const SizedBox.expand(),
     );
   }
 
@@ -1309,6 +1436,10 @@ class _ViewerScreenState extends State<ViewerScreen>
       onShowShortcuts: () => unawaited(_showKeyboardShortcuts()),
       actionsMenu: ViewerActionsMenu(
         targetCount: state.actionTargets.length,
+        canEdit: _canEditCurrent,
+        hasEdits: state.actionTargets.any(
+          (path) => state.editsFor(path).isNotEmpty,
+        ),
         onSelected: (action) => unawaited(_handleFileAction(action)),
       ),
       selectionCount: state.selectedPaths.length,

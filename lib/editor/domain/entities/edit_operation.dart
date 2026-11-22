@@ -175,7 +175,8 @@ class RotateEdit extends EditOperation {
 class StraightenEdit extends EditOperation {
   const StraightenEdit(this.degrees);
 
-  static const double maxDegrees = 45;
+  /// Range offered by the straighten slider.
+  static const double maxDegrees = 20;
 
   final double degrees;
 

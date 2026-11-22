@@ -23,6 +23,7 @@ class ViewerControlBar extends StatelessWidget {
     required this.isFullScreen,
     required this.onToggleFullScreen,
     this.onSaveRotation,
+    this.onEdit,
   });
 
   final bool canNavigate;
@@ -44,6 +45,9 @@ class ViewerControlBar extends StatelessWidget {
 
   /// Shown only while the image is rotated.
   final VoidCallback? onSaveRotation;
+
+  /// Opens the editor; null (disabled) for formats it can't edit.
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +93,13 @@ class ViewerControlBar extends StatelessWidget {
             ),
           _ControlGroup(
             children: [
+              _ControlButton(
+                tooltip: onEdit == null
+                    ? l10n.editUnavailableTooltip
+                    : l10n.editImageTooltip,
+                icon: Icons.tune_rounded,
+                onPressed: onEdit,
+              ),
               _ControlButton(
                 tooltip: l10n.rotateLeftTooltip,
                 icon: Icons.rotate_90_degrees_ccw_outlined,

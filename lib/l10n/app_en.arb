@@ -592,5 +592,349 @@
   "shortcutSaveRotation": "Save rotation to the file",
   "@shortcutSaveRotation": {
     "description": "Shortcut description."
+  },
+  "editImageTooltip": "Edit image",
+  "@editImageTooltip": {
+    "description": "Tooltip for the button that opens the editor."
+  },
+  "editUnavailableTooltip": "This file type can't be edited",
+  "@editUnavailableTooltip": {
+    "description": "Tooltip on the edit button for a file type the editor cannot open."
+  },
+  "shortcutEdit": "Edit image",
+  "@shortcutEdit": {
+    "description": "Keyboard shortcuts list: open the editor."
+  },
+  "editorTabFixes": "Basic fixes",
+  "@editorTabFixes": {
+    "description": "Editor tab with crop, straighten, red-eye and one-click fixes."
+  },
+  "editorTabTuning": "Tuning",
+  "@editorTabTuning": {
+    "description": "Editor tab with light and colour sliders."
+  },
+  "editorTabEffects": "Effects",
+  "@editorTabEffects": {
+    "description": "Editor tab with effects such as sepia."
+  },
+  "editorCrop": "Crop",
+  "@editorCrop": {
+    "description": "Editor tool: crop."
+  },
+  "editorStraighten": "Straighten",
+  "@editorStraighten": {
+    "description": "Editor tool: straighten (rotate by a small angle)."
+  },
+  "editorRedEye": "Red-eye",
+  "@editorRedEye": {
+    "description": "Editor tool: red-eye removal."
+  },
+  "editorFeelingLucky": "I'm Feeling Lucky",
+  "@editorFeelingLucky": {
+    "description": "One-click fix that improves contrast and colour automatically."
+  },
+  "editorAutoContrast": "Auto contrast",
+  "@editorAutoContrast": {
+    "description": "One-click fix: automatic contrast."
+  },
+  "editorAutoColor": "Auto color",
+  "@editorAutoColor": {
+    "description": "One-click fix: automatic colour balance."
+  },
+  "editorTuneFillLight": "Fill light",
+  "@editorTuneFillLight": {
+    "description": "Tuning slider that brightens dark areas."
+  },
+  "editorTuneHighlights": "Highlights",
+  "@editorTuneHighlights": {
+    "description": "Tuning slider for highlights."
+  },
+  "editorTuneShadows": "Shadows",
+  "@editorTuneShadows": {
+    "description": "Tuning slider that deepens shadows."
+  },
+  "editorTuneTemperature": "Color temperature",
+  "@editorTuneTemperature": {
+    "description": "Tuning slider from cooler to warmer colours."
+  },
+  "editorApply": "Apply",
+  "@editorApply": {
+    "description": "Button that applies the current tool."
+  },
+  "editorReset": "Reset",
+  "@editorReset": {
+    "description": "Button that resets the tuning sliders."
+  },
+  "editorClear": "Clear",
+  "@editorClear": {
+    "description": "Button that removes the red-eye spots placed so far."
+  },
+  "editorStrength": "Strength",
+  "@editorStrength": {
+    "description": "Slider label for how strong an effect is."
+  },
+  "effectBlackAndWhite": "Black & white",
+  "@effectBlackAndWhite": {
+    "description": "Effect: black and white."
+  },
+  "effectSepia": "Sepia",
+  "@effectSepia": {
+    "description": "Effect: sepia."
+  },
+  "effectWarmify": "Warmify",
+  "@effectWarmify": {
+    "description": "Effect: warmer colours."
+  },
+  "effectSaturation": "Saturation",
+  "@effectSaturation": {
+    "description": "Effect: colour saturation."
+  },
+  "effectSharpen": "Sharpen",
+  "@effectSharpen": {
+    "description": "Effect: sharpen."
+  },
+  "effectSoftFocus": "Soft focus",
+  "@effectSoftFocus": {
+    "description": "Effect: soft focus around the edges."
+  },
+  "effectGlow": "Glow",
+  "@effectGlow": {
+    "description": "Effect: glow."
+  },
+  "effectFilmGrain": "Film grain",
+  "@effectFilmGrain": {
+    "description": "Effect: film grain."
+  },
+  "effectVignette": "Vignette",
+  "@effectVignette": {
+    "description": "Effect: darker corners."
+  },
+  "editorCropHint": "Drag the frame or its corners to choose what to keep.",
+  "@editorCropHint": {
+    "description": "Hint in the crop tool."
+  },
+  "editorCropSwapOrientation": "Portrait / landscape",
+  "@editorCropSwapOrientation": {
+    "description": "Button that swaps the crop between portrait and landscape."
+  },
+  "editorCropFree": "Free",
+  "@editorCropFree": {
+    "description": "Crop shape: any shape."
+  },
+  "editorCropOriginal": "Original",
+  "@editorCropOriginal": {
+    "description": "Crop shape: same as the photo."
+  },
+  "editorCropSquare": "Square",
+  "@editorCropSquare": {
+    "description": "Crop shape: square."
+  },
+  "editorCrop4x6": "4 × 6",
+  "@editorCrop4x6": {
+    "description": "Crop shape: 4×6 print."
+  },
+  "editorCrop5x7": "5 × 7",
+  "@editorCrop5x7": {
+    "description": "Crop shape: 5×7 print."
+  },
+  "editorCrop8x10": "8 × 10",
+  "@editorCrop8x10": {
+    "description": "Crop shape: 8×10 print."
+  },
+  "editorCrop16x9": "16:9",
+  "@editorCrop16x9": {
+    "description": "Crop shape: widescreen."
+  },
+  "editorStraightenHint": "Move the slider until the horizon lines up with the grid.",
+  "@editorStraightenHint": {
+    "description": "Hint in the straighten tool."
+  },
+  "editorDegrees": "{degrees}°",
+  "@editorDegrees": {
+    "description": "Straighten angle in degrees.",
+    "placeholders": {
+      "degrees": {
+        "type": "String"
+      }
+    }
+  },
+  "editorRedEyeHint": "Click the centre of each red eye. Change the size first if the circle is too small or too big.",
+  "@editorRedEyeHint": {
+    "description": "Hint in the red-eye tool."
+  },
+  "editorRedEyeSize": "Size",
+  "@editorRedEyeSize": {
+    "description": "Slider for the size of red-eye circles."
+  },
+  "editorUndo": "Undo",
+  "@editorUndo": {
+    "description": "Editor toolbar: undo."
+  },
+  "editorRedo": "Redo",
+  "@editorRedo": {
+    "description": "Editor toolbar: redo."
+  },
+  "editorRevert": "Revert",
+  "@editorRevert": {
+    "description": "Editor toolbar: remove every edit."
+  },
+  "editorExport": "Export…",
+  "@editorExport": {
+    "description": "Editor toolbar: save an edited copy."
+  },
+  "editorDone": "Done",
+  "@editorDone": {
+    "description": "Editor toolbar: close the editor."
+  },
+  "editorLoadFailed": "This image can't be opened for editing.",
+  "@editorLoadFailed": {
+    "description": "Shown when the editor cannot decode the image."
+  },
+  "editorSaveFailed": "Couldn't save your edits in this folder. They'll be lost when you close Picavi.",
+  "@editorSaveFailed": {
+    "description": "Shown when the edits file next to the image cannot be written."
+  },
+  "editorExported": "Saved a copy as {name}",
+  "@editorExported": {
+    "description": "Shown after an edited copy was written.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "editorExportFailed": "Couldn't export the image",
+  "@editorExportFailed": {
+    "description": "Shown when exporting failed."
+  },
+  "exportDialogTitle": "{count, plural, =1{Export image} other{Export {count} images}}",
+  "@exportDialogTitle": {
+    "description": "Title of the export options dialog.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exportDialogDescription": "Edited copies are saved as new files. Your originals are never changed.",
+  "@exportDialogDescription": {
+    "description": "Explains that export writes new files."
+  },
+  "exportFormatLabel": "Format",
+  "@exportFormatLabel": {
+    "description": "Export dialog: file format."
+  },
+  "exportFormatJpeg": "JPEG",
+  "@exportFormatJpeg": {
+    "description": "Export format: JPEG."
+  },
+  "exportFormatPng": "PNG",
+  "@exportFormatPng": {
+    "description": "Export format: PNG."
+  },
+  "exportSizeLabel": "Size",
+  "@exportSizeLabel": {
+    "description": "Export dialog: image size."
+  },
+  "exportSizeOriginal": "Full size",
+  "@exportSizeOriginal": {
+    "description": "Export size: keep the full size."
+  },
+  "exportSizePixels": "{size} px on the long side",
+  "@exportSizePixels": {
+    "description": "Export size: longest side in pixels.",
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "exportQualityLabel": "Quality: {quality}",
+  "@exportQualityLabel": {
+    "description": "Export dialog: JPEG quality.",
+    "placeholders": {
+      "quality": {
+        "type": "int"
+      }
+    }
+  },
+  "exportChooseFolder": "Choose folder…",
+  "@exportChooseFolder": {
+    "description": "Export dialog button that continues to the folder picker."
+  },
+  "exportAction": "{count, plural, =1{Export…} other{Export {count} images…}}",
+  "@exportAction": {
+    "description": "Viewer actions menu: export edited copies.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exportedNotice": "{count, plural, =1{Exported 1 image} other{Exported {count} images}}",
+  "@exportedNotice": {
+    "description": "Viewer notice after exporting.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exportFailedNotice": "{count, plural, =1{1 image couldn't be exported} other{{count} images couldn't be exported}}",
+  "@exportFailedNotice": {
+    "description": "Viewer notice when some exports failed.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickFixMenu": "{count, plural, =1{Quick fix} other{Quick fix {count} images}}",
+  "@quickFixMenu": {
+    "description": "Viewer actions submenu with one-click edits for the selected images.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "removeEditsAction": "Remove edits",
+  "@removeEditsAction": {
+    "description": "Quick-fix menu item that removes all edits."
+  },
+  "quickFixAppliedNotice": "{count, plural, =1{Edited 1 image} other{Edited {count} images}}",
+  "@quickFixAppliedNotice": {
+    "description": "Viewer notice after a quick fix.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickFixFailedNotice": "{count, plural, =1{1 image couldn't be edited} other{{count} images couldn't be edited}}",
+  "@quickFixFailedNotice": {
+    "description": "Viewer notice when a quick fix failed for some images.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "editsRemovedNotice": "{count, plural, =1{Removed the edits from 1 image} other{Removed the edits from {count} images}}",
+  "@editsRemovedNotice": {
+    "description": "Viewer notice after removing edits.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rotationAddedToEditsNotice": "Rotation saved with this image's edits",
+  "@rotationAddedToEditsNotice": {
+    "description": "Viewer notice: the rotation of an edited image was saved with its other edits instead of rewriting the file."
+  },
+  "editedBadgeTooltip": "Edited",
+  "@editedBadgeTooltip": {
+    "description": "Tooltip on the small mark of an image that has edits."
   }
 }

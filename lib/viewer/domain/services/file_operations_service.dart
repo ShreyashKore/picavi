@@ -22,13 +22,20 @@ abstract class FileOperationsService {
   /// path. Throws [FileOperationException].
   Future<String> rename(String path, String newFileName);
 
-  /// Copies [paths] into [destinationDirectory] and returns the paths that
-  /// were copied. Existing files are never overwritten.
-  Future<List<String>> copyTo(List<String> paths, String destinationDirectory);
+  /// Copies [paths] into [destinationDirectory]. Returns each copied path
+  /// mapped to its new path (which gets a " (2)" style suffix when the name
+  /// was taken). Existing files are never overwritten.
+  Future<Map<String, String>> copyTo(
+    List<String> paths,
+    String destinationDirectory,
+  );
 
-  /// Moves [paths] into [destinationDirectory] and returns the original paths
-  /// that were moved. Existing files are never overwritten.
-  Future<List<String>> moveTo(List<String> paths, String destinationDirectory);
+  /// Moves [paths] into [destinationDirectory]. Returns each moved path
+  /// mapped to its new path. Existing files are never overwritten.
+  Future<Map<String, String>> moveTo(
+    List<String> paths,
+    String destinationDirectory,
+  );
 
   /// Shows [path] selected in the platform file manager.
   Future<bool> reveal(String path);

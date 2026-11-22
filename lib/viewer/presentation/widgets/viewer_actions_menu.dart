@@ -6,6 +6,14 @@ import '../../../core/l10n/l10n_extensions.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 enum ViewerFileAction {
+  edit,
+  export,
+  feelingLucky,
+  autoContrast,
+  autoColor,
+  blackAndWhite,
+  sepia,
+  removeEdits,
   rename,
   copyToFolder,
   moveToFolder,
@@ -35,10 +43,18 @@ class ViewerActionsMenu extends StatelessWidget {
     super.key,
     required this.targetCount,
     required this.onSelected,
+    this.canEdit = false,
+    this.hasEdits = false,
   });
 
   /// How many images multi-image actions apply to.
   final int targetCount;
+
+  /// The current image can be opened in the editor.
+  final bool canEdit;
+
+  /// At least one target has edits that can be removed.
+  final bool hasEdits;
   final ValueChanged<ViewerFileAction> onSelected;
 
   @override
@@ -71,6 +87,57 @@ class ViewerActionsMenu extends StatelessWidget {
       style: IconButton.styleFrom(visualDensity: VisualDensity.compact),
       onSelected: onSelected,
       itemBuilder: (context) => <PopupMenuEntry<ViewerFileAction>>[
+        item(
+          ViewerFileAction.edit,
+          Icons.tune_rounded,
+          l10n.editImageTooltip,
+          enabled: singleImage && canEdit,
+        ),
+        item(
+          ViewerFileAction.export,
+          Icons.ios_share,
+          l10n.exportAction(targetCount),
+        ),
+        PopupMenuItem<ViewerFileAction>(
+          enabled: false,
+          height: 32,
+          child: Text(
+            l10n.quickFixMenu(targetCount),
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+        ),
+        item(
+          ViewerFileAction.feelingLucky,
+          Icons.auto_awesome,
+          l10n.editorFeelingLucky,
+        ),
+        item(
+          ViewerFileAction.autoContrast,
+          Icons.contrast,
+          l10n.editorAutoContrast,
+        ),
+        item(
+          ViewerFileAction.autoColor,
+          Icons.color_lens_outlined,
+          l10n.editorAutoColor,
+        ),
+        item(
+          ViewerFileAction.blackAndWhite,
+          Icons.filter_b_and_w,
+          l10n.effectBlackAndWhite,
+        ),
+        item(
+          ViewerFileAction.sepia,
+          Icons.filter_vintage_outlined,
+          l10n.effectSepia,
+        ),
+        item(
+          ViewerFileAction.removeEdits,
+          Icons.restore,
+          l10n.removeEditsAction,
+          enabled: hasEdits,
+        ),
+        const PopupMenuDivider(),
         item(
           ViewerFileAction.rename,
           Icons.drive_file_rename_outline,

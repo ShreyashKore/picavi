@@ -11,6 +11,14 @@ import 'package:oiv/viewer/domain/services/image_picker_service.dart';
 import 'package:oiv/viewer/domain/services/image_transform_service.dart';
 import 'package:oiv/viewer/presentation/controllers/viewer_controller.dart';
 import 'package:oiv/viewer/presentation/models/viewer_notice.dart';
+import 'package:path/path.dart' as p;
+import 'package:oiv/editor/data/services/rendering_quick_fix_service.dart';
+import 'package:oiv/editor/domain/entities/edit_operation.dart';
+import 'package:oiv/editor/domain/entities/export_options.dart';
+import 'package:oiv/editor/domain/entities/image_edits.dart';
+import 'package:oiv/editor/domain/services/quick_fix_service.dart';
+
+import 'support/editor_fakes.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -448,6 +456,151 @@ void main() {
       expect(fixture.controller.state.currentImage.revision, 0);
     });
   });
+
+  group('ViewerController edits', () {
+    const abc = <String>['/images/a.png', '/images/b.png', '/images/c.png'];
+    const sepia = ImageEdits([EffectEdit(EffectKind.sepia, 1)]);
+
+    test('loads the folder\'s edits when it opens', () async {
+      final fixture = await _openFolder(
+        abc,
+        open: '/images/a.png',
+        savedEdits: {'/images/b.png': sepia, '/other/x.png': sepia},
+      );
+      await pumpEventQueue();
+
+      expect(fixture.controller.state.edits, {'/images/b.png': sepia});
+      expect(
+        fixture.controller.state.editsFor('/images/a.png'),
+        ImageEdits.none,
+      );
+    });
+
+    test('setEdits records and clears edits', () async {
+      final fixture = await _openFolder(abc, open: '/images/a.png');
+
+      fixture.controller.setEdits('/images/a.png', sepia);
+      expect(fixture.controller.state.editsFor('/images/a.png'), sepia);
+
+      fixture.controller.setEdits('/images/a.png', ImageEdits.none);
+      expect(fixture.controller.state.edits, isEmpty);
+    });
+
+    test('rename and move carry edits along; copy duplicates them', () async {
+      final fixture = await _openFolder(
+        abc,
+        open: '/images/a.png',
+        savedEdits: {'/images/a.png': sepia, '/images/b.png': sepia},
+      );
+      await pumpEventQueue();
+
+      await fixture.controller.renameCurrent('beach.png');
+      expect(fixture.edits.stored.keys, contains('/images/beach.png'));
+      expect(fixture.edits.stored.keys, isNot(contains('/images/a.png')));
+      expect(fixture.controller.state.editsFor('/images/beach.png'), sepia);
+
+      fixture.picker.directoryToPick = '/elsewhere';
+      await fixture.controller.openIndex(1);
+      await fixture.controller.copyTargetsToFolder(pickerTexts: _texts);
+      expect(fixture.edits.stored['/elsewhere/b.png'], sepia);
+      expect(fixture.edits.stored['/images/b.png'], sepia);
+
+      await fixture.controller.moveTargetsToFolder(pickerTexts: _texts);
+      expect(fixture.edits.stored.containsKey('/images/b.png'), isFalse);
+      expect(
+        fixture.controller.state.edits.containsKey('/images/b.png'),
+        isFalse,
+      );
+    });
+
+    test('rotating an edited image adds the rotation to its edits', () async {
+      final fixture = await _openFolder(
+        abc,
+        open: '/images/a.png',
+        savedEdits: {'/images/a.png': sepia},
+      );
+      await pumpEventQueue();
+
+      final result = await fixture.controller.saveCurrentRotation(3);
+
+      expect(result, RotationSaveResult.saved);
+      expect(fixture.transforms.calls, isEmpty);
+      expect(
+        fixture.edits.stored['/images/a.png']?.operations.last,
+        const RotateEdit(3),
+      );
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.rotationAddedToEdits,
+      );
+    });
+
+    test('quick fixes apply to every target and are saved', () async {
+      final fixture = await _openFolder(abc, open: '/images/a.png');
+      fixture.controller.selectAll();
+
+      await fixture.controller.quickFixTargets(QuickFix.feelingLucky);
+
+      expect(fixture.edits.stored, hasLength(3));
+      expect(
+        fixture.edits.stored['/images/c.png']?.operations.single,
+        isA<LevelsEdit>().having(
+          (e) => e.kind,
+          'kind',
+          AutoFixKind.feelingLucky,
+        ),
+      );
+      expect(fixture.controller.state.edits, hasLength(3));
+      expect(fixture.controller.state.isWorking, isFalse);
+      expect(fixture.controller.state.notice?.count, 3);
+
+      await fixture.controller.removeEditsFromTargets();
+      expect(fixture.edits.stored, isEmpty);
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.editsRemoved,
+      );
+    });
+
+    test('quick fix failures are counted', () async {
+      final fixture = await _openFolder(abc, open: '/images/a.png');
+      fixture.edits.failSaves = true;
+
+      await fixture.controller.quickFixTargets(QuickFix.sepia);
+
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.quickFixFailed,
+      );
+      expect(fixture.controller.state.edits, isEmpty);
+    });
+
+    test('export writes each target with its own edits', () async {
+      final fixture = await _openFolder(
+        abc,
+        open: '/images/a.png',
+        savedEdits: {'/images/b.png': sepia},
+      );
+      await pumpEventQueue();
+      fixture.picker.directoryToPick = '/out';
+      fixture.controller.selectAll();
+      fixture.exporter.failing = {'/images/c.png'};
+
+      await fixture.controller.exportTargets(
+        options: const ExportOptions(),
+        pickerTexts: _texts,
+      );
+
+      expect(fixture.exporter.calls.map((c) => c.$1), abc);
+      expect(fixture.exporter.calls[1].$2, sepia);
+      expect(fixture.exporter.calls[0].$2, ImageEdits.none);
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.exportFailed,
+      );
+      expect(fixture.controller.state.notice?.count, 1);
+    });
+  });
 }
 
 const DirectoryAccessTexts _texts = DirectoryAccessTexts(
@@ -463,6 +616,8 @@ class _FolderFixture {
     this.picker,
     this.transforms,
     this.evicted,
+    this.edits,
+    this.exporter,
   );
 
   final ViewerController controller;
@@ -471,6 +626,8 @@ class _FolderFixture {
   final _FakeImagePickerService picker;
   final _FakeImageTransforms transforms;
   final List<String> evicted;
+  final InMemoryImageEditRepository edits;
+  final FakeExportService exporter;
 
   List<String> get paths =>
       controller.state.images.map((image) => image.path).toList();
@@ -500,7 +657,10 @@ Future<_FolderFixture> _openFolder(
   List<String> paths, {
   required String open,
   ImageSortOrder? sortOrder,
+  Map<String, ImageEdits> savedEdits = const {},
 }) async {
+  final edits = InMemoryImageEditRepository()..stored.addAll(savedEdits);
+  final exporter = FakeExportService();
   final picker = _FakeImagePickerService();
   final fileOperations = _FakeFileOperations();
   final transforms = _FakeImageTransforms();
@@ -515,6 +675,12 @@ Future<_FolderFixture> _openFolder(
     nativeFileChannelService: _FakeNativeFileChannelService(),
     fileOperationsService: fileOperations,
     imageTransformService: transforms,
+    editRepository: edits,
+    quickFixService: RenderingQuickFixService(
+      pixelSource: FakePixelSource(),
+      renderService: SyncRenderService(),
+    ),
+    exportService: exporter,
     evictImage: (path) async => evicted.add(path),
     folderRefreshDebounce: const Duration(milliseconds: 5),
   );
@@ -535,6 +701,8 @@ Future<_FolderFixture> _openFolder(
     picker,
     transforms,
     evicted,
+    edits,
+    exporter,
   );
 }
 
@@ -676,14 +844,28 @@ class _FakeFileOperations implements FileOperationsService {
   }
 
   @override
-  Future<List<String>> copyTo(List<String> paths, String destination) async {
+  Future<Map<String, String>> copyTo(
+    List<String> paths,
+    String destination,
+  ) async {
     lastCopy = paths;
-    return paths.where((path) => !failingPaths.contains(path)).toList();
+    return {
+      for (final path in paths)
+        if (!failingPaths.contains(path))
+          path: p.join(destination, p.basename(path)),
+    };
   }
 
   @override
-  Future<List<String>> moveTo(List<String> paths, String destination) async {
-    return paths.where((path) => !failingPaths.contains(path)).toList();
+  Future<Map<String, String>> moveTo(
+    List<String> paths,
+    String destination,
+  ) async {
+    return {
+      for (final path in paths)
+        if (!failingPaths.contains(path))
+          path: p.join(destination, p.basename(path)),
+    };
   }
 
   @override

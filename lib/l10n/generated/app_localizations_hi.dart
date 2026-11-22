@@ -578,4 +578,296 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get shortcutSaveRotation => 'घुमाव फ़ाइल में सहेजें';
+
+  @override
+  String get editImageTooltip => 'छवि संपादित करें';
+
+  @override
+  String get editUnavailableTooltip =>
+      'यह फ़ाइल प्रकार संपादित नहीं किया जा सकता';
+
+  @override
+  String get shortcutEdit => 'छवि संपादित करें';
+
+  @override
+  String get editorTabFixes => 'बुनियादी सुधार';
+
+  @override
+  String get editorTabTuning => 'ट्यूनिंग';
+
+  @override
+  String get editorTabEffects => 'इफ़ेक्ट';
+
+  @override
+  String get editorCrop => 'क्रॉप';
+
+  @override
+  String get editorStraighten => 'सीधा करें';
+
+  @override
+  String get editorRedEye => 'लाल आँख';
+
+  @override
+  String get editorFeelingLucky => 'भाग्य आज़माएँ';
+
+  @override
+  String get editorAutoContrast => 'स्वतः कंट्रास्ट';
+
+  @override
+  String get editorAutoColor => 'स्वतः रंग';
+
+  @override
+  String get editorTuneFillLight => 'फ़िल लाइट';
+
+  @override
+  String get editorTuneHighlights => 'हाइलाइट्स';
+
+  @override
+  String get editorTuneShadows => 'छायाएँ';
+
+  @override
+  String get editorTuneTemperature => 'रंग तापमान';
+
+  @override
+  String get editorApply => 'लागू करें';
+
+  @override
+  String get editorReset => 'रीसेट करें';
+
+  @override
+  String get editorClear => 'साफ़ करें';
+
+  @override
+  String get editorStrength => 'तीव्रता';
+
+  @override
+  String get effectBlackAndWhite => 'ब्लैक एंड व्हाइट';
+
+  @override
+  String get effectSepia => 'सीपिया';
+
+  @override
+  String get effectWarmify => 'गर्माहट';
+
+  @override
+  String get effectSaturation => 'संतृप्ति';
+
+  @override
+  String get effectSharpen => 'शार्प करें';
+
+  @override
+  String get effectSoftFocus => 'सॉफ़्ट फ़ोकस';
+
+  @override
+  String get effectGlow => 'चमक';
+
+  @override
+  String get effectFilmGrain => 'फ़िल्म ग्रेन';
+
+  @override
+  String get effectVignette => 'विनेट';
+
+  @override
+  String get editorCropHint =>
+      'क्या रखना है चुनने के लिए फ़्रेम या उसके कोने खींचें।';
+
+  @override
+  String get editorCropSwapOrientation => 'पोर्ट्रेट / लैंडस्केप';
+
+  @override
+  String get editorCropFree => 'मुक्त';
+
+  @override
+  String get editorCropOriginal => 'मूल';
+
+  @override
+  String get editorCropSquare => 'वर्गाकार';
+
+  @override
+  String get editorCrop4x6 => '4 × 6';
+
+  @override
+  String get editorCrop5x7 => '5 × 7';
+
+  @override
+  String get editorCrop8x10 => '8 × 10';
+
+  @override
+  String get editorCrop16x9 => '16:9';
+
+  @override
+  String get editorStraightenHint =>
+      'स्लाइडर तब तक खिसकाएँ जब तक क्षितिज ग्रिड से न मिल जाए।';
+
+  @override
+  String editorDegrees(String degrees) {
+    return '$degrees°';
+  }
+
+  @override
+  String get editorRedEyeHint =>
+      'हर लाल आँख के बीच में क्लिक करें। अगर घेरा बहुत छोटा या बड़ा हो, तो पहले आकार बदलें।';
+
+  @override
+  String get editorRedEyeSize => 'आकार';
+
+  @override
+  String get editorUndo => 'पूर्ववत करें';
+
+  @override
+  String get editorRedo => 'फिर से करें';
+
+  @override
+  String get editorRevert => 'मूल पर लौटें';
+
+  @override
+  String get editorExport => 'निर्यात करें…';
+
+  @override
+  String get editorDone => 'हो गया';
+
+  @override
+  String get editorLoadFailed => 'इस छवि को संपादन के लिए नहीं खोला जा सका।';
+
+  @override
+  String get editorSaveFailed =>
+      'इस फ़ोल्डर में आपके संपादन सहेजे नहीं जा सके। Picavi बंद करने पर वे खो जाएँगे।';
+
+  @override
+  String editorExported(String name) {
+    return 'प्रति $name के रूप में सहेजी गई';
+  }
+
+  @override
+  String get editorExportFailed => 'छवि निर्यात नहीं हो सकी';
+
+  @override
+  String exportDialogTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ निर्यात करें',
+      one: 'छवि निर्यात करें',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exportDialogDescription =>
+      'संपादित प्रतियाँ नई फ़ाइलों के रूप में सहेजी जाती हैं। आपकी मूल फ़ाइलें कभी नहीं बदलतीं।';
+
+  @override
+  String get exportFormatLabel => 'फ़ॉर्मैट';
+
+  @override
+  String get exportFormatJpeg => 'JPEG';
+
+  @override
+  String get exportFormatPng => 'PNG';
+
+  @override
+  String get exportSizeLabel => 'आकार';
+
+  @override
+  String get exportSizeOriginal => 'पूरा आकार';
+
+  @override
+  String exportSizePixels(int size) {
+    return 'लंबी तरफ़ $size px';
+  }
+
+  @override
+  String exportQualityLabel(int quality) {
+    return 'गुणवत्ता: $quality';
+  }
+
+  @override
+  String get exportChooseFolder => 'फ़ोल्डर चुनें…';
+
+  @override
+  String exportAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ निर्यात करें…',
+      one: 'निर्यात करें…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ निर्यात की गईं',
+      one: '1 छवि निर्यात की गई',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ निर्यात नहीं हो सकीं',
+      one: '1 छवि निर्यात नहीं हो सकी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixMenu(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियों का त्वरित सुधार',
+      one: 'त्वरित सुधार',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get removeEditsAction => 'संपादन हटाएँ';
+
+  @override
+  String quickFixAppliedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ संपादित की गईं',
+      one: '1 छवि संपादित की गई',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ संपादित नहीं हो सकीं',
+      one: '1 छवि संपादित नहीं हो सकी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String editsRemovedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियों के संपादन हटाए गए',
+      one: '1 छवि के संपादन हटाए गए',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rotationAddedToEditsNotice =>
+      'घुमाव इस छवि के संपादनों के साथ सहेजा गया';
+
+  @override
+  String get editedBadgeTooltip => 'संपादित';
 }

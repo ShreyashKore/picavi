@@ -553,4 +553,289 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shortcutSaveRotation => '将旋转保存到文件';
+
+  @override
+  String get editImageTooltip => '编辑图片';
+
+  @override
+  String get editUnavailableTooltip => '无法编辑此类文件';
+
+  @override
+  String get shortcutEdit => '编辑图片';
+
+  @override
+  String get editorTabFixes => '基本修正';
+
+  @override
+  String get editorTabTuning => '微调';
+
+  @override
+  String get editorTabEffects => '效果';
+
+  @override
+  String get editorCrop => '裁剪';
+
+  @override
+  String get editorStraighten => '拉直';
+
+  @override
+  String get editorRedEye => '红眼';
+
+  @override
+  String get editorFeelingLucky => '手气不错';
+
+  @override
+  String get editorAutoContrast => '自动对比度';
+
+  @override
+  String get editorAutoColor => '自动颜色';
+
+  @override
+  String get editorTuneFillLight => '补光';
+
+  @override
+  String get editorTuneHighlights => '高光';
+
+  @override
+  String get editorTuneShadows => '阴影';
+
+  @override
+  String get editorTuneTemperature => '色温';
+
+  @override
+  String get editorApply => '应用';
+
+  @override
+  String get editorReset => '重置';
+
+  @override
+  String get editorClear => '清除';
+
+  @override
+  String get editorStrength => '强度';
+
+  @override
+  String get effectBlackAndWhite => '黑白';
+
+  @override
+  String get effectSepia => '怀旧';
+
+  @override
+  String get effectWarmify => '暖色';
+
+  @override
+  String get effectSaturation => '饱和度';
+
+  @override
+  String get effectSharpen => '锐化';
+
+  @override
+  String get effectSoftFocus => '柔焦';
+
+  @override
+  String get effectGlow => '光晕';
+
+  @override
+  String get effectFilmGrain => '胶片颗粒';
+
+  @override
+  String get effectVignette => '暗角';
+
+  @override
+  String get editorCropHint => '拖动边框或其四角，选择要保留的部分。';
+
+  @override
+  String get editorCropSwapOrientation => '纵向 / 横向';
+
+  @override
+  String get editorCropFree => '自由';
+
+  @override
+  String get editorCropOriginal => '原始比例';
+
+  @override
+  String get editorCropSquare => '正方形';
+
+  @override
+  String get editorCrop4x6 => '4 × 6';
+
+  @override
+  String get editorCrop5x7 => '5 × 7';
+
+  @override
+  String get editorCrop8x10 => '8 × 10';
+
+  @override
+  String get editorCrop16x9 => '16:9';
+
+  @override
+  String get editorStraightenHint => '移动滑块，直到地平线与网格对齐。';
+
+  @override
+  String editorDegrees(String degrees) {
+    return '$degrees°';
+  }
+
+  @override
+  String get editorRedEyeHint => '点击每只红眼的中心。如果圆圈太小或太大，请先调整大小。';
+
+  @override
+  String get editorRedEyeSize => '大小';
+
+  @override
+  String get editorUndo => '撤销';
+
+  @override
+  String get editorRedo => '重做';
+
+  @override
+  String get editorRevert => '还原';
+
+  @override
+  String get editorExport => '导出…';
+
+  @override
+  String get editorDone => '完成';
+
+  @override
+  String get editorLoadFailed => '无法打开此图片进行编辑。';
+
+  @override
+  String get editorSaveFailed => '无法在此文件夹中保存编辑。关闭 Picavi 后编辑将丢失。';
+
+  @override
+  String editorExported(String name) {
+    return '已另存为 $name';
+  }
+
+  @override
+  String get editorExportFailed => '无法导出图片';
+
+  @override
+  String exportDialogTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '导出 $count 张图片',
+      one: '导出图片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exportDialogDescription => '编辑后的副本会保存为新文件，原图永远不会被更改。';
+
+  @override
+  String get exportFormatLabel => '格式';
+
+  @override
+  String get exportFormatJpeg => 'JPEG';
+
+  @override
+  String get exportFormatPng => 'PNG';
+
+  @override
+  String get exportSizeLabel => '尺寸';
+
+  @override
+  String get exportSizeOriginal => '原始尺寸';
+
+  @override
+  String exportSizePixels(int size) {
+    return '长边 $size 像素';
+  }
+
+  @override
+  String exportQualityLabel(int quality) {
+    return '质量：$quality';
+  }
+
+  @override
+  String get exportChooseFolder => '选择文件夹…';
+
+  @override
+  String exportAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '导出 $count 张图片…',
+      one: '导出…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已导出 $count 张图片',
+      one: '已导出 1 张图片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '有 $count 张图片无法导出',
+      one: '有 1 张图片无法导出',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixMenu(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '快速修正 $count 张图片',
+      one: '快速修正',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get removeEditsAction => '移除编辑';
+
+  @override
+  String quickFixAppliedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已编辑 $count 张图片',
+      one: '已编辑 1 张图片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '有 $count 张图片无法编辑',
+      one: '有 1 张图片无法编辑',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String editsRemovedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已移除 $count 张图片的编辑',
+      one: '已移除 1 张图片的编辑',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rotationAddedToEditsNotice => '旋转已与此图片的编辑一起保存';
+
+  @override
+  String get editedBadgeTooltip => '已编辑';
 }

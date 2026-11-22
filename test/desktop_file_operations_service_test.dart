@@ -95,7 +95,7 @@ void main() {
 
       final copied = await service.copyTo([a], destination.path);
 
-      expect(copied, [a]);
+      expect(copied, {a: p.join(destination.path, 'a (2).png')});
       expect(namesIn(destination), <String>['a (2).png', 'a.png']);
       expect(
         await File(p.join(destination.path, 'a.png')).readAsString(),
@@ -110,7 +110,8 @@ void main() {
 
       final moved = await service.moveTo([a, b], destination.path);
 
-      expect(moved, [a, b]);
+      expect(moved.keys, [a, b]);
+      expect(moved[a], p.join(destination.path, 'a.png'));
       expect(namesIn(source), isEmpty);
       expect(namesIn(destination), <String>['a.png', 'b.png']);
     });
@@ -130,7 +131,7 @@ void main() {
 
       final copied = await service.copyTo([missing, a], destination.path);
 
-      expect(copied, [a]);
+      expect(copied.keys, [a]);
     });
   });
 }

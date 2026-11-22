@@ -14,6 +14,12 @@ enum ViewerNoticeType {
   rotationSaved,
   rotationUnsupported,
   rotationSaveFailed,
+  rotationAddedToEdits,
+  exported,
+  exportFailed,
+  quickFixApplied,
+  quickFixFailed,
+  editsRemoved,
 }
 
 class ViewerNotice {

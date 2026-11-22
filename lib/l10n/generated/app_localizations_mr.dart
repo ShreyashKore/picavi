@@ -579,4 +579,294 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get shortcutSaveRotation => 'फिरवणे फाइलमध्ये जतन करा';
+
+  @override
+  String get editImageTooltip => 'प्रतिमा संपादित करा';
+
+  @override
+  String get editUnavailableTooltip => 'हा फाइल प्रकार संपादित करता येत नाही';
+
+  @override
+  String get shortcutEdit => 'प्रतिमा संपादित करा';
+
+  @override
+  String get editorTabFixes => 'मूलभूत सुधारणा';
+
+  @override
+  String get editorTabTuning => 'ट्यूनिंग';
+
+  @override
+  String get editorTabEffects => 'इफेक्ट्स';
+
+  @override
+  String get editorCrop => 'क्रॉप';
+
+  @override
+  String get editorStraighten => 'सरळ करा';
+
+  @override
+  String get editorRedEye => 'लाल डोळे';
+
+  @override
+  String get editorFeelingLucky => 'नशीब आजमवा';
+
+  @override
+  String get editorAutoContrast => 'स्वयं कॉन्ट्रास्ट';
+
+  @override
+  String get editorAutoColor => 'स्वयं रंग';
+
+  @override
+  String get editorTuneFillLight => 'फिल लाइट';
+
+  @override
+  String get editorTuneHighlights => 'हायलाइट्स';
+
+  @override
+  String get editorTuneShadows => 'सावल्या';
+
+  @override
+  String get editorTuneTemperature => 'रंग तापमान';
+
+  @override
+  String get editorApply => 'लागू करा';
+
+  @override
+  String get editorReset => 'रीसेट करा';
+
+  @override
+  String get editorClear => 'साफ करा';
+
+  @override
+  String get editorStrength => 'तीव्रता';
+
+  @override
+  String get effectBlackAndWhite => 'कृष्णधवल';
+
+  @override
+  String get effectSepia => 'सेपिया';
+
+  @override
+  String get effectWarmify => 'उबदार';
+
+  @override
+  String get effectSaturation => 'संपृक्तता';
+
+  @override
+  String get effectSharpen => 'धार वाढवा';
+
+  @override
+  String get effectSoftFocus => 'सॉफ्ट फोकस';
+
+  @override
+  String get effectGlow => 'झळाळी';
+
+  @override
+  String get effectFilmGrain => 'फिल्म ग्रेन';
+
+  @override
+  String get effectVignette => 'व्हिनेट';
+
+  @override
+  String get editorCropHint =>
+      'काय ठेवायचे ते निवडण्यासाठी चौकट किंवा तिचे कोपरे ओढा.';
+
+  @override
+  String get editorCropSwapOrientation => 'पोर्ट्रेट / लँडस्केप';
+
+  @override
+  String get editorCropFree => 'मुक्त';
+
+  @override
+  String get editorCropOriginal => 'मूळ';
+
+  @override
+  String get editorCropSquare => 'चौरस';
+
+  @override
+  String get editorCrop4x6 => '4 × 6';
+
+  @override
+  String get editorCrop5x7 => '5 × 7';
+
+  @override
+  String get editorCrop8x10 => '8 × 10';
+
+  @override
+  String get editorCrop16x9 => '16:9';
+
+  @override
+  String get editorStraightenHint => 'क्षितिज जाळीशी जुळेपर्यंत स्लायडर सरकवा.';
+
+  @override
+  String editorDegrees(String degrees) {
+    return '$degrees°';
+  }
+
+  @override
+  String get editorRedEyeHint =>
+      'प्रत्येक लाल डोळ्याच्या मध्यभागी क्लिक करा. वर्तुळ खूप लहान किंवा मोठे असल्यास आधी आकार बदला.';
+
+  @override
+  String get editorRedEyeSize => 'आकार';
+
+  @override
+  String get editorUndo => 'पूर्ववत करा';
+
+  @override
+  String get editorRedo => 'पुन्हा करा';
+
+  @override
+  String get editorRevert => 'मूळ स्थितीत आणा';
+
+  @override
+  String get editorExport => 'निर्यात करा…';
+
+  @override
+  String get editorDone => 'झाले';
+
+  @override
+  String get editorLoadFailed => 'ही प्रतिमा संपादनासाठी उघडता आली नाही.';
+
+  @override
+  String get editorSaveFailed =>
+      'या फोल्डरमध्ये तुमची संपादने जतन करता आली नाहीत. Picavi बंद केल्यावर ती हरवतील.';
+
+  @override
+  String editorExported(String name) {
+    return 'प्रत $name म्हणून जतन केली';
+  }
+
+  @override
+  String get editorExportFailed => 'प्रतिमा निर्यात करता आली नाही';
+
+  @override
+  String exportDialogTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा निर्यात करा',
+      one: 'प्रतिमा निर्यात करा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exportDialogDescription =>
+      'संपादित प्रती नवीन फाइल्स म्हणून जतन होतात. तुमच्या मूळ फाइल्स कधीही बदलत नाहीत.';
+
+  @override
+  String get exportFormatLabel => 'फॉरमॅट';
+
+  @override
+  String get exportFormatJpeg => 'JPEG';
+
+  @override
+  String get exportFormatPng => 'PNG';
+
+  @override
+  String get exportSizeLabel => 'आकार';
+
+  @override
+  String get exportSizeOriginal => 'पूर्ण आकार';
+
+  @override
+  String exportSizePixels(int size) {
+    return 'लांब बाजूला $size px';
+  }
+
+  @override
+  String exportQualityLabel(int quality) {
+    return 'गुणवत्ता: $quality';
+  }
+
+  @override
+  String get exportChooseFolder => 'फोल्डर निवडा…';
+
+  @override
+  String exportAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा निर्यात करा…',
+      one: 'निर्यात करा…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा निर्यात केल्या',
+      one: '1 प्रतिमा निर्यात केली',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा निर्यात करता आल्या नाहीत',
+      one: '1 प्रतिमा निर्यात करता आली नाही',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixMenu(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमांची झटपट सुधारणा',
+      one: 'झटपट सुधारणा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get removeEditsAction => 'संपादने काढा';
+
+  @override
+  String quickFixAppliedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा संपादित केल्या',
+      one: '1 प्रतिमा संपादित केली',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा संपादित करता आल्या नाहीत',
+      one: '1 प्रतिमा संपादित करता आली नाही',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String editsRemovedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमांची संपादने काढली',
+      one: '1 प्रतिमेची संपादने काढली',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rotationAddedToEditsNotice =>
+      'फिरवणे या प्रतिमेच्या संपादनांसह जतन केले';
+
+  @override
+  String get editedBadgeTooltip => 'संपादित';
 }

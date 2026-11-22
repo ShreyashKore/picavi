@@ -577,4 +577,295 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shortcutSaveRotation => 'حفظ التدوير في الملف';
+
+  @override
+  String get editImageTooltip => 'تحرير الصورة';
+
+  @override
+  String get editUnavailableTooltip => 'لا يمكن تحرير هذا النوع من الملفات';
+
+  @override
+  String get shortcutEdit => 'تحرير الصورة';
+
+  @override
+  String get editorTabFixes => 'إصلاحات أساسية';
+
+  @override
+  String get editorTabTuning => 'ضبط';
+
+  @override
+  String get editorTabEffects => 'تأثيرات';
+
+  @override
+  String get editorCrop => 'اقتصاص';
+
+  @override
+  String get editorStraighten => 'تقويم';
+
+  @override
+  String get editorRedEye => 'العين الحمراء';
+
+  @override
+  String get editorFeelingLucky => 'أشعر بالحظ';
+
+  @override
+  String get editorAutoContrast => 'تباين تلقائي';
+
+  @override
+  String get editorAutoColor => 'لون تلقائي';
+
+  @override
+  String get editorTuneFillLight => 'إضاءة التعبئة';
+
+  @override
+  String get editorTuneHighlights => 'الإضاءات';
+
+  @override
+  String get editorTuneShadows => 'الظلال';
+
+  @override
+  String get editorTuneTemperature => 'حرارة اللون';
+
+  @override
+  String get editorApply => 'تطبيق';
+
+  @override
+  String get editorReset => 'إعادة تعيين';
+
+  @override
+  String get editorClear => 'مسح';
+
+  @override
+  String get editorStrength => 'الشدة';
+
+  @override
+  String get effectBlackAndWhite => 'أبيض وأسود';
+
+  @override
+  String get effectSepia => 'بني داكن';
+
+  @override
+  String get effectWarmify => 'دفء';
+
+  @override
+  String get effectSaturation => 'التشبع';
+
+  @override
+  String get effectSharpen => 'زيادة الحدة';
+
+  @override
+  String get effectSoftFocus => 'تركيز ناعم';
+
+  @override
+  String get effectGlow => 'توهج';
+
+  @override
+  String get effectFilmGrain => 'حبيبات الفيلم';
+
+  @override
+  String get effectVignette => 'تظليل الحواف';
+
+  @override
+  String get editorCropHint =>
+      'اسحب الإطار أو زواياه لاختيار ما تريد الاحتفاظ به.';
+
+  @override
+  String get editorCropSwapOrientation => 'عمودي / أفقي';
+
+  @override
+  String get editorCropFree => 'حر';
+
+  @override
+  String get editorCropOriginal => 'الأصلي';
+
+  @override
+  String get editorCropSquare => 'مربع';
+
+  @override
+  String get editorCrop4x6 => '4 × 6';
+
+  @override
+  String get editorCrop5x7 => '5 × 7';
+
+  @override
+  String get editorCrop8x10 => '8 × 10';
+
+  @override
+  String get editorCrop16x9 => '16:9';
+
+  @override
+  String get editorStraightenHint =>
+      'حرّك شريط التمرير حتى يتوافق الأفق مع الشبكة.';
+
+  @override
+  String editorDegrees(String degrees) {
+    return '$degrees°';
+  }
+
+  @override
+  String get editorRedEyeHint =>
+      'انقر على وسط كل عين حمراء. غيّر الحجم أولاً إذا كانت الدائرة صغيرة أو كبيرة جدًا.';
+
+  @override
+  String get editorRedEyeSize => 'الحجم';
+
+  @override
+  String get editorUndo => 'تراجع';
+
+  @override
+  String get editorRedo => 'إعادة';
+
+  @override
+  String get editorRevert => 'استعادة الأصل';
+
+  @override
+  String get editorExport => 'تصدير…';
+
+  @override
+  String get editorDone => 'تم';
+
+  @override
+  String get editorLoadFailed => 'تعذّر فتح هذه الصورة للتحرير.';
+
+  @override
+  String get editorSaveFailed =>
+      'تعذّر حفظ التعديلات في هذا المجلد. ستُفقد عند إغلاق Picavi.';
+
+  @override
+  String editorExported(String name) {
+    return 'تم حفظ نسخة باسم $name';
+  }
+
+  @override
+  String get editorExportFailed => 'تعذّر تصدير الصورة';
+
+  @override
+  String exportDialogTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تصدير $count صور',
+      one: 'تصدير الصورة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exportDialogDescription =>
+      'تُحفظ النسخ المعدّلة كملفات جديدة. لا تتغير الملفات الأصلية أبدًا.';
+
+  @override
+  String get exportFormatLabel => 'التنسيق';
+
+  @override
+  String get exportFormatJpeg => 'JPEG';
+
+  @override
+  String get exportFormatPng => 'PNG';
+
+  @override
+  String get exportSizeLabel => 'الحجم';
+
+  @override
+  String get exportSizeOriginal => 'الحجم الكامل';
+
+  @override
+  String exportSizePixels(int size) {
+    return '$size بكسل للضلع الأطول';
+  }
+
+  @override
+  String exportQualityLabel(int quality) {
+    return 'الجودة: $quality';
+  }
+
+  @override
+  String get exportChooseFolder => 'اختيار مجلد…';
+
+  @override
+  String exportAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تصدير $count صور…',
+      one: 'تصدير…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم تصدير $count صور',
+      one: 'تم تصدير صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تعذّر تصدير $count صور',
+      one: 'تعذّر تصدير صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixMenu(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'إصلاح سريع لـ $count صور',
+      one: 'إصلاح سريع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get removeEditsAction => 'إزالة التعديلات';
+
+  @override
+  String quickFixAppliedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم تحرير $count صور',
+      one: 'تم تحرير صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تعذّر تحرير $count صور',
+      one: 'تعذّر تحرير صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String editsRemovedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تمت إزالة التعديلات من $count صور',
+      one: 'تمت إزالة التعديلات من صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rotationAddedToEditsNotice =>
+      'تم حفظ التدوير مع تعديلات هذه الصورة';
+
+  @override
+  String get editedBadgeTooltip => 'معدّلة';
 }

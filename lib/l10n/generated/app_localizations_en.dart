@@ -580,4 +580,295 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shortcutSaveRotation => 'Save rotation to the file';
+
+  @override
+  String get editImageTooltip => 'Edit image';
+
+  @override
+  String get editUnavailableTooltip => 'This file type can\'t be edited';
+
+  @override
+  String get shortcutEdit => 'Edit image';
+
+  @override
+  String get editorTabFixes => 'Basic fixes';
+
+  @override
+  String get editorTabTuning => 'Tuning';
+
+  @override
+  String get editorTabEffects => 'Effects';
+
+  @override
+  String get editorCrop => 'Crop';
+
+  @override
+  String get editorStraighten => 'Straighten';
+
+  @override
+  String get editorRedEye => 'Red-eye';
+
+  @override
+  String get editorFeelingLucky => 'I\'m Feeling Lucky';
+
+  @override
+  String get editorAutoContrast => 'Auto contrast';
+
+  @override
+  String get editorAutoColor => 'Auto color';
+
+  @override
+  String get editorTuneFillLight => 'Fill light';
+
+  @override
+  String get editorTuneHighlights => 'Highlights';
+
+  @override
+  String get editorTuneShadows => 'Shadows';
+
+  @override
+  String get editorTuneTemperature => 'Color temperature';
+
+  @override
+  String get editorApply => 'Apply';
+
+  @override
+  String get editorReset => 'Reset';
+
+  @override
+  String get editorClear => 'Clear';
+
+  @override
+  String get editorStrength => 'Strength';
+
+  @override
+  String get effectBlackAndWhite => 'Black & white';
+
+  @override
+  String get effectSepia => 'Sepia';
+
+  @override
+  String get effectWarmify => 'Warmify';
+
+  @override
+  String get effectSaturation => 'Saturation';
+
+  @override
+  String get effectSharpen => 'Sharpen';
+
+  @override
+  String get effectSoftFocus => 'Soft focus';
+
+  @override
+  String get effectGlow => 'Glow';
+
+  @override
+  String get effectFilmGrain => 'Film grain';
+
+  @override
+  String get effectVignette => 'Vignette';
+
+  @override
+  String get editorCropHint =>
+      'Drag the frame or its corners to choose what to keep.';
+
+  @override
+  String get editorCropSwapOrientation => 'Portrait / landscape';
+
+  @override
+  String get editorCropFree => 'Free';
+
+  @override
+  String get editorCropOriginal => 'Original';
+
+  @override
+  String get editorCropSquare => 'Square';
+
+  @override
+  String get editorCrop4x6 => '4 × 6';
+
+  @override
+  String get editorCrop5x7 => '5 × 7';
+
+  @override
+  String get editorCrop8x10 => '8 × 10';
+
+  @override
+  String get editorCrop16x9 => '16:9';
+
+  @override
+  String get editorStraightenHint =>
+      'Move the slider until the horizon lines up with the grid.';
+
+  @override
+  String editorDegrees(String degrees) {
+    return '$degrees°';
+  }
+
+  @override
+  String get editorRedEyeHint =>
+      'Click the centre of each red eye. Change the size first if the circle is too small or too big.';
+
+  @override
+  String get editorRedEyeSize => 'Size';
+
+  @override
+  String get editorUndo => 'Undo';
+
+  @override
+  String get editorRedo => 'Redo';
+
+  @override
+  String get editorRevert => 'Revert';
+
+  @override
+  String get editorExport => 'Export…';
+
+  @override
+  String get editorDone => 'Done';
+
+  @override
+  String get editorLoadFailed => 'This image can\'t be opened for editing.';
+
+  @override
+  String get editorSaveFailed =>
+      'Couldn\'t save your edits in this folder. They\'ll be lost when you close Picavi.';
+
+  @override
+  String editorExported(String name) {
+    return 'Saved a copy as $name';
+  }
+
+  @override
+  String get editorExportFailed => 'Couldn\'t export the image';
+
+  @override
+  String exportDialogTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Export $count images',
+      one: 'Export image',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exportDialogDescription =>
+      'Edited copies are saved as new files. Your originals are never changed.';
+
+  @override
+  String get exportFormatLabel => 'Format';
+
+  @override
+  String get exportFormatJpeg => 'JPEG';
+
+  @override
+  String get exportFormatPng => 'PNG';
+
+  @override
+  String get exportSizeLabel => 'Size';
+
+  @override
+  String get exportSizeOriginal => 'Full size';
+
+  @override
+  String exportSizePixels(int size) {
+    return '$size px on the long side';
+  }
+
+  @override
+  String exportQualityLabel(int quality) {
+    return 'Quality: $quality';
+  }
+
+  @override
+  String get exportChooseFolder => 'Choose folder…';
+
+  @override
+  String exportAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Export $count images…',
+      one: 'Export…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Exported $count images',
+      one: 'Exported 1 image',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exportFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count images couldn\'t be exported',
+      one: '1 image couldn\'t be exported',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixMenu(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Quick fix $count images',
+      one: 'Quick fix',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get removeEditsAction => 'Remove edits';
+
+  @override
+  String quickFixAppliedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Edited $count images',
+      one: 'Edited 1 image',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickFixFailedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count images couldn\'t be edited',
+      one: '1 image couldn\'t be edited',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String editsRemovedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Removed the edits from $count images',
+      one: 'Removed the edits from 1 image',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rotationAddedToEditsNotice =>
+      'Rotation saved with this image\'s edits';
+
+  @override
+  String get editedBadgeTooltip => 'Edited';
 }

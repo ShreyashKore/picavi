@@ -5,6 +5,12 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
+import '../../../editor/domain/entities/edit_operation.dart';
+import '../../../editor/domain/entities/export_options.dart';
+import '../../../editor/domain/entities/image_edits.dart';
+import '../../../editor/domain/repositories/image_edit_repository.dart';
+import '../../../editor/domain/services/image_export_service.dart';
+import '../../../editor/domain/services/quick_fix_service.dart';
 import '../../data/services/native_file_channel_service.dart';
 import '../../domain/entities/gallery_image.dart';
 import '../../domain/entities/image_sort_order.dart';
@@ -22,9 +28,15 @@ class ViewerController extends ChangeNotifier {
     required NativeFileChannelService nativeFileChannelService,
     required FileOperationsService fileOperationsService,
     required ImageTransformService imageTransformService,
+    ImageEditRepository? editRepository,
+    QuickFixService? quickFixService,
+    ImageExportService? exportService,
     Future<void> Function(String path)? evictImage,
     Duration folderRefreshDebounce = const Duration(milliseconds: 400),
   }) : _imageRepository = imageRepository,
+       _editRepository = editRepository,
+       _quickFixService = quickFixService,
+       _exportService = exportService,
        _imagePickerService = imagePickerService,
        _nativeFileChannelService = nativeFileChannelService,
        _fileOperations = fileOperationsService,
@@ -39,6 +51,11 @@ class ViewerController extends ChangeNotifier {
   final NativeFileChannelService _nativeFileChannelService;
   final FileOperationsService _fileOperations;
   final ImageTransformService _imageTransforms;
+
+  /// Where non-destructive edits live; null disables editing support.
+  final ImageEditRepository? _editRepository;
+  final QuickFixService? _quickFixService;
+  final ImageExportService? _exportService;
 
   /// Drops cached decodes of a file that was rewritten on disk.
   final Future<void> Function(String path)? _evictImage;
@@ -291,6 +308,7 @@ class ViewerController extends ChangeNotifier {
           .map((path) => path == oldPath ? newPath : path)
           .toSet();
       _setState(_state.copyWith(images: images, selectedPaths: selection));
+      await _carryEdits({oldPath: newPath}, keepOriginal: false);
       return null;
     } on FileOperationException catch (error) {
       return error.error;
@@ -312,6 +330,7 @@ class ViewerController extends ChangeNotifier {
     }
 
     final copied = await _fileOperations.copyTo(targets, destination);
+    await _carryEdits(copied, keepOriginal: true);
     if (copied.length < targets.length) {
       _pushNotice(
         ViewerNoticeType.copyFailed,
@@ -334,7 +353,8 @@ class ViewerController extends ChangeNotifier {
     }
 
     final moved = await _fileOperations.moveTo(targets, destination);
-    _removeFromGallery(moved);
+    await _carryEdits(moved, keepOriginal: false);
+    _removeFromGallery(moved.keys.toList());
     if (moved.length < targets.length) {
       _pushNotice(
         ViewerNoticeType.moveFailed,
@@ -390,6 +410,22 @@ class ViewerController extends ChangeNotifier {
     }
 
     final path = _state.currentImage.path;
+    final edits = _state.editsFor(path);
+    if (edits.isNotEmpty && _editRepository != null) {
+      // The edits' crop and red-eye positions refer to the unrotated image,
+      // so rotate after them instead of rewriting the file underneath.
+      final updated = await _saveEdits(
+        path,
+        edits.adding(RotateEdit(quarterTurnsClockwise % 4)),
+      );
+      _pushNotice(
+        updated
+            ? ViewerNoticeType.rotationAddedToEdits
+            : ViewerNoticeType.rotationSaveFailed,
+      );
+      return updated ? RotationSaveResult.saved : RotationSaveResult.failed;
+    }
+
     final result = await _imageTransforms.saveRotation(
       path,
       quarterTurnsClockwise,
@@ -412,6 +448,172 @@ class ViewerController extends ChangeNotifier {
         _pushNotice(ViewerNoticeType.rotationSaveFailed);
     }
     return result;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Edits
+
+  /// Records [edits] for [path] after the editor saved them.
+  void setEdits(String path, ImageEdits edits) {
+    final next = Map<String, ImageEdits>.of(_state.edits);
+    if (edits.isEmpty) {
+      next.remove(path);
+    } else {
+      next[path] = edits;
+    }
+    _setState(_state.copyWith(edits: next));
+  }
+
+  /// Applies [fix] to the selected images (or the current one).
+  Future<void> quickFixTargets(QuickFix fix) async {
+    final service = _quickFixService;
+    final targets = _state.actionTargets;
+    if (service == null || _editRepository == null || targets.isEmpty) {
+      return;
+    }
+
+    _setState(_state.copyWith(isWorking: true));
+    var failures = 0;
+    for (final path in targets) {
+      ImageEdits? updated;
+      try {
+        updated = await service.apply(path, _state.editsFor(path), fix);
+      } catch (error) {
+        debugPrint('Unable to apply $fix to $path: $error');
+      }
+      if (updated == null || !await _saveEdits(path, updated)) {
+        failures += 1;
+      }
+    }
+    _setState(_state.copyWith(isWorking: false));
+    if (failures > 0) {
+      _pushNotice(ViewerNoticeType.quickFixFailed, count: failures);
+    } else {
+      _pushNotice(ViewerNoticeType.quickFixApplied, count: targets.length);
+    }
+  }
+
+  /// Removes every edit from the selected images (or the current one).
+  Future<void> removeEditsFromTargets() async {
+    final edited = _state.actionTargets
+        .where((path) => _state.editsFor(path).isNotEmpty)
+        .toList();
+    if (_editRepository == null || edited.isEmpty) {
+      return;
+    }
+    var removed = 0;
+    for (final path in edited) {
+      if (await _saveEdits(path, ImageEdits.none)) {
+        removed += 1;
+      }
+    }
+    _pushNotice(ViewerNoticeType.editsRemoved, count: removed);
+  }
+
+  /// Asks for a folder and writes edited copies of the selected images (or
+  /// the current one) into it.
+  Future<void> exportTargets({
+    required ExportOptions options,
+    required DirectoryAccessTexts pickerTexts,
+  }) async {
+    final service = _exportService;
+    final targets = _state.actionTargets;
+    if (service == null) {
+      return;
+    }
+    final destination = await _pickDestination(targets, pickerTexts);
+    if (destination == null) {
+      return;
+    }
+
+    _setState(_state.copyWith(isWorking: true));
+    var exported = 0;
+    for (final path in targets) {
+      final result = await service.export(
+        path,
+        _state.editsFor(path),
+        options,
+        destination,
+      );
+      if (result != null) {
+        exported += 1;
+      }
+    }
+    _setState(_state.copyWith(isWorking: false));
+    if (exported < targets.length) {
+      _pushNotice(
+        ViewerNoticeType.exportFailed,
+        count: targets.length - exported,
+      );
+    } else {
+      _pushNotice(ViewerNoticeType.exported, count: exported);
+    }
+  }
+
+  /// Asks for a folder, starting near the current one.
+  Future<String?> pickFolder(DirectoryAccessTexts pickerTexts) async {
+    final folder = await _imagePickerService.pickDirectory(
+      initialDirectory: preferredPickerDirectory(),
+      texts: pickerTexts,
+    );
+    return folder == null || folder.isEmpty ? null : folder;
+  }
+
+  Future<bool> _saveEdits(String path, ImageEdits edits) async {
+    final repository = _editRepository;
+    if (repository == null || !await repository.save(path, edits)) {
+      return false;
+    }
+    setEdits(path, edits);
+    return true;
+  }
+
+  /// Moves or copies the edits of renamed, moved or copied files.
+  Future<void> _carryEdits(
+    Map<String, String> transfers, {
+    required bool keepOriginal,
+  }) async {
+    final repository = _editRepository;
+    if (repository == null) {
+      return;
+    }
+    final next = Map<String, ImageEdits>.of(_state.edits);
+    for (final MapEntry(key: from, value: to) in transfers.entries) {
+      final edits = _state.editsFor(from);
+      if (edits.isEmpty) {
+        continue;
+      }
+      try {
+        if (keepOriginal) {
+          await repository.copy(from, to);
+        } else {
+          await repository.move(from, to);
+          next.remove(from);
+        }
+        if (p.equals(p.dirname(to), _state.currentDirectory ?? '')) {
+          next[to] = edits;
+        }
+      } catch (error) {
+        debugPrint('Unable to carry edits from $from to $to: $error');
+      }
+    }
+    _setState(_state.copyWith(edits: next));
+  }
+
+  Future<void> _loadEdits(String directory) async {
+    final repository = _editRepository;
+    if (repository == null) {
+      return;
+    }
+    final generation = _galleryGeneration;
+    final edits = await repository.loadDirectory(directory);
+    if (_isDisposed ||
+        generation != _galleryGeneration ||
+        _state.currentDirectory != directory ||
+        (edits.isEmpty && _state.edits.isEmpty)) {
+      return;
+    }
+    _setState(_state.copyWith(edits: edits));
   }
 
   Future<String?> _pickDestination(
@@ -601,9 +803,11 @@ class ViewerController extends ChangeNotifier {
         currentDirectory: currentDirectory,
         currentIndex: selectedIndex,
         selectedPaths: const <String>{},
+        edits: const <String, ImageEdits>{},
       ),
     );
     _watchDirectory(currentDirectory);
+    unawaited(_loadEdits(currentDirectory));
   }
 
   void _watchDirectory(String directoryPath) {

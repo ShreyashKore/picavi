@@ -71,16 +71,16 @@ class DesktopFileOperationsService implements FileOperationsService {
   }
 
   @override
-  Future<List<String>> copyTo(
+  Future<Map<String, String>> copyTo(
     List<String> paths,
     String destinationDirectory,
   ) async {
-    final copied = <String>[];
+    final copied = <String, String>{};
     for (final path in paths) {
       try {
         final target = await _availableTarget(path, destinationDirectory);
         await File(path).copy(target);
-        copied.add(path);
+        copied[path] = target;
       } catch (error) {
         debugPrint('Unable to copy $path: $error');
       }
@@ -89,11 +89,11 @@ class DesktopFileOperationsService implements FileOperationsService {
   }
 
   @override
-  Future<List<String>> moveTo(
+  Future<Map<String, String>> moveTo(
     List<String> paths,
     String destinationDirectory,
   ) async {
-    final moved = <String>[];
+    final moved = <String, String>{};
     for (final path in paths) {
       if (p.equals(p.dirname(path), destinationDirectory)) {
         continue;
@@ -112,7 +112,7 @@ class DesktopFileOperationsService implements FileOperationsService {
           }
           await source.delete();
         }
-        moved.add(path);
+        moved[path] = target;
       } catch (error) {
         debugPrint('Unable to move $path: $error');
       }

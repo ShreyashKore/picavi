@@ -987,6 +987,432 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save rotation to the file'**
   String get shortcutSaveRotation;
+
+  /// Tooltip for the button that opens the editor.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit image'**
+  String get editImageTooltip;
+
+  /// Tooltip on the edit button for a file type the editor cannot open.
+  ///
+  /// In en, this message translates to:
+  /// **'This file type can\'t be edited'**
+  String get editUnavailableTooltip;
+
+  /// Keyboard shortcuts list: open the editor.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit image'**
+  String get shortcutEdit;
+
+  /// Editor tab with crop, straighten, red-eye and one-click fixes.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic fixes'**
+  String get editorTabFixes;
+
+  /// Editor tab with light and colour sliders.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning'**
+  String get editorTabTuning;
+
+  /// Editor tab with effects such as sepia.
+  ///
+  /// In en, this message translates to:
+  /// **'Effects'**
+  String get editorTabEffects;
+
+  /// Editor tool: crop.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop'**
+  String get editorCrop;
+
+  /// Editor tool: straighten (rotate by a small angle).
+  ///
+  /// In en, this message translates to:
+  /// **'Straighten'**
+  String get editorStraighten;
+
+  /// Editor tool: red-eye removal.
+  ///
+  /// In en, this message translates to:
+  /// **'Red-eye'**
+  String get editorRedEye;
+
+  /// One-click fix that improves contrast and colour automatically.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m Feeling Lucky'**
+  String get editorFeelingLucky;
+
+  /// One-click fix: automatic contrast.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto contrast'**
+  String get editorAutoContrast;
+
+  /// One-click fix: automatic colour balance.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto color'**
+  String get editorAutoColor;
+
+  /// Tuning slider that brightens dark areas.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill light'**
+  String get editorTuneFillLight;
+
+  /// Tuning slider for highlights.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights'**
+  String get editorTuneHighlights;
+
+  /// Tuning slider that deepens shadows.
+  ///
+  /// In en, this message translates to:
+  /// **'Shadows'**
+  String get editorTuneShadows;
+
+  /// Tuning slider from cooler to warmer colours.
+  ///
+  /// In en, this message translates to:
+  /// **'Color temperature'**
+  String get editorTuneTemperature;
+
+  /// Button that applies the current tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get editorApply;
+
+  /// Button that resets the tuning sliders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get editorReset;
+
+  /// Button that removes the red-eye spots placed so far.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get editorClear;
+
+  /// Slider label for how strong an effect is.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength'**
+  String get editorStrength;
+
+  /// Effect: black and white.
+  ///
+  /// In en, this message translates to:
+  /// **'Black & white'**
+  String get effectBlackAndWhite;
+
+  /// Effect: sepia.
+  ///
+  /// In en, this message translates to:
+  /// **'Sepia'**
+  String get effectSepia;
+
+  /// Effect: warmer colours.
+  ///
+  /// In en, this message translates to:
+  /// **'Warmify'**
+  String get effectWarmify;
+
+  /// Effect: colour saturation.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturation'**
+  String get effectSaturation;
+
+  /// Effect: sharpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharpen'**
+  String get effectSharpen;
+
+  /// Effect: soft focus around the edges.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft focus'**
+  String get effectSoftFocus;
+
+  /// Effect: glow.
+  ///
+  /// In en, this message translates to:
+  /// **'Glow'**
+  String get effectGlow;
+
+  /// Effect: film grain.
+  ///
+  /// In en, this message translates to:
+  /// **'Film grain'**
+  String get effectFilmGrain;
+
+  /// Effect: darker corners.
+  ///
+  /// In en, this message translates to:
+  /// **'Vignette'**
+  String get effectVignette;
+
+  /// Hint in the crop tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the frame or its corners to choose what to keep.'**
+  String get editorCropHint;
+
+  /// Button that swaps the crop between portrait and landscape.
+  ///
+  /// In en, this message translates to:
+  /// **'Portrait / landscape'**
+  String get editorCropSwapOrientation;
+
+  /// Crop shape: any shape.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get editorCropFree;
+
+  /// Crop shape: same as the photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Original'**
+  String get editorCropOriginal;
+
+  /// Crop shape: square.
+  ///
+  /// In en, this message translates to:
+  /// **'Square'**
+  String get editorCropSquare;
+
+  /// Crop shape: 4×6 print.
+  ///
+  /// In en, this message translates to:
+  /// **'4 × 6'**
+  String get editorCrop4x6;
+
+  /// Crop shape: 5×7 print.
+  ///
+  /// In en, this message translates to:
+  /// **'5 × 7'**
+  String get editorCrop5x7;
+
+  /// Crop shape: 8×10 print.
+  ///
+  /// In en, this message translates to:
+  /// **'8 × 10'**
+  String get editorCrop8x10;
+
+  /// Crop shape: widescreen.
+  ///
+  /// In en, this message translates to:
+  /// **'16:9'**
+  String get editorCrop16x9;
+
+  /// Hint in the straighten tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the slider until the horizon lines up with the grid.'**
+  String get editorStraightenHint;
+
+  /// Straighten angle in degrees.
+  ///
+  /// In en, this message translates to:
+  /// **'{degrees}°'**
+  String editorDegrees(String degrees);
+
+  /// Hint in the red-eye tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Click the centre of each red eye. Change the size first if the circle is too small or too big.'**
+  String get editorRedEyeHint;
+
+  /// Slider for the size of red-eye circles.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get editorRedEyeSize;
+
+  /// Editor toolbar: undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get editorUndo;
+
+  /// Editor toolbar: redo.
+  ///
+  /// In en, this message translates to:
+  /// **'Redo'**
+  String get editorRedo;
+
+  /// Editor toolbar: remove every edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Revert'**
+  String get editorRevert;
+
+  /// Editor toolbar: save an edited copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Export…'**
+  String get editorExport;
+
+  /// Editor toolbar: close the editor.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get editorDone;
+
+  /// Shown when the editor cannot decode the image.
+  ///
+  /// In en, this message translates to:
+  /// **'This image can\'t be opened for editing.'**
+  String get editorLoadFailed;
+
+  /// Shown when the edits file next to the image cannot be written.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save your edits in this folder. They\'ll be lost when you close Picavi.'**
+  String get editorSaveFailed;
+
+  /// Shown after an edited copy was written.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved a copy as {name}'**
+  String editorExported(String name);
+
+  /// Shown when exporting failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t export the image'**
+  String get editorExportFailed;
+
+  /// Title of the export options dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Export image} other{Export {count} images}}'**
+  String exportDialogTitle(int count);
+
+  /// Explains that export writes new files.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited copies are saved as new files. Your originals are never changed.'**
+  String get exportDialogDescription;
+
+  /// Export dialog: file format.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get exportFormatLabel;
+
+  /// Export format: JPEG.
+  ///
+  /// In en, this message translates to:
+  /// **'JPEG'**
+  String get exportFormatJpeg;
+
+  /// Export format: PNG.
+  ///
+  /// In en, this message translates to:
+  /// **'PNG'**
+  String get exportFormatPng;
+
+  /// Export dialog: image size.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get exportSizeLabel;
+
+  /// Export size: keep the full size.
+  ///
+  /// In en, this message translates to:
+  /// **'Full size'**
+  String get exportSizeOriginal;
+
+  /// Export size: longest side in pixels.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} px on the long side'**
+  String exportSizePixels(int size);
+
+  /// Export dialog: JPEG quality.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality: {quality}'**
+  String exportQualityLabel(int quality);
+
+  /// Export dialog button that continues to the folder picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folder…'**
+  String get exportChooseFolder;
+
+  /// Viewer actions menu: export edited copies.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Export…} other{Export {count} images…}}'**
+  String exportAction(int count);
+
+  /// Viewer notice after exporting.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Exported 1 image} other{Exported {count} images}}'**
+  String exportedNotice(int count);
+
+  /// Viewer notice when some exports failed.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 image couldn\'t be exported} other{{count} images couldn\'t be exported}}'**
+  String exportFailedNotice(int count);
+
+  /// Viewer actions submenu with one-click edits for the selected images.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Quick fix} other{Quick fix {count} images}}'**
+  String quickFixMenu(int count);
+
+  /// Quick-fix menu item that removes all edits.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove edits'**
+  String get removeEditsAction;
+
+  /// Viewer notice after a quick fix.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Edited 1 image} other{Edited {count} images}}'**
+  String quickFixAppliedNotice(int count);
+
+  /// Viewer notice when a quick fix failed for some images.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 image couldn\'t be edited} other{{count} images couldn\'t be edited}}'**
+  String quickFixFailedNotice(int count);
+
+  /// Viewer notice after removing edits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Removed the edits from 1 image} other{Removed the edits from {count} images}}'**
+  String editsRemovedNotice(int count);
+
+  /// Viewer notice: the rotation of an edited image was saved with its other edits instead of rewriting the file.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotation saved with this image\'s edits'**
+  String get rotationAddedToEditsNotice;
+
+  /// Tooltip on the small mark of an image that has edits.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited'**
+  String get editedBadgeTooltip;
 }
 
 class _AppLocalizationsDelegate
