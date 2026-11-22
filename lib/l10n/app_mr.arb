@@ -228,5 +228,20 @@
   "quickFixFailedNotice": "{count, plural, =1{1 प्रतिमा संपादित करता आली नाही} other{{count} प्रतिमा संपादित करता आल्या नाहीत}}",
   "editsRemovedNotice": "{count, plural, =1{1 प्रतिमेची संपादने काढली} other{{count} प्रतिमांची संपादने काढली}}",
   "rotationAddedToEditsNotice": "फिरवणे या प्रतिमेच्या संपादनांसह जतन केले",
-  "editedBadgeTooltip": "संपादित"
+  "editedBadgeTooltip": "संपादित",
+  "starTooltip": "स्टार द्या (S)",
+  "unstarTooltip": "स्टार काढा (S)",
+  "starredBadgeTooltip": "स्टार दिलेली",
+  "shortcutStar": "स्टार द्या / काढा",
+  "captionTagsAction": "कॅप्शन आणि टॅग…",
+  "captionTagsTitle": "कॅप्शन आणि टॅग",
+  "captionLabel": "कॅप्शन",
+  "tagsLabel": "टॅग",
+  "tagsHint": "टॅग स्वल्पविरामाने वेगळे करा",
+  "saveLabel": "जतन करा",
+  "hideFromLibraryAction": "{count, plural, =1{लायब्ररीतून लपवा} other{{count} प्रतिमा लायब्ररीतून लपवा}}",
+  "showInLibraryAction": "{count, plural, =1{लायब्ररीत दाखवा} other{{count} प्रतिमा लायब्ररीत दाखवा}}",
+  "photoInfoSaveFailedNotice": "या फोल्डरमध्ये स्टार, कॅप्शन किंवा टॅग जतन करता आले नाहीत",
+  "libraryTitle": "लायब्ररी",
+  "shortcutLibrary": "लायब्ररी उघडा"
 }

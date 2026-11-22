@@ -35,6 +35,7 @@ List<_ShortcutEntry> _shortcutsForPlatform() {
     _ShortcutEntry(['R', '⇧R'], (l10n) => l10n.shortcutRotate),
     _ShortcutEntry(['I'], (l10n) => l10n.shortcutInfo),
     _ShortcutEntry(['E'], (l10n) => l10n.shortcutEdit),
+    _ShortcutEntry(['S'], (l10n) => l10n.shortcutStar),
     _ShortcutEntry(['${command}S'], (l10n) => l10n.shortcutSaveRotation),
     _ShortcutEntry(['F2'], (l10n) => l10n.shortcutRename),
     _ShortcutEntry([

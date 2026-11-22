@@ -871,4 +871,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editedBadgeTooltip => 'Edited';
+
+  @override
+  String get starTooltip => 'Star (S)';
+
+  @override
+  String get unstarTooltip => 'Remove star (S)';
+
+  @override
+  String get starredBadgeTooltip => 'Starred';
+
+  @override
+  String get shortcutStar => 'Star / remove star';
+
+  @override
+  String get captionTagsAction => 'Caption and tags…';
+
+  @override
+  String get captionTagsTitle => 'Caption and tags';
+
+  @override
+  String get captionLabel => 'Caption';
+
+  @override
+  String get tagsLabel => 'Tags';
+
+  @override
+  String get tagsHint => 'Separate tags with commas';
+
+  @override
+  String get saveLabel => 'Save';
+
+  @override
+  String hideFromLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hide $count images from library',
+      one: 'Hide from library',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showInLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Show $count images in library',
+      one: 'Show in library',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get photoInfoSaveFailedNotice =>
+      'Couldn\'t save the star, caption or tags in this folder';
+
+  @override
+  String get libraryTitle => 'Library';
+
+  @override
+  String get shortcutLibrary => 'Open the library';
 }

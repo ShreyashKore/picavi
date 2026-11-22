@@ -17,6 +17,7 @@ import 'package:oiv/editor/domain/entities/edit_operation.dart';
 import 'package:oiv/editor/domain/entities/export_options.dart';
 import 'package:oiv/editor/domain/entities/image_edits.dart';
 import 'package:oiv/editor/domain/services/quick_fix_service.dart';
+import 'package:oiv/library/domain/entities/photo_info.dart';
 
 import 'support/editor_fakes.dart';
 
@@ -601,6 +602,81 @@ void main() {
       expect(fixture.controller.state.notice?.count, 1);
     });
   });
+
+  group('ViewerController stars, captions and tags', () {
+    const abc = <String>['/images/a.png', '/images/b.png', '/images/c.png'];
+
+    test(
+      'star toggles, and unstars only when every target is starred',
+      () async {
+        final fixture = await _openFolder(
+          abc,
+          open: '/images/a.png',
+          savedInfo: {'/images/a.png': const PhotoInfo(starred: true)},
+        );
+        await pumpEventQueue();
+        expect(
+          fixture.controller.state.photoInfoFor('/images/a.png').starred,
+          isTrue,
+        );
+
+        fixture.controller.selectAll();
+        await fixture.controller.toggleStarTargets();
+        expect(
+          fixture.info.stored.values.where((i) => i.starred),
+          hasLength(3),
+        );
+
+        await fixture.controller.toggleStarTargets();
+        expect(fixture.info.stored, isEmpty);
+        expect(fixture.controller.state.photoInfo, isEmpty);
+      },
+    );
+
+    test('caption, tags and hidden keep each other', () async {
+      final fixture = await _openFolder(abc, open: '/images/b.png');
+
+      await fixture.controller.setCaptionAndTags('/images/b.png', ' Sunset ', [
+        'beach',
+      ]);
+      await fixture.controller.setTargetsHidden(true);
+
+      expect(
+        fixture.info.stored['/images/b.png'],
+        const PhotoInfo(caption: 'Sunset', tags: ['beach'], hidden: true),
+      );
+    });
+
+    test('info follows a rename', () async {
+      final fixture = await _openFolder(
+        abc,
+        open: '/images/a.png',
+        savedInfo: {'/images/a.png': const PhotoInfo(starred: true)},
+      );
+      await pumpEventQueue();
+
+      await fixture.controller.renameCurrent('z.png');
+
+      expect(fixture.info.stored.keys, ['/images/z.png']);
+      expect(
+        fixture.controller.state.photoInfoFor('/images/z.png').starred,
+        isTrue,
+      );
+    });
+
+    test('a failed save is reported and nothing changes', () async {
+      final fixture = await _openFolder(abc, open: '/images/a.png');
+      fixture.info.failSaves = true;
+
+      await fixture.controller.toggleStarTargets();
+
+      expect(fixture.controller.state.photoInfo, isEmpty);
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.photoInfoSaveFailed,
+      );
+    });
+  });
 }
 
 const DirectoryAccessTexts _texts = DirectoryAccessTexts(
@@ -618,6 +694,7 @@ class _FolderFixture {
     this.evicted,
     this.edits,
     this.exporter,
+    this.info,
   );
 
   final ViewerController controller;
@@ -628,6 +705,7 @@ class _FolderFixture {
   final List<String> evicted;
   final InMemoryImageEditRepository edits;
   final FakeExportService exporter;
+  final InMemoryPhotoInfoRepository info;
 
   List<String> get paths =>
       controller.state.images.map((image) => image.path).toList();
@@ -658,7 +736,9 @@ Future<_FolderFixture> _openFolder(
   required String open,
   ImageSortOrder? sortOrder,
   Map<String, ImageEdits> savedEdits = const {},
+  Map<String, PhotoInfo> savedInfo = const {},
 }) async {
+  final info = InMemoryPhotoInfoRepository()..stored.addAll(savedInfo);
   final edits = InMemoryImageEditRepository()..stored.addAll(savedEdits);
   final exporter = FakeExportService();
   final picker = _FakeImagePickerService();
@@ -676,6 +756,7 @@ Future<_FolderFixture> _openFolder(
     fileOperationsService: fileOperations,
     imageTransformService: transforms,
     editRepository: edits,
+    photoInfoRepository: info,
     quickFixService: RenderingQuickFixService(
       pixelSource: FakePixelSource(),
       renderService: SyncRenderService(),
@@ -703,6 +784,7 @@ Future<_FolderFixture> _openFolder(
     evicted,
     edits,
     exporter,
+    info,
   );
 }
 

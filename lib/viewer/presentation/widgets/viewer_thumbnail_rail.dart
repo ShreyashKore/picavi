@@ -19,6 +19,7 @@ class ViewerThumbnailRail extends StatelessWidget {
     required this.onScrollImageChange,
     this.selectedPaths = const <String>{},
     this.edits = const <String, ImageEdits>{},
+    this.starredPaths = const <String>{},
     this.topInset = 0,
   });
 
@@ -33,6 +34,9 @@ class ViewerThumbnailRail extends StatelessWidget {
   /// Edits by path; edited images show their edited version and a badge.
   final Map<String, ImageEdits> edits;
 
+  /// Images that show a star badge.
+  final Set<String> starredPaths;
+
   /// Decode width for thumbnails; also used to evict them from the cache.
   static const int cacheWidth = 220;
   final double topInset;
@@ -41,6 +45,25 @@ class ViewerThumbnailRail extends StatelessWidget {
   static const int editedThumbnailDimension = 330;
 
   Widget _thumbnail(
+    GalleryImage image,
+    ImageEdits? edits, {
+    required ImageErrorWidgetBuilder errorBuilder,
+    bool starred = false,
+  }) {
+    final picture = _picture(image, edits, errorBuilder: errorBuilder);
+    if (!starred) {
+      return picture;
+    }
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        picture,
+        const PositionedDirectional(start: 2, top: 2, child: _StarBadge()),
+      ],
+    );
+  }
+
+  Widget _picture(
     GalleryImage image,
     ImageEdits? edits, {
     required ImageErrorWidgetBuilder errorBuilder,
@@ -163,6 +186,7 @@ class ViewerThumbnailRail extends StatelessWidget {
                         child: _thumbnail(
                           images[index],
                           edits[images[index].path],
+                          starred: starredPaths.contains(images[index].path),
                           errorBuilder: (_, _, _) => const ColoredBox(
                             color: AppColors.brokenImage,
                             child: Center(
@@ -202,6 +226,23 @@ class _EditedBadge extends StatelessWidget {
           padding: EdgeInsets.all(2),
           child: Icon(Icons.tune_rounded, size: 10, color: Colors.white),
         ),
+      ),
+    );
+  }
+}
+
+class _StarBadge extends StatelessWidget {
+  const _StarBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: context.l10n.starredBadgeTooltip,
+      child: const Icon(
+        Icons.star_rounded,
+        size: 14,
+        color: Color(0xFFFFC94D),
+        shadows: [Shadow(blurRadius: 3)],
       ),
     );
   }

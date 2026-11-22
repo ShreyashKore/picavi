@@ -228,5 +228,20 @@
   "quickFixFailedNotice": "{count, plural, =1{تعذّر تحرير صورة واحدة} other{تعذّر تحرير {count} صور}}",
   "editsRemovedNotice": "{count, plural, =1{تمت إزالة التعديلات من صورة واحدة} other{تمت إزالة التعديلات من {count} صور}}",
   "rotationAddedToEditsNotice": "تم حفظ التدوير مع تعديلات هذه الصورة",
-  "editedBadgeTooltip": "معدّلة"
+  "editedBadgeTooltip": "معدّلة",
+  "starTooltip": "تمييز بنجمة (S)",
+  "unstarTooltip": "إزالة النجمة (S)",
+  "starredBadgeTooltip": "مميّزة بنجمة",
+  "shortcutStar": "تمييز / إزالة النجمة",
+  "captionTagsAction": "التعليق والوسوم…",
+  "captionTagsTitle": "التعليق والوسوم",
+  "captionLabel": "التعليق",
+  "tagsLabel": "الوسوم",
+  "tagsHint": "افصل بين الوسوم بفواصل",
+  "saveLabel": "حفظ",
+  "hideFromLibraryAction": "{count, plural, =1{إخفاء من المكتبة} other{إخفاء {count} صور من المكتبة}}",
+  "showInLibraryAction": "{count, plural, =1{إظهار في المكتبة} other{إظهار {count} صور في المكتبة}}",
+  "photoInfoSaveFailedNotice": "تعذّر حفظ النجمة أو التعليق أو الوسوم في هذا المجلد",
+  "libraryTitle": "المكتبة",
+  "shortcutLibrary": "فتح المكتبة"
 }

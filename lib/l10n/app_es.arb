@@ -228,5 +228,20 @@
   "quickFixFailedNotice": "{count, plural, =1{No se pudo editar 1 imagen} other{No se pudieron editar {count} imágenes}}",
   "editsRemovedNotice": "{count, plural, =1{Se quitaron las ediciones de 1 imagen} other{Se quitaron las ediciones de {count} imágenes}}",
   "rotationAddedToEditsNotice": "Giro guardado con las ediciones de esta imagen",
-  "editedBadgeTooltip": "Editada"
+  "editedBadgeTooltip": "Editada",
+  "starTooltip": "Destacar (S)",
+  "unstarTooltip": "Quitar destacado (S)",
+  "starredBadgeTooltip": "Destacada",
+  "shortcutStar": "Destacar / quitar destacado",
+  "captionTagsAction": "Título y etiquetas…",
+  "captionTagsTitle": "Título y etiquetas",
+  "captionLabel": "Título",
+  "tagsLabel": "Etiquetas",
+  "tagsHint": "Separa las etiquetas con comas",
+  "saveLabel": "Guardar",
+  "hideFromLibraryAction": "{count, plural, =1{Ocultar en la biblioteca} other{Ocultar {count} imágenes en la biblioteca}}",
+  "showInLibraryAction": "{count, plural, =1{Mostrar en la biblioteca} other{Mostrar {count} imágenes en la biblioteca}}",
+  "photoInfoSaveFailedNotice": "No se pudo guardar el destacado, el título o las etiquetas en esta carpeta",
+  "libraryTitle": "Biblioteca",
+  "shortcutLibrary": "Abrir la biblioteca"
 }

@@ -14,6 +14,9 @@ enum ViewerFileAction {
   blackAndWhite,
   sepia,
   removeEdits,
+  captionTags,
+  hide,
+  unhide,
   rename,
   copyToFolder,
   moveToFolder,
@@ -45,6 +48,7 @@ class ViewerActionsMenu extends StatelessWidget {
     required this.onSelected,
     this.canEdit = false,
     this.hasEdits = false,
+    this.allHidden = false,
   });
 
   /// How many images multi-image actions apply to.
@@ -55,6 +59,9 @@ class ViewerActionsMenu extends StatelessWidget {
 
   /// At least one target has edits that can be removed.
   final bool hasEdits;
+
+  /// Every target is hidden from the library (offer "Show" instead of "Hide").
+  final bool allHidden;
   final ValueChanged<ViewerFileAction> onSelected;
 
   @override
@@ -137,6 +144,25 @@ class ViewerActionsMenu extends StatelessWidget {
           l10n.removeEditsAction,
           enabled: hasEdits,
         ),
+        const PopupMenuDivider(),
+        item(
+          ViewerFileAction.captionTags,
+          Icons.short_text_rounded,
+          l10n.captionTagsAction,
+          enabled: singleImage,
+        ),
+        if (allHidden)
+          item(
+            ViewerFileAction.unhide,
+            Icons.visibility_outlined,
+            l10n.showInLibraryAction(targetCount),
+          )
+        else
+          item(
+            ViewerFileAction.hide,
+            Icons.visibility_off_outlined,
+            l10n.hideFromLibraryAction(targetCount),
+          ),
         const PopupMenuDivider(),
         item(
           ViewerFileAction.rename,

@@ -7,6 +7,8 @@ import 'package:oiv/editor/domain/repositories/image_edit_repository.dart';
 import 'package:oiv/editor/domain/services/edit_render_service.dart';
 import 'package:oiv/editor/domain/services/image_export_service.dart';
 import 'package:oiv/editor/domain/services/image_pixel_source.dart';
+import 'package:oiv/library/domain/entities/photo_info.dart';
+import 'package:oiv/library/domain/repositories/photo_info_repository.dart';
 import 'package:path/path.dart' as p;
 
 /// Edits kept in memory, keyed by full path.
@@ -122,5 +124,50 @@ class FakeExportService implements ImageExportService {
       return null;
     }
     return p.join(directory, p.basename(imagePath));
+  }
+}
+
+/// Photo info kept in memory, keyed by full path.
+class InMemoryPhotoInfoRepository implements PhotoInfoRepository {
+  final Map<String, PhotoInfo> stored = {};
+  bool failSaves = false;
+
+  @override
+  Future<Map<String, PhotoInfo>> loadDirectory(String directory) async => {
+    for (final entry in stored.entries)
+      if (p.dirname(entry.key) == directory) entry.key: entry.value,
+  };
+
+  @override
+  Future<PhotoInfo> load(String imagePath) async =>
+      stored[imagePath] ?? PhotoInfo.none;
+
+  @override
+  Future<bool> save(String imagePath, PhotoInfo info) async {
+    if (failSaves) {
+      return false;
+    }
+    if (info.isEmpty) {
+      stored.remove(imagePath);
+    } else {
+      stored[imagePath] = info;
+    }
+    return true;
+  }
+
+  @override
+  Future<void> move(String from, String to) async {
+    final info = stored.remove(from);
+    if (info != null) {
+      stored[to] = info;
+    }
+  }
+
+  @override
+  Future<void> copy(String from, String to) async {
+    final info = stored[from];
+    if (info != null) {
+      stored[to] = info;
+    }
   }
 }

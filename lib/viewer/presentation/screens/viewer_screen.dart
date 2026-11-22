@@ -23,6 +23,7 @@ import '../../../editor/domain/entities/image_edits.dart';
 import '../../../editor/domain/services/quick_fix_service.dart';
 import '../../../editor/presentation/screens/editor_screen.dart';
 import '../../../editor/presentation/widgets/export_options_dialog.dart';
+import '../../../library/data/repositories/sidecar_photo_info_repository.dart';
 import '../../data/repositories/file_system_image_repository.dart';
 import '../../data/services/desktop_file_operations_service.dart';
 import '../../data/services/desktop_image_picker_service.dart';
@@ -38,6 +39,7 @@ import '../../domain/services/image_picker_service.dart';
 import '../controllers/viewer_controller.dart';
 import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
+import '../widgets/caption_tags_dialog.dart';
 import '../widgets/image_info_overlay.dart';
 import '../widgets/interactive_image_viewer.dart';
 import '../widgets/keyboard_shortcuts_dialog.dart';
@@ -123,6 +125,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       ),
       imageTransformService: RasterImageTransformService(),
       editRepository: _editRepository,
+      photoInfoRepository: const SidecarPhotoInfoRepository(),
       quickFixService: const RenderingQuickFixService(),
       exportService: const RasterImageExportService(),
       evictImage: (path) => AppImage.evictFile(
@@ -456,6 +459,12 @@ class _ViewerScreenState extends State<ViewerScreen>
         await _controller.quickFixTargets(QuickFix.sepia);
       case ViewerFileAction.removeEdits:
         await _controller.removeEditsFromTargets();
+      case ViewerFileAction.captionTags:
+        await _editCaptionAndTags();
+      case ViewerFileAction.hide:
+        await _controller.setTargetsHidden(true);
+      case ViewerFileAction.unhide:
+        await _controller.setTargetsHidden(false);
       case ViewerFileAction.rename:
         await _renameCurrentImage();
       case ViewerFileAction.copyToFolder:
@@ -509,6 +518,25 @@ class _ViewerScreenState extends State<ViewerScreen>
     );
     if (edits != null) {
       _controller.setEdits(path, edits);
+    }
+    if (mounted) {
+      _viewerFocusNode.requestFocus();
+    }
+  }
+
+  Future<void> _editCaptionAndTags() async {
+    final state = _controller.state;
+    if (!state.hasImages) {
+      return;
+    }
+    _stopSlideshow();
+    final path = state.currentImage.path;
+    final result = await showCaptionTagsDialog(
+      context,
+      info: state.photoInfoFor(path),
+    );
+    if (result != null) {
+      await _controller.setCaptionAndTags(path, result.$1, result.$2);
     }
     if (mounted) {
       _viewerFocusNode.requestFocus();
@@ -912,6 +940,7 @@ class _ViewerScreenState extends State<ViewerScreen>
         notice.count,
       ),
       ViewerNoticeType.editsRemoved => l10n.editsRemovedNotice(notice.count),
+      ViewerNoticeType.photoInfoSaveFailed => l10n.photoInfoSaveFailedNotice,
     };
   }
 
@@ -1154,6 +1183,9 @@ class _ViewerScreenState extends State<ViewerScreen>
     if (key == LogicalKeyboardKey.keyE) {
       return () => unawaited(_openEditor());
     }
+    if (key == LogicalKeyboardKey.keyS) {
+      return () => unawaited(_controller.toggleStarTargets());
+    }
     if (key == LogicalKeyboardKey.delete ||
         key == LogicalKeyboardKey.backspace) {
       return () => unawaited(_confirmAndTrash());
@@ -1327,6 +1359,8 @@ class _ViewerScreenState extends State<ViewerScreen>
                 currentIndex: state.currentIndex,
                 imageCount: state.images.length,
                 viewState: imageViewState,
+                caption: state.photoInfoFor(state.currentImage.path).caption,
+                tags: state.photoInfoFor(state.currentImage.path).tags,
               ),
             ),
 
@@ -1350,6 +1384,10 @@ class _ViewerScreenState extends State<ViewerScreen>
                       onTap: _handleThumbnailTap,
                       selectedPaths: state.selectedPaths,
                       edits: state.edits,
+                      starredPaths: {
+                        for (final entry in state.photoInfo.entries)
+                          if (entry.value.starred) entry.key,
+                      },
                       onScrollImageChange: (delta) =>
                           unawaited(_goToRelativeIndex(delta)),
                       topInset: _thumbnailControlsInset,
@@ -1440,10 +1478,15 @@ class _ViewerScreenState extends State<ViewerScreen>
         hasEdits: state.actionTargets.any(
           (path) => state.editsFor(path).isNotEmpty,
         ),
+        allHidden: state.actionTargets.every(
+          (path) => state.photoInfoFor(path).hidden,
+        ),
         onSelected: (action) => unawaited(_handleFileAction(action)),
       ),
       selectionCount: state.selectedPaths.length,
       onClearSelection: _controller.clearSelection,
+      isStarred: state.photoInfoFor(state.currentImage.path).starred,
+      onToggleStar: () => unawaited(_controller.toggleStarTargets()),
     );
   }
 

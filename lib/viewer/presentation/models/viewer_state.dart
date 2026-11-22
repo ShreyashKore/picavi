@@ -1,4 +1,5 @@
 import '../../../editor/domain/entities/image_edits.dart';
+import '../../../library/domain/entities/photo_info.dart';
 import '../../domain/entities/gallery_image.dart';
 import '../../domain/entities/image_sort_order.dart';
 import 'viewer_notice.dart';
@@ -13,6 +14,7 @@ class ViewerState {
     this.sortOrder = const ImageSortOrder(),
     this.selectedPaths = const <String>{},
     this.edits = const <String, ImageEdits>{},
+    this.photoInfo = const <String, PhotoInfo>{},
     this.isWorking = false,
   });
 
@@ -25,6 +27,7 @@ class ViewerState {
       sortOrder = const ImageSortOrder(),
       selectedPaths = const <String>{},
       edits = const <String, ImageEdits>{},
+      photoInfo = const <String, PhotoInfo>{},
       isWorking = false;
 
   final List<GalleryImage> images;
@@ -40,6 +43,11 @@ class ViewerState {
 
   /// Non-destructive edits of images in the current folder, by path.
   final Map<String, ImageEdits> edits;
+
+  /// Stars, captions, tags and hidden flags in the current folder, by path.
+  final Map<String, PhotoInfo> photoInfo;
+
+  PhotoInfo photoInfoFor(String path) => photoInfo[path] ?? PhotoInfo.none;
 
   /// A batch action (export, quick fix) is running.
   final bool isWorking;
@@ -77,6 +85,7 @@ class ViewerState {
     ImageSortOrder? sortOrder,
     Set<String>? selectedPaths,
     Map<String, ImageEdits>? edits,
+    Map<String, PhotoInfo>? photoInfo,
     bool? isWorking,
   }) {
     return ViewerState(
@@ -88,6 +97,7 @@ class ViewerState {
       sortOrder: sortOrder ?? this.sortOrder,
       selectedPaths: selectedPaths ?? this.selectedPaths,
       edits: edits ?? this.edits,
+      photoInfo: photoInfo ?? this.photoInfo,
       isWorking: isWorking ?? this.isWorking,
     );
   }

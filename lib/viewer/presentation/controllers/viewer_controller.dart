@@ -11,6 +11,8 @@ import '../../../editor/domain/entities/image_edits.dart';
 import '../../../editor/domain/repositories/image_edit_repository.dart';
 import '../../../editor/domain/services/image_export_service.dart';
 import '../../../editor/domain/services/quick_fix_service.dart';
+import '../../../library/domain/entities/photo_info.dart';
+import '../../../library/domain/repositories/photo_info_repository.dart';
 import '../../data/services/native_file_channel_service.dart';
 import '../../domain/entities/gallery_image.dart';
 import '../../domain/entities/image_sort_order.dart';
@@ -29,12 +31,14 @@ class ViewerController extends ChangeNotifier {
     required FileOperationsService fileOperationsService,
     required ImageTransformService imageTransformService,
     ImageEditRepository? editRepository,
+    PhotoInfoRepository? photoInfoRepository,
     QuickFixService? quickFixService,
     ImageExportService? exportService,
     Future<void> Function(String path)? evictImage,
     Duration folderRefreshDebounce = const Duration(milliseconds: 400),
   }) : _imageRepository = imageRepository,
        _editRepository = editRepository,
+       _photoInfoRepository = photoInfoRepository,
        _quickFixService = quickFixService,
        _exportService = exportService,
        _imagePickerService = imagePickerService,
@@ -54,6 +58,9 @@ class ViewerController extends ChangeNotifier {
 
   /// Where non-destructive edits live; null disables editing support.
   final ImageEditRepository? _editRepository;
+
+  /// Where stars, captions and tags live; null disables them.
+  final PhotoInfoRepository? _photoInfoRepository;
   final QuickFixService? _quickFixService;
   final ImageExportService? _exportService;
 
@@ -568,52 +575,131 @@ class ViewerController extends ChangeNotifier {
     return true;
   }
 
-  /// Moves or copies the edits of renamed, moved or copied files.
+  /// Moves or copies the edits and photo info of renamed, moved or copied
+  /// files along with them.
   Future<void> _carryEdits(
     Map<String, String> transfers, {
     required bool keepOriginal,
   }) async {
-    final repository = _editRepository;
-    if (repository == null) {
-      return;
-    }
-    final next = Map<String, ImageEdits>.of(_state.edits);
+    final editRepository = _editRepository;
+    final infoRepository = _photoInfoRepository;
+    final nextEdits = Map<String, ImageEdits>.of(_state.edits);
+    final nextInfo = Map<String, PhotoInfo>.of(_state.photoInfo);
     for (final MapEntry(key: from, value: to) in transfers.entries) {
-      final edits = _state.editsFor(from);
-      if (edits.isEmpty) {
-        continue;
-      }
+      final staysHere = p.equals(p.dirname(to), _state.currentDirectory ?? '');
       try {
-        if (keepOriginal) {
-          await repository.copy(from, to);
-        } else {
-          await repository.move(from, to);
-          next.remove(from);
+        final edits = _state.editsFor(from);
+        if (editRepository != null && edits.isNotEmpty) {
+          if (keepOriginal) {
+            await editRepository.copy(from, to);
+          } else {
+            await editRepository.move(from, to);
+            nextEdits.remove(from);
+          }
+          if (staysHere) {
+            nextEdits[to] = edits;
+          }
         }
-        if (p.equals(p.dirname(to), _state.currentDirectory ?? '')) {
-          next[to] = edits;
+        final info = _state.photoInfoFor(from);
+        if (infoRepository != null && !info.isEmpty) {
+          if (keepOriginal) {
+            await infoRepository.copy(from, to);
+          } else {
+            await infoRepository.move(from, to);
+            nextInfo.remove(from);
+          }
+          if (staysHere) {
+            nextInfo[to] = info;
+          }
         }
       } catch (error) {
         debugPrint('Unable to carry edits from $from to $to: $error');
       }
     }
-    _setState(_state.copyWith(edits: next));
+    _setState(_state.copyWith(edits: nextEdits, photoInfo: nextInfo));
   }
 
   Future<void> _loadEdits(String directory) async {
-    final repository = _editRepository;
-    if (repository == null) {
-      return;
-    }
     final generation = _galleryGeneration;
-    final edits = await repository.loadDirectory(directory);
+    final results = await Future.wait<Map<String, Object>>([
+      _editRepository?.loadDirectory(directory) ??
+          Future.value(const <String, ImageEdits>{}),
+      _photoInfoRepository?.loadDirectory(directory) ??
+          Future.value(const <String, PhotoInfo>{}),
+    ]);
+    final edits = results[0] as Map<String, ImageEdits>;
+    final info = results[1] as Map<String, PhotoInfo>;
     if (_isDisposed ||
         generation != _galleryGeneration ||
         _state.currentDirectory != directory ||
-        (edits.isEmpty && _state.edits.isEmpty)) {
+        (edits.isEmpty &&
+            info.isEmpty &&
+            _state.edits.isEmpty &&
+            _state.photoInfo.isEmpty)) {
       return;
     }
-    _setState(_state.copyWith(edits: edits));
+    _setState(_state.copyWith(edits: edits, photoInfo: info));
+  }
+
+  // ---------------------------------------------------------------------------
+  // Stars, captions, tags
+
+  /// Stars the selected images (or the current one); if they are all
+  /// starred already, removes the star instead.
+  Future<void> toggleStarTargets() async {
+    final targets = _state.actionTargets;
+    if (targets.isEmpty) {
+      return;
+    }
+    final star = !targets.every((path) => _state.photoInfoFor(path).starred);
+    await _updatePhotoInfo(targets, (info) => info.copyWith(starred: star));
+  }
+
+  /// Hides the selected images (or the current one) from the library, or
+  /// shows them again.
+  Future<void> setTargetsHidden(bool hidden) async {
+    await _updatePhotoInfo(
+      _state.actionTargets,
+      (info) => info.copyWith(hidden: hidden),
+    );
+  }
+
+  Future<void> setCaptionAndTags(
+    String path,
+    String caption,
+    List<String> tags,
+  ) async {
+    await _updatePhotoInfo([
+      path,
+    ], (info) => info.copyWith(caption: caption.trim(), tags: tags));
+  }
+
+  Future<void> _updatePhotoInfo(
+    List<String> paths,
+    PhotoInfo Function(PhotoInfo info) change,
+  ) async {
+    final repository = _photoInfoRepository;
+    if (repository == null || paths.isEmpty) {
+      return;
+    }
+    final next = Map<String, PhotoInfo>.of(_state.photoInfo);
+    var failed = false;
+    for (final path in paths) {
+      final updated = change(_state.photoInfoFor(path));
+      if (!await repository.save(path, updated)) {
+        failed = true;
+        continue;
+      }
+      if (updated.isEmpty) {
+        next.remove(path);
+      } else {
+        next[path] = updated;
+      }
+    }
+    _setState(_state.copyWith(photoInfo: next));
+    if (failed) {
+      _pushNotice(ViewerNoticeType.photoInfoSaveFailed);
+    }
   }
 
   Future<String?> _pickDestination(
@@ -804,6 +890,7 @@ class ViewerController extends ChangeNotifier {
         currentIndex: selectedIndex,
         selectedPaths: const <String>{},
         edits: const <String, ImageEdits>{},
+        photoInfo: const <String, PhotoInfo>{},
       ),
     );
     _watchDirectory(currentDirectory);

@@ -228,5 +228,20 @@
   "quickFixFailedNotice": "{count, plural, =1{有 1 张图片无法编辑} other{有 {count} 张图片无法编辑}}",
   "editsRemovedNotice": "{count, plural, =1{已移除 1 张图片的编辑} other{已移除 {count} 张图片的编辑}}",
   "rotationAddedToEditsNotice": "旋转已与此图片的编辑一起保存",
-  "editedBadgeTooltip": "已编辑"
+  "editedBadgeTooltip": "已编辑",
+  "starTooltip": "加星标 (S)",
+  "unstarTooltip": "取消星标 (S)",
+  "starredBadgeTooltip": "已加星标",
+  "shortcutStar": "加星标 / 取消星标",
+  "captionTagsAction": "说明和标签…",
+  "captionTagsTitle": "说明和标签",
+  "captionLabel": "说明",
+  "tagsLabel": "标签",
+  "tagsHint": "用逗号分隔标签",
+  "saveLabel": "保存",
+  "hideFromLibraryAction": "{count, plural, =1{在图库中隐藏} other{在图库中隐藏 {count} 张图片}}",
+  "showInLibraryAction": "{count, plural, =1{在图库中显示} other{在图库中显示 {count} 张图片}}",
+  "photoInfoSaveFailedNotice": "无法在此文件夹中保存星标、说明或标签",
+  "libraryTitle": "图库",
+  "shortcutLibrary": "打开图库"
 }

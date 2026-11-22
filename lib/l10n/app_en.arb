@@ -936,5 +936,75 @@
   "editedBadgeTooltip": "Edited",
   "@editedBadgeTooltip": {
     "description": "Tooltip on the small mark of an image that has edits."
+  },
+  "starTooltip": "Star (S)",
+  "@starTooltip": {
+    "description": "Tooltip on the star button of an unstarred photo."
+  },
+  "unstarTooltip": "Remove star (S)",
+  "@unstarTooltip": {
+    "description": "Tooltip on the star button of a starred photo."
+  },
+  "starredBadgeTooltip": "Starred",
+  "@starredBadgeTooltip": {
+    "description": "Tooltip on the star mark of a starred thumbnail."
+  },
+  "shortcutStar": "Star / remove star",
+  "@shortcutStar": {
+    "description": "Keyboard shortcuts list: star or unstar."
+  },
+  "captionTagsAction": "Caption and tags…",
+  "@captionTagsAction": {
+    "description": "Menu item that edits the caption and tags."
+  },
+  "captionTagsTitle": "Caption and tags",
+  "@captionTagsTitle": {
+    "description": "Title of the caption and tags dialog."
+  },
+  "captionLabel": "Caption",
+  "@captionLabel": {
+    "description": "Label for a photo caption."
+  },
+  "tagsLabel": "Tags",
+  "@tagsLabel": {
+    "description": "Label for a photo's tags."
+  },
+  "tagsHint": "Separate tags with commas",
+  "@tagsHint": {
+    "description": "Helper text under the tags field."
+  },
+  "saveLabel": "Save",
+  "@saveLabel": {
+    "description": "Generic save button."
+  },
+  "hideFromLibraryAction": "{count, plural, =1{Hide from library} other{Hide {count} images from library}}",
+  "@hideFromLibraryAction": {
+    "description": "Menu item that hides photos from the library.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "showInLibraryAction": "{count, plural, =1{Show in library} other{Show {count} images in library}}",
+  "@showInLibraryAction": {
+    "description": "Menu item that shows hidden photos in the library again.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "photoInfoSaveFailedNotice": "Couldn't save the star, caption or tags in this folder",
+  "@photoInfoSaveFailedNotice": {
+    "description": "Shown when a star, caption or tags could not be saved."
+  },
+  "libraryTitle": "Library",
+  "@libraryTitle": {
+    "description": "Name of the library (all photos in watched folders)."
+  },
+  "shortcutLibrary": "Open the library",
+  "@shortcutLibrary": {
+    "description": "Keyboard shortcuts list: open the library."
   }
 }

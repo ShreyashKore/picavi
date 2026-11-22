@@ -868,4 +868,66 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get editedBadgeTooltip => 'معدّلة';
+
+  @override
+  String get starTooltip => 'تمييز بنجمة (S)';
+
+  @override
+  String get unstarTooltip => 'إزالة النجمة (S)';
+
+  @override
+  String get starredBadgeTooltip => 'مميّزة بنجمة';
+
+  @override
+  String get shortcutStar => 'تمييز / إزالة النجمة';
+
+  @override
+  String get captionTagsAction => 'التعليق والوسوم…';
+
+  @override
+  String get captionTagsTitle => 'التعليق والوسوم';
+
+  @override
+  String get captionLabel => 'التعليق';
+
+  @override
+  String get tagsLabel => 'الوسوم';
+
+  @override
+  String get tagsHint => 'افصل بين الوسوم بفواصل';
+
+  @override
+  String get saveLabel => 'حفظ';
+
+  @override
+  String hideFromLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'إخفاء $count صور من المكتبة',
+      one: 'إخفاء من المكتبة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showInLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'إظهار $count صور في المكتبة',
+      one: 'إظهار في المكتبة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get photoInfoSaveFailedNotice =>
+      'تعذّر حفظ النجمة أو التعليق أو الوسوم في هذا المجلد';
+
+  @override
+  String get libraryTitle => 'المكتبة';
+
+  @override
+  String get shortcutLibrary => 'فتح المكتبة';
 }

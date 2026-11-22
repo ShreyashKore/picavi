@@ -877,4 +877,66 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get editedBadgeTooltip => 'Editada';
+
+  @override
+  String get starTooltip => 'Destacar (S)';
+
+  @override
+  String get unstarTooltip => 'Quitar destacado (S)';
+
+  @override
+  String get starredBadgeTooltip => 'Destacada';
+
+  @override
+  String get shortcutStar => 'Destacar / quitar destacado';
+
+  @override
+  String get captionTagsAction => 'Título y etiquetas…';
+
+  @override
+  String get captionTagsTitle => 'Título y etiquetas';
+
+  @override
+  String get captionLabel => 'Título';
+
+  @override
+  String get tagsLabel => 'Etiquetas';
+
+  @override
+  String get tagsHint => 'Separa las etiquetas con comas';
+
+  @override
+  String get saveLabel => 'Guardar';
+
+  @override
+  String hideFromLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ocultar $count imágenes en la biblioteca',
+      one: 'Ocultar en la biblioteca',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showInLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mostrar $count imágenes en la biblioteca',
+      one: 'Mostrar en la biblioteca',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get photoInfoSaveFailedNotice =>
+      'No se pudo guardar el destacado, el título o las etiquetas en esta carpeta';
+
+  @override
+  String get libraryTitle => 'Biblioteca';
+
+  @override
+  String get shortcutLibrary => 'Abrir la biblioteca';
 }

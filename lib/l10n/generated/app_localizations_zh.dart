@@ -838,4 +838,65 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get editedBadgeTooltip => '已编辑';
+
+  @override
+  String get starTooltip => '加星标 (S)';
+
+  @override
+  String get unstarTooltip => '取消星标 (S)';
+
+  @override
+  String get starredBadgeTooltip => '已加星标';
+
+  @override
+  String get shortcutStar => '加星标 / 取消星标';
+
+  @override
+  String get captionTagsAction => '说明和标签…';
+
+  @override
+  String get captionTagsTitle => '说明和标签';
+
+  @override
+  String get captionLabel => '说明';
+
+  @override
+  String get tagsLabel => '标签';
+
+  @override
+  String get tagsHint => '用逗号分隔标签';
+
+  @override
+  String get saveLabel => '保存';
+
+  @override
+  String hideFromLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '在图库中隐藏 $count 张图片',
+      one: '在图库中隐藏',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showInLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '在图库中显示 $count 张图片',
+      one: '在图库中显示',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get photoInfoSaveFailedNotice => '无法在此文件夹中保存星标、说明或标签';
+
+  @override
+  String get libraryTitle => '图库';
+
+  @override
+  String get shortcutLibrary => '打开图库';
 }

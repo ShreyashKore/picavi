@@ -1413,6 +1413,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edited'**
   String get editedBadgeTooltip;
+
+  /// Tooltip on the star button of an unstarred photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Star (S)'**
+  String get starTooltip;
+
+  /// Tooltip on the star button of a starred photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove star (S)'**
+  String get unstarTooltip;
+
+  /// Tooltip on the star mark of a starred thumbnail.
+  ///
+  /// In en, this message translates to:
+  /// **'Starred'**
+  String get starredBadgeTooltip;
+
+  /// Keyboard shortcuts list: star or unstar.
+  ///
+  /// In en, this message translates to:
+  /// **'Star / remove star'**
+  String get shortcutStar;
+
+  /// Menu item that edits the caption and tags.
+  ///
+  /// In en, this message translates to:
+  /// **'Caption and tags…'**
+  String get captionTagsAction;
+
+  /// Title of the caption and tags dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Caption and tags'**
+  String get captionTagsTitle;
+
+  /// Label for a photo caption.
+  ///
+  /// In en, this message translates to:
+  /// **'Caption'**
+  String get captionLabel;
+
+  /// Label for a photo's tags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get tagsLabel;
+
+  /// Helper text under the tags field.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate tags with commas'**
+  String get tagsHint;
+
+  /// Generic save button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveLabel;
+
+  /// Menu item that hides photos from the library.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Hide from library} other{Hide {count} images from library}}'**
+  String hideFromLibraryAction(int count);
+
+  /// Menu item that shows hidden photos in the library again.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Show in library} other{Show {count} images in library}}'**
+  String showInLibraryAction(int count);
+
+  /// Shown when a star, caption or tags could not be saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the star, caption or tags in this folder'**
+  String get photoInfoSaveFailedNotice;
+
+  /// Name of the library (all photos in watched folders).
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get libraryTitle;
+
+  /// Keyboard shortcuts list: open the library.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the library'**
+  String get shortcutLibrary;
 }
 
 class _AppLocalizationsDelegate

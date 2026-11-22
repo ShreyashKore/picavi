@@ -17,6 +17,9 @@ class ViewerTopOverlay extends StatelessWidget {
     required this.actionsMenu,
     this.selectionCount = 0,
     this.onClearSelection,
+    this.isStarred = false,
+    this.onToggleStar,
+    this.onOpenLibrary,
   });
 
   final String fileName;
@@ -29,6 +32,9 @@ class ViewerTopOverlay extends StatelessWidget {
   final Widget actionsMenu;
   final int selectionCount;
   final VoidCallback? onClearSelection;
+  final bool isStarred;
+  final VoidCallback? onToggleStar;
+  final VoidCallback? onOpenLibrary;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +82,21 @@ class ViewerTopOverlay extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (onToggleStar != null)
+                    IconButton(
+                      tooltip: isStarred
+                          ? context.l10n.unstarTooltip
+                          : context.l10n.starTooltip,
+                      onPressed: onToggleStar,
+                      icon: Icon(
+                        isStarred
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded,
+                        size: 20,
+                        color: isStarred ? const Color(0xFFFFC94D) : null,
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    ),
                   const SizedBox(width: 8),
                   if (selectionCount > 0)
                     Padding(
@@ -89,6 +110,13 @@ class ViewerTopOverlay extends StatelessWidget {
                             context.l10n.clearSelectionTooltip,
                         visualDensity: VisualDensity.compact,
                       ),
+                    ),
+                  if (onOpenLibrary != null)
+                    IconButton(
+                      tooltip: context.l10n.libraryTitle,
+                      onPressed: onOpenLibrary,
+                      icon: const Icon(Icons.photo_library_outlined, size: 18),
+                      visualDensity: VisualDensity.compact,
                     ),
                   actionsMenu,
                   _SortMenuButton(

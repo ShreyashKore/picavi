@@ -20,6 +20,7 @@ enum ViewerNoticeType {
   quickFixApplied,
   quickFixFailed,
   editsRemoved,
+  photoInfoSaveFailed,
 }
 
 class ViewerNotice {

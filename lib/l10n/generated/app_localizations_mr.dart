@@ -869,4 +869,66 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get editedBadgeTooltip => 'संपादित';
+
+  @override
+  String get starTooltip => 'स्टार द्या (S)';
+
+  @override
+  String get unstarTooltip => 'स्टार काढा (S)';
+
+  @override
+  String get starredBadgeTooltip => 'स्टार दिलेली';
+
+  @override
+  String get shortcutStar => 'स्टार द्या / काढा';
+
+  @override
+  String get captionTagsAction => 'कॅप्शन आणि टॅग…';
+
+  @override
+  String get captionTagsTitle => 'कॅप्शन आणि टॅग';
+
+  @override
+  String get captionLabel => 'कॅप्शन';
+
+  @override
+  String get tagsLabel => 'टॅग';
+
+  @override
+  String get tagsHint => 'टॅग स्वल्पविरामाने वेगळे करा';
+
+  @override
+  String get saveLabel => 'जतन करा';
+
+  @override
+  String hideFromLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा लायब्ररीतून लपवा',
+      one: 'लायब्ररीतून लपवा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showInLibraryAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा लायब्ररीत दाखवा',
+      one: 'लायब्ररीत दाखवा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get photoInfoSaveFailedNotice =>
+      'या फोल्डरमध्ये स्टार, कॅप्शन किंवा टॅग जतन करता आले नाहीत';
+
+  @override
+  String get libraryTitle => 'लायब्ररी';
+
+  @override
+  String get shortcutLibrary => 'लायब्ररी उघडा';
 }
