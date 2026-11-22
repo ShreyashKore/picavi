@@ -15,6 +15,8 @@ class AppPreferencesService {
   static const String _slideshowShuffleKey = 'slideshowShuffle';
   static const String _slideshowLoopKey = 'slideshowLoop';
   static const String _slideshowFullScreenKey = 'slideshowFullScreen';
+  static const String _libraryFoldersKey = 'libraryWatchedFolders';
+  static const String _libraryHiddenFoldersKey = 'libraryHiddenFolders';
 
   /// Maximum number of recently opened folders kept in history.
   static const int maxRecentFolders = 10;
@@ -268,5 +270,35 @@ class AppPreferencesService {
     }
 
     return null;
+  }
+
+  Future<List<String>> getLibraryFolders() =>
+      _getStringList(_libraryFoldersKey);
+
+  Future<void> setLibraryFolders(List<String> folders) =>
+      _setStringList(_libraryFoldersKey, folders);
+
+  Future<List<String>> getLibraryHiddenFolders() =>
+      _getStringList(_libraryHiddenFoldersKey);
+
+  Future<void> setLibraryHiddenFolders(List<String> folders) =>
+      _setStringList(_libraryHiddenFoldersKey, folders);
+
+  Future<List<String>> _getStringList(String key) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      return preferences.getStringList(key) ?? const <String>[];
+    } catch (_) {
+      return const <String>[];
+    }
+  }
+
+  Future<void> _setStringList(String key, List<String> values) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.setStringList(key, values);
+    } catch (_) {
+      // Ignore persistence failures and keep the app usable.
+    }
   }
 }
