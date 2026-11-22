@@ -4,6 +4,7 @@ Type=Application
 Name=Picavi
 Comment=Open Image Viewer
 Exec=@BINARY_NAME@ %F
+Icon=@BINARY_NAME@
 Terminal=false
 Categories=Graphics;Viewer;
 MimeType=image/bmp;image/gif;image/jpeg;image/png;image/svg+xml;image/webp;image/x-icon;

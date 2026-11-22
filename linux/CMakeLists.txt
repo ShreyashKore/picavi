@@ -104,6 +104,13 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oiv.desktop"
   DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications"
   COMPONENT Runtime)
 
+foreach(icon_size 256 512)
+  install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/icons/oiv_${icon_size}.png"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${icon_size}x${icon_size}/apps"
+    RENAME "${BINARY_NAME}.png"
+    COMPONENT Runtime)
+endforeach()
+
 install(FILES "${FLUTTER_ICU_DATA_FILE}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   COMPONENT Runtime)
 
