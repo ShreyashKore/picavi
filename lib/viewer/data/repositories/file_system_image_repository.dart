@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
 import '../../domain/constants/supported_image_extensions.dart';
 import '../../domain/entities/gallery_image.dart';
+import '../../domain/entities/image_sort_order.dart';
 import '../../domain/repositories/image_repository.dart';
+import '../../domain/utils/natural_compare.dart';
 
 class FileSystemImageRepository implements ImageRepository {
   @override
@@ -19,8 +22,9 @@ class FileSystemImageRepository implements ImageRepository {
 
   @override
   Future<List<GalleryImage>> readImagesFromDirectory(
-    String directoryPath,
-  ) async {
+    String directoryPath, {
+    ImageSortOrder sortOrder = const ImageSortOrder(),
+  }) async {
     final images = <GalleryImage>[];
 
     await for (final entity in Directory(
@@ -31,12 +35,93 @@ class FileSystemImageRepository implements ImageRepository {
       }
     }
 
-    images.sort(
-      (left, right) =>
-          left.fileName.toLowerCase().compareTo(right.fileName.toLowerCase()),
-    );
+    return sortImages(images, sortOrder);
+  }
 
-    return images;
+  @override
+  Future<List<GalleryImage>> sortImages(
+    List<GalleryImage> images,
+    ImageSortOrder sortOrder,
+  ) async {
+    final stats = switch (sortOrder.field) {
+      ImageSortField.modified || ImageSortField.size => await _statAll(images),
+      _ => const <String, FileStat?>{},
+    };
+
+    int compareByField(GalleryImage left, GalleryImage right) {
+      switch (sortOrder.field) {
+        case ImageSortField.name:
+          return 0;
+        case ImageSortField.type:
+          return p
+              .extension(left.path)
+              .toLowerCase()
+              .compareTo(p.extension(right.path).toLowerCase());
+        case ImageSortField.modified:
+          final leftTime = stats[left.path]?.modified;
+          final rightTime = stats[right.path]?.modified;
+          if (leftTime == null || rightTime == null) {
+            return 0;
+          }
+          return leftTime.compareTo(rightTime);
+        case ImageSortField.size:
+          return (stats[left.path]?.size ?? 0).compareTo(
+            stats[right.path]?.size ?? 0,
+          );
+      }
+    }
+
+    final sorted = List<GalleryImage>.of(images)
+      ..sort((left, right) {
+        var result = compareByField(left, right);
+        if (result == 0) {
+          result = compareNaturally(left.fileName, right.fileName);
+        }
+        return sortOrder.ascending ? result : -result;
+      });
+    return sorted;
+  }
+
+  @override
+  Stream<void> watchDirectory(String directoryPath) {
+    if (!FileSystemEntity.isWatchSupported) {
+      return const Stream<void>.empty();
+    }
+
+    try {
+      return Directory(directoryPath)
+          .watch()
+          .where(
+            (event) =>
+                isSupportedImagePath(event.path) ||
+                (event is FileSystemMoveEvent &&
+                    event.destination != null &&
+                    isSupportedImagePath(event.destination!)),
+          )
+          .map<void>((_) {})
+          .handleError((Object error) {
+            debugPrint('Stopped watching $directoryPath: $error');
+          });
+    } catch (error) {
+      debugPrint('Unable to watch $directoryPath: $error');
+      return const Stream<void>.empty();
+    }
+  }
+
+  Future<Map<String, FileStat?>> _statAll(List<GalleryImage> images) async {
+    final entries = await Future.wait(
+      images.map((image) async {
+        try {
+          return MapEntry<String, FileStat?>(
+            image.path,
+            await File(image.path).stat(),
+          );
+        } on FileSystemException {
+          return MapEntry<String, FileStat?>(image.path, null);
+        }
+      }),
+    );
+    return Map<String, FileStat?>.fromEntries(entries);
   }
 
   @override

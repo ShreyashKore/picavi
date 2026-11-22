@@ -22,10 +22,10 @@ falls into one of those three buckets.
 | Fit modes | Fit / fill / actual size toggle, zoom-to-fit-width; fullscreen toggle (`F`) |
 | Compare view | Picasa's 2-up side-by-side compare |
 | Drag & drop | Drop a file/folder onto the window to open; drag an image out to other apps |
-| Folder watching | Rail doesn't refresh when files are added/removed on disk |
-| Sort options | Only one sort order; Picasa sorted by name, date taken, modified, size |
+| Folder watching | ✅ Done in Phase 0 |
+| Sort options | ✅ Name, modified, size, type done; date taken still to do |
 | Histogram | Picasa showed a live histogram in the info pane |
-| Shortcut help | No `?` overlay; many Picasa shortcuts missing (`Del`, `Ctrl+R`, `Space`, `1`, …) |
+| Shortcut help | ✅ `?` overlay added; still missing file shortcuts like `Del` (Phase 1) |
 | Multi-select ("Picture Tray") | Can't select several images to act on them together |
 
 ### 2. Formats
@@ -73,9 +73,8 @@ falls into one of those three buckets.
 | Share / email | OS share sheet |
 
 ### 6. Housekeeping found during the review
-- Control-bar tooltips (`Zoom in`, `Rotate left`, `Previous image`, …) are
-  hardcoded English — violates the no-hardcoded-strings rule.
-- README format list and `photo_view` mention are stale.
+- ~~Control-bar tooltips and info-panel labels were hardcoded English~~ → localized.
+- ~~README format list and `photo_view` mention were stale~~ → fixed.
 - No light theme (Picasa was light-on-dark too, so this is optional).
 - ~~App icon was the default asset set~~ → replaced with the photo-stack icon
   (source + master in `assets/branding/`).
@@ -85,11 +84,15 @@ falls into one of those three buckets.
 Each phase ships as a usable release. Later phases depend on earlier
 architecture choices, so the decisions are called out up front.
 
-### Phase 0 — Cleanup (v1.0.x, ~1 week)
-- Localize hardcoded tooltips; fix README.
-- New app icon on macOS / Windows / Linux.
-- Keyboard shortcut overlay (`?`).
-- Sort options + folder watching (`Directory.watch`) in `FileSystemImageRepository`.
+### Phase 0 — Cleanup (v1.0.x) — ✅ done
+- ✅ Localize hardcoded tooltips and info-panel labels; fix README.
+- ✅ New app icon on macOS / Windows / Linux.
+- ✅ Keyboard shortcut overlay (`?`) plus Space / + / − / 1 / 0 / R / I shortcuts.
+- ✅ Sort by name (natural), date modified, size, type; persisted.
+- ✅ Folder watching — the rail refreshes when files are added/removed.
+- ✅ Fixed the 3 `unawaited_return_in_try_block` analyzer warnings.
+- Deferred: sort by *date taken* (needs EXIF for every file — do it with the
+  Phase 3 metadata cache); reloading an image whose file was edited in place.
 
 ### Phase 1 — Viewer essentials (v1.1, ~3–4 weeks)
 - `FileOperationsService` interface in `domain/`, impl in `data/`:

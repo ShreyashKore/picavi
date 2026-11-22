@@ -143,4 +143,144 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get defaultViewerUnsupported =>
       'इस प्लेटफ़ॉर्म पर डिफ़ॉल्ट व्यूअर सेटअप उपलब्ध नहीं है।';
+
+  @override
+  String get zoomOutTooltip => 'ज़ूम आउट';
+
+  @override
+  String get zoomInTooltip => 'ज़ूम इन';
+
+  @override
+  String get actualSizeTooltip => 'वास्तविक आकार (1:1)';
+
+  @override
+  String get rotateLeftTooltip => 'बाएँ घुमाएँ';
+
+  @override
+  String get rotateRightTooltip => 'दाएँ घुमाएँ';
+
+  @override
+  String get showImageInfoTooltip => 'छवि जानकारी दिखाएँ';
+
+  @override
+  String get hideImageInfoTooltip => 'छवि जानकारी छिपाएँ';
+
+  @override
+  String get previousImageTooltip => 'पिछली छवि';
+
+  @override
+  String get nextImageTooltip => 'अगली छवि';
+
+  @override
+  String get playSlideshowTooltip => 'स्लाइड शो चलाएँ';
+
+  @override
+  String get pauseSlideshowTooltip => 'स्लाइड शो रोकें';
+
+  @override
+  String get imageLoadFailed => 'छवि लोड नहीं हो सकी';
+
+  @override
+  String get unknownValue => 'अज्ञात';
+
+  @override
+  String get loadingValue => 'लोड हो रहा है…';
+
+  @override
+  String get infoImageLabel => 'छवि';
+
+  @override
+  String infoImagePosition(int current, int total) {
+    return '$total में से $current';
+  }
+
+  @override
+  String get infoTypeLabel => 'प्रकार';
+
+  @override
+  String get infoResolutionLabel => 'रिज़ॉल्यूशन';
+
+  @override
+  String get infoFileSizeLabel => 'फ़ाइल आकार';
+
+  @override
+  String get infoCapturedLabel => 'लिया गया';
+
+  @override
+  String get infoModifiedLabel => 'संशोधित';
+
+  @override
+  String get infoCameraLabel => 'कैमरा';
+
+  @override
+  String get infoLensLabel => 'लेंस';
+
+  @override
+  String get infoFocalLengthLabel => 'फ़ोकल लंबाई';
+
+  @override
+  String get infoApertureLabel => 'एपर्चर';
+
+  @override
+  String get infoExposureLabel => 'एक्सपोज़र';
+
+  @override
+  String get infoIsoLabel => 'ISO';
+
+  @override
+  String get sortTooltip => 'छवियाँ क्रमबद्ध करें';
+
+  @override
+  String get sortByName => 'नाम';
+
+  @override
+  String get sortByModified => 'संशोधन तिथि';
+
+  @override
+  String get sortBySize => 'फ़ाइल आकार';
+
+  @override
+  String get sortByType => 'फ़ाइल प्रकार';
+
+  @override
+  String get sortAscending => 'आरोही';
+
+  @override
+  String get sortDescending => 'अवरोही';
+
+  @override
+  String get keyboardShortcutsTitle => 'कीबोर्ड शॉर्टकट';
+
+  @override
+  String get shortcutNextPrevious => 'अगली / पिछली छवि';
+
+  @override
+  String get shortcutFirstLast => 'पहली / अंतिम छवि';
+
+  @override
+  String get shortcutPlayPause => 'स्लाइड शो चलाएँ / रोकें';
+
+  @override
+  String get shortcutZoom => 'ज़ूम इन / आउट';
+
+  @override
+  String get shortcutActualSize => 'वास्तविक आकार (1:1)';
+
+  @override
+  String get shortcutFit => 'विंडो में फ़िट करें';
+
+  @override
+  String get shortcutRotate => 'दाएँ / बाएँ घुमाएँ';
+
+  @override
+  String get shortcutInfo => 'छवि जानकारी दिखाएँ / छिपाएँ';
+
+  @override
+  String get shortcutHelp => 'कीबोर्ड शॉर्टकट दिखाएँ';
+
+  @override
+  String get shortcutClose => 'Picavi बंद करें';
+
+  @override
+  String get closeLabel => 'बंद करें';
 }

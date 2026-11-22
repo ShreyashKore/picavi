@@ -10,6 +10,7 @@ class AppPreferencesService {
   static const String _lastOpenedImagePathKey = 'lastOpenedImagePath';
   static const String _showRecentFoldersEnabledKey = 'showRecentFoldersEnabled';
   static const String _recentFoldersKey = 'recentFolders';
+  static const String _imageSortOrderKey = 'imageSortOrder';
 
   /// Maximum number of recently opened folders kept in history.
   static const int maxRecentFolders = 10;
@@ -174,6 +175,26 @@ class AppPreferencesService {
       }
 
       await preferences.setStringList(_recentFoldersKey, updated);
+    } catch (_) {
+      // Ignore persistence failures and keep the app usable.
+    }
+  }
+
+  /// The persisted gallery sort order, as an opaque key owned by the viewer
+  /// feature (see `ImageSortOrder.storageKey`).
+  Future<String?> getImageSortOrderKey() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      return preferences.getString(_imageSortOrderKey);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> setImageSortOrderKey(String key) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.setString(_imageSortOrderKey, key);
     } catch (_) {
       // Ignore persistence failures and keep the app usable.
     }

@@ -17,6 +17,7 @@ import '../../data/repositories/file_system_image_repository.dart';
 import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
 import '../../domain/constants/supported_image_extensions.dart';
+import '../../domain/entities/image_sort_order.dart';
 import '../../domain/entities/recent_folder.dart';
 import '../../domain/repositories/image_repository.dart';
 import '../../domain/services/image_picker_service.dart';
@@ -25,6 +26,7 @@ import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
 import '../widgets/image_info_overlay.dart';
 import '../widgets/interactive_image_viewer.dart';
+import '../widgets/keyboard_shortcuts_dialog.dart';
 import '../widgets/recent_folders_panel.dart';
 import '../widgets/viewer_control_bar.dart';
 import '../widgets/viewer_empty_state.dart';
@@ -97,6 +99,7 @@ class _ViewerScreenState extends State<ViewerScreen>
     unawaited(_initializeDefaultViewerState());
     unawaited(_refreshRestoreLastOpenedImagePreference());
     unawaited(_refreshRecentFolders());
+    unawaited(_restoreSortOrder());
   }
 
   @override
@@ -280,6 +283,33 @@ class _ViewerScreenState extends State<ViewerScreen>
     if (state.hasImages) {
       await _persistLastOpenedImagePath(state.currentImage.path);
     }
+  }
+
+  Future<void> _restoreSortOrder() async {
+    final key = await _appPreferencesService.getImageSortOrderKey();
+    if (!mounted || key == null) {
+      return;
+    }
+
+    await _controller.setSortOrder(ImageSortOrder.fromStorageKey(key));
+  }
+
+  Future<void> _changeSortOrder(ImageSortOrder sortOrder) async {
+    await _controller.setSortOrder(sortOrder);
+    await _appPreferencesService.setImageSortOrderKey(sortOrder.storageKey);
+  }
+
+  Future<void> _showKeyboardShortcuts() async {
+    await showKeyboardShortcutsDialog(context);
+    if (mounted) {
+      _viewerFocusNode.requestFocus();
+    }
+  }
+
+  void _toggleInfoOverlay() {
+    setState(() {
+      _showInfoOverlay = !_showInfoOverlay;
+    });
   }
 
   Future<void> _persistLastOpenedImagePath(String imagePath) async {
@@ -679,7 +709,66 @@ class _ViewerScreenState extends State<ViewerScreen>
       return KeyEventResult.handled;
     }
 
-    return KeyEventResult.ignored;
+    final keyboard = HardwareKeyboard.instance;
+    if (keyboard.isMetaPressed ||
+        keyboard.isControlPressed ||
+        keyboard.isAltPressed) {
+      return KeyEventResult.ignored;
+    }
+
+    final action = _shortcutActionFor(
+      event,
+      isShiftPressed: keyboard.isShiftPressed,
+    );
+    if (action == null) {
+      return KeyEventResult.ignored;
+    }
+
+    action();
+    return KeyEventResult.handled;
+  }
+
+  /// Single-key viewer shortcuts. Keep in sync with
+  /// `keyboard_shortcuts_dialog.dart`.
+  VoidCallback? _shortcutActionFor(
+    KeyEvent event, {
+    required bool isShiftPressed,
+  }) {
+    final key = event.logicalKey;
+    final character = event.character;
+
+    if (character == '?' ||
+        (key == LogicalKeyboardKey.slash && isShiftPressed)) {
+      return () => unawaited(_showKeyboardShortcuts());
+    }
+    if (key == LogicalKeyboardKey.space) {
+      return _toggleSlideshow;
+    }
+    if (character == '+' ||
+        key == LogicalKeyboardKey.equal ||
+        key == LogicalKeyboardKey.numpadAdd) {
+      return _imageViewerController.zoomIn;
+    }
+    if (key == LogicalKeyboardKey.minus ||
+        key == LogicalKeyboardKey.numpadSubtract) {
+      return _imageViewerController.zoomOut;
+    }
+    if (key == LogicalKeyboardKey.digit1 || key == LogicalKeyboardKey.numpad1) {
+      return _imageViewerController.zoomToOneToOne;
+    }
+    if (key == LogicalKeyboardKey.digit0 || key == LogicalKeyboardKey.numpad0) {
+      return _imageViewerController.reset;
+    }
+    if (key == LogicalKeyboardKey.keyR) {
+      return isShiftPressed
+          ? _imageViewerController.rotateLeft
+          : _imageViewerController.rotateRight;
+    }
+    if (key == LogicalKeyboardKey.keyI) {
+      return _toggleInfoOverlay;
+    }
+
+    return null;
   }
 
   @override
@@ -718,9 +807,7 @@ class _ViewerScreenState extends State<ViewerScreen>
     );
 
     return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(LogicalKeyboardKey.escape): _closeApp,
-      },
+      bindings: {const SingleActivator(LogicalKeyboardKey.escape): _closeApp},
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: state.hasImages
@@ -792,7 +879,7 @@ class _ViewerScreenState extends State<ViewerScreen>
                       Icon(Icons.broken_image_outlined, size: 48),
                       SizedBox(height: 12),
                       Text(
-                        'Failed to load image',
+                        context.l10n.imageLoadFailed,
                         style: TextStyle(fontSize: 16, color: Colors.white70),
                       ),
                       Text(
@@ -861,11 +948,7 @@ class _ViewerScreenState extends State<ViewerScreen>
                     onNext: () => unawaited(_goToRelativeIndex(1)),
                     onRotateLeft: _imageViewerController.rotateLeft,
                     onRotateRight: _imageViewerController.rotateRight,
-                    onToggleInfo: () {
-                      setState(() {
-                        _showInfoOverlay = !_showInfoOverlay;
-                      });
-                    },
+                    onToggleInfo: _toggleInfoOverlay,
                     showInfo: _showInfoOverlay,
                   ),
               ],
@@ -890,6 +973,9 @@ class _ViewerScreenState extends State<ViewerScreen>
       ),
       settingsTooltip: context.l10n.settingsTitle,
       onOpenSettings: _openSettings,
+      sortOrder: state.sortOrder,
+      onSortOrderChanged: (sortOrder) => unawaited(_changeSortOrder(sortOrder)),
+      onShowShortcuts: () => unawaited(_showKeyboardShortcuts()),
     );
   }
 
@@ -944,12 +1030,7 @@ class _QuarterCirclePainter extends CustomPainter {
       ..strokeWidth = 1.2;
 
     canvas.drawArc(
-      Rect.fromLTWH(
-        -size.width,
-        -size.height,
-        size.width * 2,
-        size.height * 2,
-      ),
+      Rect.fromLTWH(-size.width, -size.height, size.width * 2, size.height * 2),
       -pi / 2,
       pi / 2,
       false,

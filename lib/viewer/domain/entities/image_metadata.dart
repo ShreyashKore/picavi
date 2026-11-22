@@ -100,7 +100,7 @@ Future<Map<String, IfdTag>> _readExifTags(File file, String extension) async {
 
   try {
     final bytes = await file.readAsBytes();
-    return readExifFromBytes(bytes);
+    return await readExifFromBytes(bytes);
   } on FileSystemException {
     return const <String, IfdTag>{};
   } catch (_) {

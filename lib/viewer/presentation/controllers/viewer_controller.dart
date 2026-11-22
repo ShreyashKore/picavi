@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 
 import '../../data/services/native_file_channel_service.dart';
 import '../../domain/entities/gallery_image.dart';
+import '../../domain/entities/image_sort_order.dart';
 import '../../domain/repositories/image_repository.dart';
 import '../../domain/services/image_picker_service.dart';
 import '../models/viewer_notice.dart';
@@ -16,18 +17,26 @@ class ViewerController extends ChangeNotifier {
     required ImageRepository imageRepository,
     required ImagePickerService imagePickerService,
     required NativeFileChannelService nativeFileChannelService,
+    Duration folderRefreshDebounce = const Duration(milliseconds: 400),
   }) : _imageRepository = imageRepository,
        _imagePickerService = imagePickerService,
-       _nativeFileChannelService = nativeFileChannelService;
+       _nativeFileChannelService = nativeFileChannelService,
+       _folderRefreshDebounce = folderRefreshDebounce;
 
   static const List<int> _permissionDeniedErrorCodes = [1, 13];
 
   final ImageRepository _imageRepository;
   final ImagePickerService _imagePickerService;
   final NativeFileChannelService _nativeFileChannelService;
+  final Duration _folderRefreshDebounce;
 
   ViewerState _state = const ViewerState.initial();
   int _noticeCounter = 0;
+  int _galleryGeneration = 0;
+  String? _watchedDirectory;
+  StreamSubscription<void>? _directoryWatch;
+  Timer? _folderRefreshTimer;
+  bool _isDisposed = false;
 
   ViewerState get state => _state;
 
@@ -133,6 +142,35 @@ class ViewerController extends ChangeNotifier {
     _setState(_state.copyWith(currentIndex: index));
   }
 
+  /// Re-orders the current gallery (and future folders) by [sortOrder],
+  /// keeping the image on screen selected.
+  Future<void> setSortOrder(ImageSortOrder sortOrder) async {
+    if (sortOrder == _state.sortOrder) {
+      return;
+    }
+
+    _setState(_state.copyWith(sortOrder: sortOrder));
+    if (!_state.hasImages) {
+      return;
+    }
+
+    final generation = ++_galleryGeneration;
+    final currentPath = _state.currentImage.path;
+    final List<GalleryImage> sorted;
+    try {
+      sorted = await _imageRepository.sortImages(_state.images, sortOrder);
+    } catch (error) {
+      debugPrint('Unable to sort images: $error');
+      return;
+    }
+
+    if (_isDisposed || generation != _galleryGeneration) {
+      return;
+    }
+
+    _replaceImagesKeepingSelection(sorted, currentPath);
+  }
+
   void clearNotice() {
     if (_state.notice == null) {
       return;
@@ -195,7 +233,10 @@ class ViewerController extends ChangeNotifier {
     bool allowPermissionPrompt = true,
   }) async {
     try {
-      return await _imageRepository.readImagesFromDirectory(directoryPath);
+      return await _imageRepository.readImagesFromDirectory(
+        directoryPath,
+        sortOrder: _state.sortOrder,
+      );
     } on FileSystemException catch (error) {
       debugPrint(
         'Unable to read image directory $directoryPath: ${error.message}',
@@ -252,6 +293,7 @@ class ViewerController extends ChangeNotifier {
     required int selectedIndex,
     required String currentDirectory,
   }) {
+    _galleryGeneration += 1;
     _setState(
       _state.copyWith(
         images: images,
@@ -259,6 +301,104 @@ class ViewerController extends ChangeNotifier {
         currentIndex: selectedIndex,
       ),
     );
+    _watchDirectory(currentDirectory);
+  }
+
+  void _watchDirectory(String directoryPath) {
+    if (_watchedDirectory == directoryPath && _directoryWatch != null) {
+      return;
+    }
+
+    _stopWatchingDirectory();
+    _watchedDirectory = directoryPath;
+    try {
+      _directoryWatch = _imageRepository
+          .watchDirectory(directoryPath)
+          .listen(
+            (_) => _scheduleFolderRefresh(),
+            onError: (Object error) {
+              debugPrint('Folder watch failed for $directoryPath: $error');
+            },
+          );
+    } catch (error) {
+      debugPrint('Unable to watch $directoryPath: $error');
+    }
+  }
+
+  void _stopWatchingDirectory() {
+    _folderRefreshTimer?.cancel();
+    _folderRefreshTimer = null;
+    unawaited(_directoryWatch?.cancel());
+    _directoryWatch = null;
+    _watchedDirectory = null;
+  }
+
+  void _scheduleFolderRefresh() {
+    _folderRefreshTimer?.cancel();
+    _folderRefreshTimer = Timer(_folderRefreshDebounce, () {
+      unawaited(_refreshWatchedDirectory());
+    });
+  }
+
+  Future<void> _refreshWatchedDirectory() async {
+    final directoryPath = _watchedDirectory;
+    if (_isDisposed || directoryPath == null || !_state.hasImages) {
+      return;
+    }
+
+    final generation = _galleryGeneration;
+    final List<GalleryImage> images;
+    try {
+      images = await _imageRepository.readImagesFromDirectory(
+        directoryPath,
+        sortOrder: _state.sortOrder,
+      );
+    } catch (error) {
+      // Keep showing what we have; the folder may be briefly unreadable.
+      debugPrint('Unable to refresh $directoryPath: $error');
+      return;
+    }
+
+    if (_isDisposed ||
+        generation != _galleryGeneration ||
+        _watchedDirectory != directoryPath ||
+        !_state.hasImages) {
+      return;
+    }
+
+    _replaceImagesKeepingSelection(images, _state.currentImage.path);
+  }
+
+  /// Swaps in [images], keeping [selectedPath] on screen when it still
+  /// exists, or the image now at the same position when it was removed.
+  void _replaceImagesKeepingSelection(
+    List<GalleryImage> images,
+    String selectedPath,
+  ) {
+    final currentPaths = _state.images.map((image) => image.path);
+    final nextPaths = images.map((image) => image.path);
+    if (listEquals(currentPaths.toList(), nextPaths.toList())) {
+      return;
+    }
+
+    if (images.isEmpty) {
+      _stopWatchingDirectory();
+      _setState(
+        _state.copyWith(images: const <GalleryImage>[], currentIndex: 0),
+      );
+      return;
+    }
+
+    final normalizedSelected = _imageRepository.normalizedPath(selectedPath);
+    final matchIndex = images.indexWhere(
+      (image) =>
+          _imageRepository.normalizedPath(image.path) == normalizedSelected,
+    );
+    final nextIndex = matchIndex >= 0
+        ? matchIndex
+        : _state.currentIndex.clamp(0, images.length - 1);
+
+    _setState(_state.copyWith(images: images, currentIndex: nextIndex));
   }
 
   void _pushNotice(ViewerNoticeType type) {
@@ -277,6 +417,8 @@ class ViewerController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _isDisposed = true;
+    _stopWatchingDirectory();
     _nativeFileChannelService.setOpenFilesHandler(null);
     super.dispose();
   }

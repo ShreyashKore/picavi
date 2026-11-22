@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/l10n/l10n_extensions.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../domain/entities/image_metadata.dart';
 import 'interactive_image_viewer.dart';
@@ -44,6 +45,7 @@ class _ImageInfoOverlayState extends State<ImageInfoOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final runtimeResolution = widget.viewState.imageInfo?.pixelSize;
 
     return FutureBuilder<ImageMetadata>(
@@ -51,7 +53,7 @@ class _ImageInfoOverlayState extends State<ImageInfoOverlay> {
       builder: (context, snapshot) {
         final metadata = snapshot.data;
         final resolutionLabel = runtimeResolution == null
-            ? metadata?.embeddedResolution ?? 'Loading…'
+            ? metadata?.embeddedResolution ?? l10n.loadingValue
             : '${runtimeResolution.width.round()} × ${runtimeResolution.height.round()}';
 
         return ConstrainedBox(
@@ -83,43 +85,66 @@ class _ImageInfoOverlayState extends State<ImageInfoOverlay> {
                     ),
                     const SizedBox(height: 10),
                     _InfoLine(
-                      label: 'Image',
-                      value:
-                          '${widget.currentIndex + 1} of ${widget.imageCount}',
+                      label: l10n.infoImageLabel,
+                      value: l10n.infoImagePosition(
+                        widget.currentIndex + 1,
+                        widget.imageCount,
+                      ),
                     ),
-                    _InfoLine(label: 'Type', value: metadata?.typeLabel ?? ''),
-                    _InfoLine(label: 'Resolution', value: resolutionLabel),
                     _InfoLine(
-                      label: 'File size',
+                      label: l10n.infoTypeLabel,
+                      value: metadata?.typeLabel ?? '',
+                    ),
+                    _InfoLine(
+                      label: l10n.infoResolutionLabel,
+                      value: resolutionLabel,
+                    ),
+                    _InfoLine(
+                      label: l10n.infoFileSizeLabel,
                       value: metadata?.fileSize == null
-                          ? 'Unknown'
+                          ? l10n.unknownValue
                           : _formatBytes(metadata!.fileSize!),
                     ),
                     if (metadata?.capturedAt != null)
                       _InfoLine(
-                        label: 'Captured',
+                        label: l10n.infoCapturedLabel,
                         value: _formatDateTime(metadata!.capturedAt!),
                       ),
                     if (metadata?.modifiedAt != null)
                       _InfoLine(
-                        label: 'Modified',
+                        label: l10n.infoModifiedLabel,
                         value: _formatDateTime(metadata!.modifiedAt!),
                       ),
                     if (metadata?.camera != null)
-                      _InfoLine(label: 'Camera', value: metadata!.camera!),
+                      _InfoLine(
+                        label: l10n.infoCameraLabel,
+                        value: metadata!.camera!,
+                      ),
                     if (metadata?.lens != null)
-                      _InfoLine(label: 'Lens', value: metadata!.lens!),
+                      _InfoLine(
+                        label: l10n.infoLensLabel,
+                        value: metadata!.lens!,
+                      ),
                     if (metadata?.focalLength != null)
                       _InfoLine(
-                        label: 'Focal length',
+                        label: l10n.infoFocalLengthLabel,
                         value: metadata!.focalLength!,
                       ),
                     if (metadata?.aperture != null)
-                      _InfoLine(label: 'Aperture', value: metadata!.aperture!),
+                      _InfoLine(
+                        label: l10n.infoApertureLabel,
+                        value: metadata!.aperture!,
+                      ),
                     if (metadata?.exposure != null)
-                      _InfoLine(label: 'Exposure', value: metadata!.exposure!),
+                      _InfoLine(
+                        label: l10n.infoExposureLabel,
+                        value: metadata!.exposure!,
+                      ),
                     if (metadata?.iso != null)
-                      _InfoLine(label: 'ISO', value: metadata!.iso!),
+                      _InfoLine(
+                        label: l10n.infoIsoLabel,
+                        value: metadata!.iso!,
+                      ),
                     const SizedBox(height: 8),
                     Text(
                       widget.imagePath,

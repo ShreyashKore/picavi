@@ -143,4 +143,144 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get defaultViewerUnsupported =>
       'إعداد العارض الافتراضي غير متاح على هذه المنصة.';
+
+  @override
+  String get zoomOutTooltip => 'تصغير';
+
+  @override
+  String get zoomInTooltip => 'تكبير';
+
+  @override
+  String get actualSizeTooltip => 'الحجم الفعلي (1:1)';
+
+  @override
+  String get rotateLeftTooltip => 'تدوير لليسار';
+
+  @override
+  String get rotateRightTooltip => 'تدوير لليمين';
+
+  @override
+  String get showImageInfoTooltip => 'إظهار معلومات الصورة';
+
+  @override
+  String get hideImageInfoTooltip => 'إخفاء معلومات الصورة';
+
+  @override
+  String get previousImageTooltip => 'الصورة السابقة';
+
+  @override
+  String get nextImageTooltip => 'الصورة التالية';
+
+  @override
+  String get playSlideshowTooltip => 'تشغيل عرض الشرائح';
+
+  @override
+  String get pauseSlideshowTooltip => 'إيقاف عرض الشرائح مؤقتًا';
+
+  @override
+  String get imageLoadFailed => 'تعذّر تحميل الصورة';
+
+  @override
+  String get unknownValue => 'غير معروف';
+
+  @override
+  String get loadingValue => 'جارٍ التحميل…';
+
+  @override
+  String get infoImageLabel => 'الصورة';
+
+  @override
+  String infoImagePosition(int current, int total) {
+    return '$current من $total';
+  }
+
+  @override
+  String get infoTypeLabel => 'النوع';
+
+  @override
+  String get infoResolutionLabel => 'الدقة';
+
+  @override
+  String get infoFileSizeLabel => 'حجم الملف';
+
+  @override
+  String get infoCapturedLabel => 'تاريخ الالتقاط';
+
+  @override
+  String get infoModifiedLabel => 'تاريخ التعديل';
+
+  @override
+  String get infoCameraLabel => 'الكاميرا';
+
+  @override
+  String get infoLensLabel => 'العدسة';
+
+  @override
+  String get infoFocalLengthLabel => 'البعد البؤري';
+
+  @override
+  String get infoApertureLabel => 'فتحة العدسة';
+
+  @override
+  String get infoExposureLabel => 'التعريض';
+
+  @override
+  String get infoIsoLabel => 'ISO';
+
+  @override
+  String get sortTooltip => 'ترتيب الصور';
+
+  @override
+  String get sortByName => 'الاسم';
+
+  @override
+  String get sortByModified => 'تاريخ التعديل';
+
+  @override
+  String get sortBySize => 'حجم الملف';
+
+  @override
+  String get sortByType => 'نوع الملف';
+
+  @override
+  String get sortAscending => 'تصاعدي';
+
+  @override
+  String get sortDescending => 'تنازلي';
+
+  @override
+  String get keyboardShortcutsTitle => 'اختصارات لوحة المفاتيح';
+
+  @override
+  String get shortcutNextPrevious => 'الصورة التالية / السابقة';
+
+  @override
+  String get shortcutFirstLast => 'الصورة الأولى / الأخيرة';
+
+  @override
+  String get shortcutPlayPause => 'تشغيل / إيقاف عرض الشرائح';
+
+  @override
+  String get shortcutZoom => 'تكبير / تصغير';
+
+  @override
+  String get shortcutActualSize => 'الحجم الفعلي (1:1)';
+
+  @override
+  String get shortcutFit => 'ملاءمة النافذة';
+
+  @override
+  String get shortcutRotate => 'تدوير لليمين / لليسار';
+
+  @override
+  String get shortcutInfo => 'إظهار / إخفاء معلومات الصورة';
+
+  @override
+  String get shortcutHelp => 'إظهار اختصارات لوحة المفاتيح';
+
+  @override
+  String get shortcutClose => 'إغلاق Picavi';
+
+  @override
+  String get closeLabel => 'إغلاق';
 }

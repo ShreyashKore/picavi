@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../domain/entities/image_sort_order.dart';
 
 class ViewerTopOverlay extends StatelessWidget {
   const ViewerTopOverlay({
@@ -9,12 +11,18 @@ class ViewerTopOverlay extends StatelessWidget {
     required this.positionLabel,
     required this.settingsTooltip,
     required this.onOpenSettings,
+    required this.sortOrder,
+    required this.onSortOrderChanged,
+    required this.onShowShortcuts,
   });
 
   final String fileName;
   final String positionLabel;
   final String settingsTooltip;
   final VoidCallback onOpenSettings;
+  final ImageSortOrder sortOrder;
+  final ValueChanged<ImageSortOrder> onSortOrderChanged;
+  final VoidCallback onShowShortcuts;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +71,16 @@ class ViewerTopOverlay extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
+                  _SortMenuButton(
+                    sortOrder: sortOrder,
+                    onChanged: onSortOrderChanged,
+                  ),
+                  IconButton(
+                    tooltip: context.l10n.keyboardShortcutsTitle,
+                    onPressed: onShowShortcuts,
+                    icon: const Icon(Icons.keyboard_outlined, size: 18),
+                    visualDensity: VisualDensity.compact,
+                  ),
                   IconButton(
                     tooltip: settingsTooltip,
                     onPressed: onOpenSettings,
@@ -75,6 +93,50 @@ class ViewerTopOverlay extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SortMenuButton extends StatelessWidget {
+  const _SortMenuButton({required this.sortOrder, required this.onChanged});
+
+  final ImageSortOrder sortOrder;
+  final ValueChanged<ImageSortOrder> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final fieldLabels = <ImageSortField, String>{
+      ImageSortField.name: l10n.sortByName,
+      ImageSortField.modified: l10n.sortByModified,
+      ImageSortField.size: l10n.sortBySize,
+      ImageSortField.type: l10n.sortByType,
+    };
+
+    return PopupMenuButton<ImageSortOrder>(
+      tooltip: l10n.sortTooltip,
+      icon: const Icon(Icons.sort_rounded, size: 18),
+      style: IconButton.styleFrom(visualDensity: VisualDensity.compact),
+      onSelected: onChanged,
+      itemBuilder: (context) => <PopupMenuEntry<ImageSortOrder>>[
+        for (final entry in fieldLabels.entries)
+          CheckedPopupMenuItem<ImageSortOrder>(
+            value: sortOrder.copyWith(field: entry.key),
+            checked: sortOrder.field == entry.key,
+            child: Text(entry.value),
+          ),
+        const PopupMenuDivider(),
+        CheckedPopupMenuItem<ImageSortOrder>(
+          value: sortOrder.copyWith(ascending: true),
+          checked: sortOrder.ascending,
+          child: Text(l10n.sortAscending),
+        ),
+        CheckedPopupMenuItem<ImageSortOrder>(
+          value: sortOrder.copyWith(ascending: false),
+          checked: !sortOrder.ascending,
+          child: Text(l10n.sortDescending),
+        ),
+      ],
     );
   }
 }

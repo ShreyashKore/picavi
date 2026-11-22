@@ -81,8 +81,8 @@ dependencies behind a `domain/` interface so they stay swappable.
 - **No hardcoded user-facing strings.** All UI text comes from localizations.
 - **Supported formats** live in one place:
   [supported_image_extensions.dart](lib/viewer/domain/constants/supported_image_extensions.dart)
-  (`.bmp .gif .ico .jpeg .jpg .png .svg .webp`). Note the README's format list is
-  stale — this constant is the source of truth.
+  (`.bmp .gif .ico .jpeg .jpg .png .svg .webp`). This constant is the source of
+  truth; keep the README's list in sync.
 
 ## Localization (i18n)
 
@@ -125,7 +125,9 @@ or a service, add or extend a fake and assert on the resulting `ViewerState`.
 ## Gotchas
 
 - `lib/l10n/generated/` and other generated Flutter files are not hand-editable.
-- The README lists `photo_view` but it is **not** a dependency; zoom/pan is the
-  custom [InteractiveImageViewer](lib/viewer/presentation/widgets/interactive_image_viewer.dart).
+- Zoom/pan is the custom [InteractiveImageViewer](lib/viewer/presentation/widgets/interactive_image_viewer.dart)
+  (there is no `photo_view` dependency).
+- Viewer keyboard shortcuts live in `ViewerScreen._shortcutActionFor`; keep the
+  list in [keyboard_shortcuts_dialog.dart](lib/viewer/presentation/widgets/keyboard_shortcuts_dialog.dart) in sync.
 - Only the dark theme exists — there is no light theme.
 - `AppImage` handles both raster images and SVGs; use it instead of raw `Image`.

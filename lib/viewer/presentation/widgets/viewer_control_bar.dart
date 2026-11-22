@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class ViewerControlBar extends StatelessWidget {
@@ -34,6 +35,7 @@ class ViewerControlBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Wrap(
@@ -44,12 +46,12 @@ class ViewerControlBar extends StatelessWidget {
           _ControlGroup(
             children: [
               _ControlButton(
-                tooltip: 'Zoom out',
+                tooltip: l10n.zoomOutTooltip,
                 icon: Icons.remove,
                 onPressed: onZoomOut,
               ),
               _ControlButton(
-                tooltip: 'Zoom in',
+                tooltip: l10n.zoomInTooltip,
                 icon: Icons.add,
                 onPressed: onZoomIn,
               ),
@@ -67,17 +69,19 @@ class ViewerControlBar extends StatelessWidget {
           _ControlGroup(
             children: [
               _ControlButton(
-                tooltip: 'Rotate left',
+                tooltip: l10n.rotateLeftTooltip,
                 icon: Icons.rotate_90_degrees_ccw_outlined,
                 onPressed: onRotateLeft,
               ),
               _ControlButton(
-                tooltip: 'Rotate right',
+                tooltip: l10n.rotateRightTooltip,
                 icon: Icons.rotate_90_degrees_cw_outlined,
                 onPressed: onRotateRight,
               ),
               _ControlButton(
-                tooltip: showInfo ? 'Hide image info' : 'Show image info',
+                tooltip: showInfo
+                    ? l10n.hideImageInfoTooltip
+                    : l10n.showImageInfoTooltip,
                 icon: showInfo ? Icons.info : Icons.info_outline,
                 onPressed: onToggleInfo,
               ),
@@ -138,14 +142,17 @@ class _OneToOneButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-        minimumSize: const Size(0, 36),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    return Tooltip(
+      message: context.l10n.actualSizeTooltip,
+      child: TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          minimumSize: const Size(0, 36),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        child: const Text('1:1'),
       ),
-      child: const Text('1:1'),
     );
   }
 }
@@ -167,6 +174,7 @@ class _PlaybackGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final disabled = !enabled;
 
     return DecoratedBox(
@@ -180,7 +188,7 @@ class _PlaybackGroup extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _ControlButton(
-              tooltip: 'Previous image',
+              tooltip: l10n.previousImageTooltip,
               icon: Icons.skip_previous_rounded,
               onPressed: disabled ? null : onPrevious,
             ),
@@ -190,7 +198,9 @@ class _PlaybackGroup extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
                 shape: const CircleBorder(),
                 child: IconButton(
-                  tooltip: isPlaying ? 'Pause slideshow' : 'Play slideshow',
+                  tooltip: isPlaying
+                      ? l10n.pauseSlideshowTooltip
+                      : l10n.playSlideshowTooltip,
                   onPressed: disabled ? null : onTogglePlay,
                   icon: Icon(
                     isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
@@ -201,7 +211,7 @@ class _PlaybackGroup extends StatelessWidget {
               ),
             ),
             _ControlButton(
-              tooltip: 'Next image',
+              tooltip: l10n.nextImageTooltip,
               icon: Icons.skip_next_rounded,
               onPressed: disabled ? null : onNext,
             ),

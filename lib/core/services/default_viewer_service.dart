@@ -81,11 +81,11 @@ class DefaultViewerService {
       }
 
       if (Platform.isWindows) {
-        return _getWindowsStatus();
+        return await _getWindowsStatus();
       }
 
       if (Platform.isLinux) {
-        return _getLinuxStatus();
+        return await _getLinuxStatus();
       }
     } catch (_) {
       // Fall through to unsupported state.

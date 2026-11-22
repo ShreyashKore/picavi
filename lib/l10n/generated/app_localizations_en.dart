@@ -144,4 +144,144 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get defaultViewerUnsupported =>
       'Default viewer setup is not available on this platform.';
+
+  @override
+  String get zoomOutTooltip => 'Zoom out';
+
+  @override
+  String get zoomInTooltip => 'Zoom in';
+
+  @override
+  String get actualSizeTooltip => 'Actual size (1:1)';
+
+  @override
+  String get rotateLeftTooltip => 'Rotate left';
+
+  @override
+  String get rotateRightTooltip => 'Rotate right';
+
+  @override
+  String get showImageInfoTooltip => 'Show image info';
+
+  @override
+  String get hideImageInfoTooltip => 'Hide image info';
+
+  @override
+  String get previousImageTooltip => 'Previous image';
+
+  @override
+  String get nextImageTooltip => 'Next image';
+
+  @override
+  String get playSlideshowTooltip => 'Play slideshow';
+
+  @override
+  String get pauseSlideshowTooltip => 'Pause slideshow';
+
+  @override
+  String get imageLoadFailed => 'Failed to load image';
+
+  @override
+  String get unknownValue => 'Unknown';
+
+  @override
+  String get loadingValue => 'Loading…';
+
+  @override
+  String get infoImageLabel => 'Image';
+
+  @override
+  String infoImagePosition(int current, int total) {
+    return '$current of $total';
+  }
+
+  @override
+  String get infoTypeLabel => 'Type';
+
+  @override
+  String get infoResolutionLabel => 'Resolution';
+
+  @override
+  String get infoFileSizeLabel => 'File size';
+
+  @override
+  String get infoCapturedLabel => 'Captured';
+
+  @override
+  String get infoModifiedLabel => 'Modified';
+
+  @override
+  String get infoCameraLabel => 'Camera';
+
+  @override
+  String get infoLensLabel => 'Lens';
+
+  @override
+  String get infoFocalLengthLabel => 'Focal length';
+
+  @override
+  String get infoApertureLabel => 'Aperture';
+
+  @override
+  String get infoExposureLabel => 'Exposure';
+
+  @override
+  String get infoIsoLabel => 'ISO';
+
+  @override
+  String get sortTooltip => 'Sort images';
+
+  @override
+  String get sortByName => 'Name';
+
+  @override
+  String get sortByModified => 'Date modified';
+
+  @override
+  String get sortBySize => 'File size';
+
+  @override
+  String get sortByType => 'File type';
+
+  @override
+  String get sortAscending => 'Ascending';
+
+  @override
+  String get sortDescending => 'Descending';
+
+  @override
+  String get keyboardShortcutsTitle => 'Keyboard shortcuts';
+
+  @override
+  String get shortcutNextPrevious => 'Next / previous image';
+
+  @override
+  String get shortcutFirstLast => 'First / last image';
+
+  @override
+  String get shortcutPlayPause => 'Play / pause slideshow';
+
+  @override
+  String get shortcutZoom => 'Zoom in / out';
+
+  @override
+  String get shortcutActualSize => 'Actual size (1:1)';
+
+  @override
+  String get shortcutFit => 'Fit to window';
+
+  @override
+  String get shortcutRotate => 'Rotate right / left';
+
+  @override
+  String get shortcutInfo => 'Show / hide image info';
+
+  @override
+  String get shortcutHelp => 'Show keyboard shortcuts';
+
+  @override
+  String get shortcutClose => 'Close Picavi';
+
+  @override
+  String get closeLabel => 'Close';
 }

@@ -64,7 +64,7 @@ lib/
 - No hardcoded user-facing strings — everything goes through localizations.
 - Supported formats live only in
   `lib/viewer/domain/constants/supported_image_extensions.dart`
-  (`.bmp .gif .ico .jpeg .jpg .png .svg .webp`); the README list is stale.
+  (`.bmp .gif .ico .jpeg .jpg .png .svg .webp`); keep the README list in sync.
 
 ## Localization
 
@@ -95,7 +95,8 @@ interface implementations and asserting on the resulting `ViewerState` (see
 ## Gotchas
 
 - Generated files (`lib/l10n/generated/`, Flutter plugin registrants) are not hand-editable.
-- README mentions `photo_view` but it is **not** a dependency; zoom/pan is the
-  custom `InteractiveImageViewer`.
+- Zoom/pan is the custom `InteractiveImageViewer` (no `photo_view` dependency).
+- Viewer keyboard shortcuts live in `ViewerScreen._shortcutActionFor`; keep the
+  list in `keyboard_shortcuts_dialog.dart` in sync.
 - Dark theme only — no light theme.
 - Use `AppImage` (handles raster + SVG), not raw `Image`.

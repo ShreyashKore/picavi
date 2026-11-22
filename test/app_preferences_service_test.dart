@@ -15,6 +15,12 @@ void main() {
       service = AppPreferencesService();
     });
 
+    test('image sort order key round-trips', () async {
+      expect(await service.getImageSortOrderKey(), isNull);
+      await service.setImageSortOrderKey('modified:desc');
+      expect(await service.getImageSortOrderKey(), 'modified:desc');
+    });
+
     test('restore last opened image is enabled by default', () async {
       expect(await service.isRestoreLastOpenedImageEnabled(), isTrue);
       expect(await service.resolveStartupOpenPath(), isNull);

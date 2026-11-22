@@ -35,6 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _isUpdatingRecentFoldersPreference = false;
   bool _showRecentFoldersEnabled = false;
   String _versionLabel = '—';
+  bool _isVersionUnavailable = false;
 
   @override
   void initState() {
@@ -78,7 +79,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
 
     setState(() {
-      _versionLabel = versionLabel;
+      _versionLabel = versionLabel ?? _versionLabel;
+      _isVersionUnavailable = versionLabel == null;
       _status = status;
       _isLoadingStatus = false;
       _restoreLastOpenedImageEnabled = restoreLastOpenedImageEnabled;
@@ -99,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     });
   }
 
-  Future<String> _loadVersionLabel() async {
+  Future<String?> _loadVersionLabel() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final buildSuffix = packageInfo.buildNumber.isEmpty
@@ -107,7 +109,7 @@ class _SettingsScreenState extends State<SettingsScreen>
           : ' (${packageInfo.buildNumber})';
       return '${packageInfo.version}$buildSuffix';
     } catch (_) {
-      return 'Unknown';
+      return null;
     }
   }
 
@@ -343,7 +345,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                             child: Icon(Icons.info_outline),
                           ),
                           title: Text(context.l10n.versionTitle),
-                          subtitle: Text(_versionLabel),
+                          subtitle: Text(
+                            _isVersionUnavailable
+                                ? context.l10n.unknownValue
+                                : _versionLabel,
+                          ),
                         ),
                       ],
                     ),

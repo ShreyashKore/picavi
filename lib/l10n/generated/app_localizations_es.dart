@@ -145,4 +145,144 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get defaultViewerUnsupported =>
       'La configuración del visor predeterminado no está disponible en esta plataforma.';
+
+  @override
+  String get zoomOutTooltip => 'Alejar';
+
+  @override
+  String get zoomInTooltip => 'Acercar';
+
+  @override
+  String get actualSizeTooltip => 'Tamaño real (1:1)';
+
+  @override
+  String get rotateLeftTooltip => 'Girar a la izquierda';
+
+  @override
+  String get rotateRightTooltip => 'Girar a la derecha';
+
+  @override
+  String get showImageInfoTooltip => 'Mostrar información de la imagen';
+
+  @override
+  String get hideImageInfoTooltip => 'Ocultar información de la imagen';
+
+  @override
+  String get previousImageTooltip => 'Imagen anterior';
+
+  @override
+  String get nextImageTooltip => 'Imagen siguiente';
+
+  @override
+  String get playSlideshowTooltip => 'Iniciar presentación';
+
+  @override
+  String get pauseSlideshowTooltip => 'Pausar presentación';
+
+  @override
+  String get imageLoadFailed => 'No se pudo cargar la imagen';
+
+  @override
+  String get unknownValue => 'Desconocido';
+
+  @override
+  String get loadingValue => 'Cargando…';
+
+  @override
+  String get infoImageLabel => 'Imagen';
+
+  @override
+  String infoImagePosition(int current, int total) {
+    return '$current de $total';
+  }
+
+  @override
+  String get infoTypeLabel => 'Tipo';
+
+  @override
+  String get infoResolutionLabel => 'Resolución';
+
+  @override
+  String get infoFileSizeLabel => 'Tamaño';
+
+  @override
+  String get infoCapturedLabel => 'Tomada';
+
+  @override
+  String get infoModifiedLabel => 'Modificada';
+
+  @override
+  String get infoCameraLabel => 'Cámara';
+
+  @override
+  String get infoLensLabel => 'Objetivo';
+
+  @override
+  String get infoFocalLengthLabel => 'Distancia focal';
+
+  @override
+  String get infoApertureLabel => 'Apertura';
+
+  @override
+  String get infoExposureLabel => 'Exposición';
+
+  @override
+  String get infoIsoLabel => 'ISO';
+
+  @override
+  String get sortTooltip => 'Ordenar imágenes';
+
+  @override
+  String get sortByName => 'Nombre';
+
+  @override
+  String get sortByModified => 'Fecha de modificación';
+
+  @override
+  String get sortBySize => 'Tamaño';
+
+  @override
+  String get sortByType => 'Tipo de archivo';
+
+  @override
+  String get sortAscending => 'Ascendente';
+
+  @override
+  String get sortDescending => 'Descendente';
+
+  @override
+  String get keyboardShortcutsTitle => 'Atajos de teclado';
+
+  @override
+  String get shortcutNextPrevious => 'Imagen siguiente / anterior';
+
+  @override
+  String get shortcutFirstLast => 'Primera / última imagen';
+
+  @override
+  String get shortcutPlayPause => 'Iniciar / pausar presentación';
+
+  @override
+  String get shortcutZoom => 'Acercar / alejar';
+
+  @override
+  String get shortcutActualSize => 'Tamaño real (1:1)';
+
+  @override
+  String get shortcutFit => 'Ajustar a la ventana';
+
+  @override
+  String get shortcutRotate => 'Girar a la derecha / izquierda';
+
+  @override
+  String get shortcutInfo => 'Mostrar / ocultar información';
+
+  @override
+  String get shortcutHelp => 'Mostrar atajos de teclado';
+
+  @override
+  String get shortcutClose => 'Cerrar Picavi';
+
+  @override
+  String get closeLabel => 'Cerrar';
 }

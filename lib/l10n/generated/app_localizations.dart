@@ -321,6 +321,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Default viewer setup is not available on this platform.'**
   String get defaultViewerUnsupported;
+
+  /// Tooltip for the zoom-out button.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get zoomOutTooltip;
+
+  /// Tooltip for the zoom-in button.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get zoomInTooltip;
+
+  /// Tooltip for the 1:1 button that shows the image at its actual pixel size.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual size (1:1)'**
+  String get actualSizeTooltip;
+
+  /// Tooltip for the rotate-left button.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate left'**
+  String get rotateLeftTooltip;
+
+  /// Tooltip for the rotate-right button.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate right'**
+  String get rotateRightTooltip;
+
+  /// Tooltip for the button that shows the image info panel.
+  ///
+  /// In en, this message translates to:
+  /// **'Show image info'**
+  String get showImageInfoTooltip;
+
+  /// Tooltip for the button that hides the image info panel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide image info'**
+  String get hideImageInfoTooltip;
+
+  /// Tooltip for the previous-image button.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous image'**
+  String get previousImageTooltip;
+
+  /// Tooltip for the next-image button.
+  ///
+  /// In en, this message translates to:
+  /// **'Next image'**
+  String get nextImageTooltip;
+
+  /// Tooltip for the button that starts the slideshow.
+  ///
+  /// In en, this message translates to:
+  /// **'Play slideshow'**
+  String get playSlideshowTooltip;
+
+  /// Tooltip for the button that pauses the slideshow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause slideshow'**
+  String get pauseSlideshowTooltip;
+
+  /// Shown in place of an image that could not be decoded.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load image'**
+  String get imageLoadFailed;
+
+  /// Placeholder when a value (file size, version) is unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknownValue;
+
+  /// Placeholder while a value is still loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get loadingValue;
+
+  /// Info panel label for the image position in the folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get infoImageLabel;
+
+  /// Info panel value: position of the image in the folder.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} of {total}'**
+  String infoImagePosition(int current, int total);
+
+  /// Info panel label for the file type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get infoTypeLabel;
+
+  /// Info panel label for the pixel resolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolution'**
+  String get infoResolutionLabel;
+
+  /// Info panel label for the file size.
+  ///
+  /// In en, this message translates to:
+  /// **'File size'**
+  String get infoFileSizeLabel;
+
+  /// Info panel label for the date the photo was taken.
+  ///
+  /// In en, this message translates to:
+  /// **'Captured'**
+  String get infoCapturedLabel;
+
+  /// Info panel label for the file modification date.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified'**
+  String get infoModifiedLabel;
+
+  /// Info panel label for the camera model.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get infoCameraLabel;
+
+  /// Info panel label for the lens model.
+  ///
+  /// In en, this message translates to:
+  /// **'Lens'**
+  String get infoLensLabel;
+
+  /// Info panel label for the focal length.
+  ///
+  /// In en, this message translates to:
+  /// **'Focal length'**
+  String get infoFocalLengthLabel;
+
+  /// Info panel label for the aperture (f-number).
+  ///
+  /// In en, this message translates to:
+  /// **'Aperture'**
+  String get infoApertureLabel;
+
+  /// Info panel label for the exposure time.
+  ///
+  /// In en, this message translates to:
+  /// **'Exposure'**
+  String get infoExposureLabel;
+
+  /// Info panel label for the ISO sensitivity.
+  ///
+  /// In en, this message translates to:
+  /// **'ISO'**
+  String get infoIsoLabel;
+
+  /// Tooltip for the menu that changes how the folder is sorted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort images'**
+  String get sortTooltip;
+
+  /// Sort option: by file name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get sortByName;
+
+  /// Sort option: by date modified.
+  ///
+  /// In en, this message translates to:
+  /// **'Date modified'**
+  String get sortByModified;
+
+  /// Sort option: by file size.
+  ///
+  /// In en, this message translates to:
+  /// **'File size'**
+  String get sortBySize;
+
+  /// Sort option: by file type (extension).
+  ///
+  /// In en, this message translates to:
+  /// **'File type'**
+  String get sortByType;
+
+  /// Sort direction: ascending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get sortAscending;
+
+  /// Sort direction: descending.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get sortDescending;
+
+  /// Title of the keyboard shortcuts dialog and its button tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard shortcuts'**
+  String get keyboardShortcutsTitle;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Next / previous image'**
+  String get shortcutNextPrevious;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'First / last image'**
+  String get shortcutFirstLast;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Play / pause slideshow'**
+  String get shortcutPlayPause;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in / out'**
+  String get shortcutZoom;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual size (1:1)'**
+  String get shortcutActualSize;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit to window'**
+  String get shortcutFit;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate right / left'**
+  String get shortcutRotate;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Show / hide image info'**
+  String get shortcutInfo;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Show keyboard shortcuts'**
+  String get shortcutHelp;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Picavi'**
+  String get shortcutClose;
+
+  /// Generic close button label.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get closeLabel;
 }
 
 class _AppLocalizationsDelegate

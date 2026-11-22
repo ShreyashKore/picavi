@@ -53,6 +53,197 @@
   "defaultViewerSetSuccess": "Picavi is now the default image viewer for supported formats.",
   "defaultViewerFlowOpened": "System default-app settings were opened.",
   "defaultViewerSetFailed": "Picavi couldn't be set as the default viewer automatically.",
-  "defaultViewerUnsupported": "Default viewer setup is not available on this platform."
+  "defaultViewerUnsupported": "Default viewer setup is not available on this platform.",
+  "zoomOutTooltip": "Zoom out",
+  "@zoomOutTooltip": {
+    "description": "Tooltip for the zoom-out button."
+  },
+  "zoomInTooltip": "Zoom in",
+  "@zoomInTooltip": {
+    "description": "Tooltip for the zoom-in button."
+  },
+  "actualSizeTooltip": "Actual size (1:1)",
+  "@actualSizeTooltip": {
+    "description": "Tooltip for the 1:1 button that shows the image at its actual pixel size."
+  },
+  "rotateLeftTooltip": "Rotate left",
+  "@rotateLeftTooltip": {
+    "description": "Tooltip for the rotate-left button."
+  },
+  "rotateRightTooltip": "Rotate right",
+  "@rotateRightTooltip": {
+    "description": "Tooltip for the rotate-right button."
+  },
+  "showImageInfoTooltip": "Show image info",
+  "@showImageInfoTooltip": {
+    "description": "Tooltip for the button that shows the image info panel."
+  },
+  "hideImageInfoTooltip": "Hide image info",
+  "@hideImageInfoTooltip": {
+    "description": "Tooltip for the button that hides the image info panel."
+  },
+  "previousImageTooltip": "Previous image",
+  "@previousImageTooltip": {
+    "description": "Tooltip for the previous-image button."
+  },
+  "nextImageTooltip": "Next image",
+  "@nextImageTooltip": {
+    "description": "Tooltip for the next-image button."
+  },
+  "playSlideshowTooltip": "Play slideshow",
+  "@playSlideshowTooltip": {
+    "description": "Tooltip for the button that starts the slideshow."
+  },
+  "pauseSlideshowTooltip": "Pause slideshow",
+  "@pauseSlideshowTooltip": {
+    "description": "Tooltip for the button that pauses the slideshow."
+  },
+  "imageLoadFailed": "Failed to load image",
+  "@imageLoadFailed": {
+    "description": "Shown in place of an image that could not be decoded."
+  },
+  "unknownValue": "Unknown",
+  "@unknownValue": {
+    "description": "Placeholder when a value (file size, version) is unknown."
+  },
+  "loadingValue": "Loading…",
+  "@loadingValue": {
+    "description": "Placeholder while a value is still loading."
+  },
+  "infoImageLabel": "Image",
+  "@infoImageLabel": {
+    "description": "Info panel label for the image position in the folder."
+  },
+  "infoImagePosition": "{current} of {total}",
+  "@infoImagePosition": {
+    "description": "Info panel value: position of the image in the folder.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "infoTypeLabel": "Type",
+  "@infoTypeLabel": {
+    "description": "Info panel label for the file type."
+  },
+  "infoResolutionLabel": "Resolution",
+  "@infoResolutionLabel": {
+    "description": "Info panel label for the pixel resolution."
+  },
+  "infoFileSizeLabel": "File size",
+  "@infoFileSizeLabel": {
+    "description": "Info panel label for the file size."
+  },
+  "infoCapturedLabel": "Captured",
+  "@infoCapturedLabel": {
+    "description": "Info panel label for the date the photo was taken."
+  },
+  "infoModifiedLabel": "Modified",
+  "@infoModifiedLabel": {
+    "description": "Info panel label for the file modification date."
+  },
+  "infoCameraLabel": "Camera",
+  "@infoCameraLabel": {
+    "description": "Info panel label for the camera model."
+  },
+  "infoLensLabel": "Lens",
+  "@infoLensLabel": {
+    "description": "Info panel label for the lens model."
+  },
+  "infoFocalLengthLabel": "Focal length",
+  "@infoFocalLengthLabel": {
+    "description": "Info panel label for the focal length."
+  },
+  "infoApertureLabel": "Aperture",
+  "@infoApertureLabel": {
+    "description": "Info panel label for the aperture (f-number)."
+  },
+  "infoExposureLabel": "Exposure",
+  "@infoExposureLabel": {
+    "description": "Info panel label for the exposure time."
+  },
+  "infoIsoLabel": "ISO",
+  "@infoIsoLabel": {
+    "description": "Info panel label for the ISO sensitivity."
+  },
+  "sortTooltip": "Sort images",
+  "@sortTooltip": {
+    "description": "Tooltip for the menu that changes how the folder is sorted."
+  },
+  "sortByName": "Name",
+  "@sortByName": {
+    "description": "Sort option: by file name."
+  },
+  "sortByModified": "Date modified",
+  "@sortByModified": {
+    "description": "Sort option: by date modified."
+  },
+  "sortBySize": "File size",
+  "@sortBySize": {
+    "description": "Sort option: by file size."
+  },
+  "sortByType": "File type",
+  "@sortByType": {
+    "description": "Sort option: by file type (extension)."
+  },
+  "sortAscending": "Ascending",
+  "@sortAscending": {
+    "description": "Sort direction: ascending."
+  },
+  "sortDescending": "Descending",
+  "@sortDescending": {
+    "description": "Sort direction: descending."
+  },
+  "keyboardShortcutsTitle": "Keyboard shortcuts",
+  "@keyboardShortcutsTitle": {
+    "description": "Title of the keyboard shortcuts dialog and its button tooltip."
+  },
+  "shortcutNextPrevious": "Next / previous image",
+  "@shortcutNextPrevious": {
+    "description": "Shortcut description."
+  },
+  "shortcutFirstLast": "First / last image",
+  "@shortcutFirstLast": {
+    "description": "Shortcut description."
+  },
+  "shortcutPlayPause": "Play / pause slideshow",
+  "@shortcutPlayPause": {
+    "description": "Shortcut description."
+  },
+  "shortcutZoom": "Zoom in / out",
+  "@shortcutZoom": {
+    "description": "Shortcut description."
+  },
+  "shortcutActualSize": "Actual size (1:1)",
+  "@shortcutActualSize": {
+    "description": "Shortcut description."
+  },
+  "shortcutFit": "Fit to window",
+  "@shortcutFit": {
+    "description": "Shortcut description."
+  },
+  "shortcutRotate": "Rotate right / left",
+  "@shortcutRotate": {
+    "description": "Shortcut description."
+  },
+  "shortcutInfo": "Show / hide image info",
+  "@shortcutInfo": {
+    "description": "Shortcut description."
+  },
+  "shortcutHelp": "Show keyboard shortcuts",
+  "@shortcutHelp": {
+    "description": "Shortcut description."
+  },
+  "shortcutClose": "Close Picavi",
+  "@shortcutClose": {
+    "description": "Shortcut description."
+  },
+  "closeLabel": "Close",
+  "@closeLabel": {
+    "description": "Generic close button label."
+  }
 }
-

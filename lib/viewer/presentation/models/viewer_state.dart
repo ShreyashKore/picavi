@@ -1,4 +1,5 @@
 import '../../domain/entities/gallery_image.dart';
+import '../../domain/entities/image_sort_order.dart';
 import 'viewer_notice.dart';
 
 class ViewerState {
@@ -8,6 +9,7 @@ class ViewerState {
     required this.currentIndex,
     required this.isBootstrapping,
     required this.notice,
+    this.sortOrder = const ImageSortOrder(),
   });
 
   const ViewerState.initial()
@@ -15,13 +17,15 @@ class ViewerState {
       currentDirectory = null,
       currentIndex = 0,
       isBootstrapping = true,
-      notice = null;
+      notice = null,
+      sortOrder = const ImageSortOrder();
 
   final List<GalleryImage> images;
   final String? currentDirectory;
   final int currentIndex;
   final bool isBootstrapping;
   final ViewerNotice? notice;
+  final ImageSortOrder sortOrder;
 
   bool get hasImages => images.isNotEmpty;
 
@@ -34,6 +38,7 @@ class ViewerState {
     bool? isBootstrapping,
     ViewerNotice? notice,
     bool clearNotice = false,
+    ImageSortOrder? sortOrder,
   }) {
     return ViewerState(
       images: images ?? this.images,
@@ -41,6 +46,7 @@ class ViewerState {
       currentIndex: currentIndex ?? this.currentIndex,
       isBootstrapping: isBootstrapping ?? this.isBootstrapping,
       notice: clearNotice ? null : notice ?? this.notice,
+      sortOrder: sortOrder ?? this.sortOrder,
     );
   }
 }

@@ -128,4 +128,144 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get defaultViewerUnsupported => '此平台不支持默认查看器设置。';
+
+  @override
+  String get zoomOutTooltip => '缩小';
+
+  @override
+  String get zoomInTooltip => '放大';
+
+  @override
+  String get actualSizeTooltip => '实际大小 (1:1)';
+
+  @override
+  String get rotateLeftTooltip => '向左旋转';
+
+  @override
+  String get rotateRightTooltip => '向右旋转';
+
+  @override
+  String get showImageInfoTooltip => '显示图片信息';
+
+  @override
+  String get hideImageInfoTooltip => '隐藏图片信息';
+
+  @override
+  String get previousImageTooltip => '上一张';
+
+  @override
+  String get nextImageTooltip => '下一张';
+
+  @override
+  String get playSlideshowTooltip => '播放幻灯片';
+
+  @override
+  String get pauseSlideshowTooltip => '暂停幻灯片';
+
+  @override
+  String get imageLoadFailed => '无法加载图片';
+
+  @override
+  String get unknownValue => '未知';
+
+  @override
+  String get loadingValue => '正在加载…';
+
+  @override
+  String get infoImageLabel => '图片';
+
+  @override
+  String infoImagePosition(int current, int total) {
+    return '第 $current 张，共 $total 张';
+  }
+
+  @override
+  String get infoTypeLabel => '类型';
+
+  @override
+  String get infoResolutionLabel => '分辨率';
+
+  @override
+  String get infoFileSizeLabel => '文件大小';
+
+  @override
+  String get infoCapturedLabel => '拍摄时间';
+
+  @override
+  String get infoModifiedLabel => '修改时间';
+
+  @override
+  String get infoCameraLabel => '相机';
+
+  @override
+  String get infoLensLabel => '镜头';
+
+  @override
+  String get infoFocalLengthLabel => '焦距';
+
+  @override
+  String get infoApertureLabel => '光圈';
+
+  @override
+  String get infoExposureLabel => '曝光';
+
+  @override
+  String get infoIsoLabel => 'ISO';
+
+  @override
+  String get sortTooltip => '排序图片';
+
+  @override
+  String get sortByName => '名称';
+
+  @override
+  String get sortByModified => '修改日期';
+
+  @override
+  String get sortBySize => '文件大小';
+
+  @override
+  String get sortByType => '文件类型';
+
+  @override
+  String get sortAscending => '升序';
+
+  @override
+  String get sortDescending => '降序';
+
+  @override
+  String get keyboardShortcutsTitle => '键盘快捷键';
+
+  @override
+  String get shortcutNextPrevious => '下一张 / 上一张';
+
+  @override
+  String get shortcutFirstLast => '第一张 / 最后一张';
+
+  @override
+  String get shortcutPlayPause => '播放 / 暂停幻灯片';
+
+  @override
+  String get shortcutZoom => '放大 / 缩小';
+
+  @override
+  String get shortcutActualSize => '实际大小 (1:1)';
+
+  @override
+  String get shortcutFit => '适应窗口';
+
+  @override
+  String get shortcutRotate => '向右 / 向左旋转';
+
+  @override
+  String get shortcutInfo => '显示 / 隐藏图片信息';
+
+  @override
+  String get shortcutHelp => '显示键盘快捷键';
+
+  @override
+  String get shortcutClose => '关闭 Picavi';
+
+  @override
+  String get closeLabel => '关闭';
 }
