@@ -33,6 +33,41 @@ void main() {
       expect(completedScale, closeTo(1.2, 0.02));
     });
 
+    testWidgets('fit/fill toggles between covering and fitting', (
+      tester,
+    ) async {
+      final controller = InteractiveImageViewerController();
+      // A 2:1 image in a 4:3 viewport: filling needs 1.5x the fit zoom.
+      final image = _buildSvgImage(
+        const Color(0xFF43A047),
+        width: 40,
+        height: 20,
+      );
+
+      await _pumpViewer(tester, controller: controller, image: image);
+      // Let the SVG's intrinsic size resolve (real async work).
+      for (var i = 0; i < 20 && controller.value.imageInfo == null; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump();
+      }
+      await tester.pump();
+      expect(controller.value.imageInfo, isNotNull);
+      expect(controller.value.fillZoomFactor, closeTo(1.5, 0.01));
+      expect(controller.value.isFillingViewport, isFalse);
+
+      controller.toggleFitFill();
+      await tester.pumpAndSettle();
+      expect(controller.value.zoomFactor, closeTo(1.5, 0.01));
+      expect(controller.value.isFillingViewport, isTrue);
+
+      controller.toggleFitFill();
+      await tester.pumpAndSettle();
+      expect(controller.value.zoomFactor, closeTo(1, 0.01));
+      expect(controller.value.isFillingViewport, isFalse);
+    });
+
     testWidgets('rotation commands animate toward quarter turns', (
       tester,
     ) async {

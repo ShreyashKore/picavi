@@ -486,4 +486,54 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get clickLabel => '点击';
+
+  @override
+  String get slideshowSectionTitle => '幻灯片';
+
+  @override
+  String get slideshowIntervalTitle => '每张图片的时间';
+
+  @override
+  String slideshowIntervalValue(int seconds) {
+    return '$seconds 秒';
+  }
+
+  @override
+  String get slideshowShuffleTitle => '随机播放';
+
+  @override
+  String get slideshowShuffleDescription => '以随机顺序显示图片。';
+
+  @override
+  String get slideshowLoopTitle => '循环';
+
+  @override
+  String get slideshowLoopDescription => '播放完最后一张后重新开始。';
+
+  @override
+  String get slideshowFullScreenTitle => '幻灯片播放时全屏';
+
+  @override
+  String get slideshowFullScreenDescription => '开始播放幻灯片时切换到全屏。';
+
+  @override
+  String get enterFullScreenTooltip => '全屏';
+
+  @override
+  String get exitFullScreenTooltip => '退出全屏';
+
+  @override
+  String get fillWindowTooltip => '填满窗口';
+
+  @override
+  String get fitWindowTooltip => '适应窗口';
+
+  @override
+  String get shortcutFullScreen => '开启 / 关闭全屏';
+
+  @override
+  String get shortcutFitFill => '适应 / 填满窗口';
+
+  @override
+  String get dropToOpen => '松开以打开';
 }

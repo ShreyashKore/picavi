@@ -7,17 +7,21 @@ import '../../../../core/l10n/l10n_extensions.dart';
 import '../../../../core/services/app_preferences_service.dart';
 import '../../../../core/services/default_viewer_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../data/services/slideshow_settings_store.dart';
+import '../../domain/entities/slideshow_settings.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({
     super.key,
     required this.appPreferencesService,
     required this.defaultViewerService,
+    required this.slideshowSettingsStore,
     this.initialStatus,
   });
 
   final AppPreferencesService appPreferencesService;
   final DefaultViewerService defaultViewerService;
+  final SlideshowSettingsStore slideshowSettingsStore;
   final DefaultViewerStatus? initialStatus;
 
   @override
@@ -36,6 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _showRecentFoldersEnabled = false;
   String _versionLabel = '—';
   bool _isVersionUnavailable = false;
+  SlideshowSettings? _slideshowSettings;
 
   @override
   void initState() {
@@ -68,12 +73,14 @@ class _SettingsScreenState extends State<SettingsScreen>
         .isRestoreLastOpenedImageEnabled();
     final showRecentFoldersEnabledFuture = widget.appPreferencesService
         .isShowRecentFoldersEnabled();
+    final slideshowSettingsFuture = widget.slideshowSettingsStore.load();
 
     final versionLabel = await versionFuture;
     final status = await statusFuture;
     final restoreLastOpenedImageEnabled =
         await restoreLastOpenedImageEnabledFuture;
     final showRecentFoldersEnabled = await showRecentFoldersEnabledFuture;
+    final slideshowSettings = await slideshowSettingsFuture;
     if (!mounted) {
       return;
     }
@@ -85,6 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       _isLoadingStatus = false;
       _restoreLastOpenedImageEnabled = restoreLastOpenedImageEnabled;
       _showRecentFoldersEnabled = showRecentFoldersEnabled;
+      _slideshowSettings = slideshowSettings;
       _isLoadingResumePreference = false;
     });
   }
@@ -183,6 +191,79 @@ class _SettingsScreenState extends State<SettingsScreen>
     });
   }
 
+  Future<void> _updateSlideshowSettings(SlideshowSettings settings) async {
+    setState(() => _slideshowSettings = settings);
+    await widget.slideshowSettingsStore.save(settings);
+  }
+
+  List<Widget> _buildSlideshowSection(SlideshowSettings settings) {
+    final l10n = context.l10n;
+    return [
+      Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: Text(
+          l10n.slideshowSectionTitle,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+      ),
+      const SizedBox(height: 8),
+      ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: const CircleAvatar(child: Icon(Icons.timer_outlined)),
+        title: Text(l10n.slideshowIntervalTitle),
+        trailing: DropdownButton<int>(
+          value: settings.intervalSeconds,
+          underline: const SizedBox.shrink(),
+          onChanged: (value) {
+            if (value != null) {
+              unawaited(
+                _updateSlideshowSettings(
+                  settings.copyWith(intervalSeconds: value),
+                ),
+              );
+            }
+          },
+          items: [
+            for (final seconds in SlideshowSettings.intervalChoices)
+              DropdownMenuItem<int>(
+                value: seconds,
+                child: Text(l10n.slideshowIntervalValue(seconds)),
+              ),
+          ],
+        ),
+      ),
+      SwitchListTile.adaptive(
+        contentPadding: EdgeInsets.zero,
+        secondary: const CircleAvatar(child: Icon(Icons.shuffle_rounded)),
+        value: settings.shuffle,
+        onChanged: (value) => unawaited(
+          _updateSlideshowSettings(settings.copyWith(shuffle: value)),
+        ),
+        title: Text(l10n.slideshowShuffleTitle),
+        subtitle: Text(l10n.slideshowShuffleDescription),
+      ),
+      SwitchListTile.adaptive(
+        contentPadding: EdgeInsets.zero,
+        secondary: const CircleAvatar(child: Icon(Icons.repeat_rounded)),
+        value: settings.loop,
+        onChanged: (value) =>
+            unawaited(_updateSlideshowSettings(settings.copyWith(loop: value))),
+        title: Text(l10n.slideshowLoopTitle),
+        subtitle: Text(l10n.slideshowLoopDescription),
+      ),
+      SwitchListTile.adaptive(
+        contentPadding: EdgeInsets.zero,
+        secondary: const CircleAvatar(child: Icon(Icons.fullscreen_rounded)),
+        value: settings.fullScreen,
+        onChanged: (value) => unawaited(
+          _updateSlideshowSettings(settings.copyWith(fullScreen: value)),
+        ),
+        title: Text(l10n.slideshowFullScreenTitle),
+        subtitle: Text(l10n.slideshowFullScreenDescription),
+      ),
+    ];
+  }
+
   String _resultMessage(DefaultViewerRequestOutcome outcome) {
     return switch (outcome) {
       DefaultViewerRequestOutcome.success =>
@@ -245,113 +326,121 @@ class _SettingsScreenState extends State<SettingsScreen>
           ),
           SafeArea(
             minimum: const EdgeInsets.all(20),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 640),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: AppColors.panel,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.08),
+            child: SingleChildScrollView(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 640),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.panel,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.08),
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const CircleAvatar(
-                            child: Icon(Icons.image_search_outlined),
-                          ),
-                          title: Text(context.l10n.defaultViewerTitle),
-                          subtitle: Text(_statusDescription(_status)),
-                          trailing: _isLoadingStatus
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const CircleAvatar(
+                              child: Icon(Icons.image_search_outlined),
+                            ),
+                            title: Text(context.l10n.defaultViewerTitle),
+                            subtitle: Text(_statusDescription(_status)),
+                            trailing: _isLoadingStatus
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : FilledButton(
+                                    onPressed:
+                                        (_status?.isSupported ?? false) &&
+                                            !_isUpdatingDefaultViewer
+                                        ? _setDefaultViewer
+                                        : null,
+                                    child: Text(
+                                      _isUpdatingDefaultViewer
+                                          ? context.l10n.defaultViewerChecking
+                                          : _defaultViewerActionLabel(_status),
+                                    ),
                                   ),
-                                )
-                              : FilledButton(
-                                  onPressed:
-                                      (_status?.isSupported ?? false) &&
-                                          !_isUpdatingDefaultViewer
-                                      ? _setDefaultViewer
-                                      : null,
-                                  child: Text(
-                                    _isUpdatingDefaultViewer
-                                        ? context.l10n.defaultViewerChecking
-                                        : _defaultViewerActionLabel(_status),
+                          ),
+                          const Divider(height: 28),
+                          SwitchListTile.adaptive(
+                            contentPadding: EdgeInsets.zero,
+                            secondary: const CircleAvatar(
+                              child: Icon(Icons.history_toggle_off),
+                            ),
+                            value: _restoreLastOpenedImageEnabled,
+                            onChanged:
+                                _isLoadingResumePreference ||
+                                    _isUpdatingResumePreference
+                                ? null
+                                : (value) => unawaited(
+                                    _setRestoreLastOpenedImageEnabled(value),
                                   ),
-                                ),
-                        ),
-                        const Divider(height: 28),
-                        SwitchListTile.adaptive(
-                          contentPadding: EdgeInsets.zero,
-                          secondary: const CircleAvatar(
-                            child: Icon(Icons.history_toggle_off),
+                            title: Text(
+                              context.l10n.restoreLastOpenedImageTitle,
+                            ),
+                            subtitle: Text(
+                              context.l10n.restoreLastOpenedImageDescription,
+                            ),
                           ),
-                          value: _restoreLastOpenedImageEnabled,
-                          onChanged:
-                              _isLoadingResumePreference ||
-                                  _isUpdatingResumePreference
-                              ? null
-                              : (value) => unawaited(
-                                  _setRestoreLastOpenedImageEnabled(value),
-                                ),
-                          title: Text(context.l10n.restoreLastOpenedImageTitle),
-                          subtitle: Text(
-                            context.l10n.restoreLastOpenedImageDescription,
+                          if (_isLoadingResumePreference ||
+                              _isUpdatingResumePreference)
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: LinearProgressIndicator(minHeight: 2),
+                            ),
+                          const Divider(height: 28),
+                          SwitchListTile.adaptive(
+                            contentPadding: EdgeInsets.zero,
+                            secondary: const CircleAvatar(
+                              child: Icon(Icons.folder_copy_outlined),
+                            ),
+                            value: _showRecentFoldersEnabled,
+                            onChanged:
+                                _isLoadingResumePreference ||
+                                    _isUpdatingRecentFoldersPreference
+                                ? null
+                                : (value) => unawaited(
+                                    _setShowRecentFoldersEnabled(value),
+                                  ),
+                            title: Text(context.l10n.showRecentFoldersTitle),
+                            subtitle: Text(
+                              context.l10n.showRecentFoldersDescription,
+                            ),
                           ),
-                        ),
-                        if (_isLoadingResumePreference ||
-                            _isUpdatingResumePreference)
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 8),
-                            child: LinearProgressIndicator(minHeight: 2),
+                          if (_isUpdatingRecentFoldersPreference)
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: LinearProgressIndicator(minHeight: 2),
+                            ),
+                          const Divider(height: 28),
+                          if (_slideshowSettings case final settings?) ...[
+                            ..._buildSlideshowSection(settings),
+                            const Divider(height: 28),
+                          ],
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const CircleAvatar(
+                              child: Icon(Icons.info_outline),
+                            ),
+                            title: Text(context.l10n.versionTitle),
+                            subtitle: Text(
+                              _isVersionUnavailable
+                                  ? context.l10n.unknownValue
+                                  : _versionLabel,
+                            ),
                           ),
-                        const Divider(height: 28),
-                        SwitchListTile.adaptive(
-                          contentPadding: EdgeInsets.zero,
-                          secondary: const CircleAvatar(
-                            child: Icon(Icons.folder_copy_outlined),
-                          ),
-                          value: _showRecentFoldersEnabled,
-                          onChanged:
-                              _isLoadingResumePreference ||
-                                  _isUpdatingRecentFoldersPreference
-                              ? null
-                              : (value) => unawaited(
-                                  _setShowRecentFoldersEnabled(value),
-                                ),
-                          title: Text(context.l10n.showRecentFoldersTitle),
-                          subtitle: Text(
-                            context.l10n.showRecentFoldersDescription,
-                          ),
-                        ),
-                        if (_isUpdatingRecentFoldersPreference)
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 8),
-                            child: LinearProgressIndicator(minHeight: 2),
-                          ),
-                        const Divider(height: 28),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const CircleAvatar(
-                            child: Icon(Icons.info_outline),
-                          ),
-                          title: Text(context.l10n.versionTitle),
-                          subtitle: Text(
-                            _isVersionUnavailable
-                                ? context.l10n.unknownValue
-                                : _versionLabel,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

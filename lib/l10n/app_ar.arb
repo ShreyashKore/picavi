@@ -136,5 +136,21 @@
   "shortcutSelectAll": "تحديد كل الصور",
   "shortcutSelect": "إضافة إلى التحديد / توسيعه",
   "shortcutEscape": "مسح التحديد أو الخروج من ملء الشاشة أو الإغلاق",
-  "clickLabel": "نقرة"
+  "clickLabel": "نقرة",
+  "slideshowSectionTitle": "عرض الشرائح",
+  "slideshowIntervalTitle": "مدة كل صورة",
+  "slideshowIntervalValue": "{seconds, plural, =1{ثانية واحدة} other{{seconds} ثوانٍ}}",
+  "slideshowShuffleTitle": "ترتيب عشوائي",
+  "slideshowShuffleDescription": "اعرض الصور بترتيب عشوائي.",
+  "slideshowLoopTitle": "تكرار",
+  "slideshowLoopDescription": "ابدأ من جديد بعد آخر صورة.",
+  "slideshowFullScreenTitle": "ملء الشاشة أثناء عرض الشرائح",
+  "slideshowFullScreenDescription": "التبديل إلى ملء الشاشة عند بدء عرض الشرائح.",
+  "enterFullScreenTooltip": "ملء الشاشة",
+  "exitFullScreenTooltip": "الخروج من ملء الشاشة",
+  "fillWindowTooltip": "ملء النافذة",
+  "fitWindowTooltip": "ملاءمة النافذة",
+  "shortcutFullScreen": "تشغيل / إيقاف ملء الشاشة",
+  "shortcutFitFill": "ملاءمة / ملء النافذة",
+  "dropToOpen": "أفلت للفتح"
 }

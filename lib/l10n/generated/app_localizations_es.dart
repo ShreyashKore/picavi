@@ -507,4 +507,64 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clickLabel => 'Clic';
+
+  @override
+  String get slideshowSectionTitle => 'Presentación';
+
+  @override
+  String get slideshowIntervalTitle => 'Tiempo por imagen';
+
+  @override
+  String slideshowIntervalValue(int seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: '$seconds segundos',
+      one: '1 segundo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get slideshowShuffleTitle => 'Orden aleatorio';
+
+  @override
+  String get slideshowShuffleDescription =>
+      'Muestra las imágenes en orden aleatorio.';
+
+  @override
+  String get slideshowLoopTitle => 'Repetir';
+
+  @override
+  String get slideshowLoopDescription =>
+      'Vuelve a empezar tras la última imagen.';
+
+  @override
+  String get slideshowFullScreenTitle =>
+      'Pantalla completa durante la presentación';
+
+  @override
+  String get slideshowFullScreenDescription =>
+      'Cambia a pantalla completa al iniciar una presentación.';
+
+  @override
+  String get enterFullScreenTooltip => 'Pantalla completa';
+
+  @override
+  String get exitFullScreenTooltip => 'Salir de pantalla completa';
+
+  @override
+  String get fillWindowTooltip => 'Rellenar ventana';
+
+  @override
+  String get fitWindowTooltip => 'Ajustar a la ventana';
+
+  @override
+  String get shortcutFullScreen => 'Activar / desactivar pantalla completa';
+
+  @override
+  String get shortcutFitFill => 'Ajustar / rellenar ventana';
+
+  @override
+  String get dropToOpen => 'Suelta para abrir';
 }

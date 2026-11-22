@@ -136,5 +136,21 @@
   "shortcutSelectAll": "सर्व प्रतिमा निवडा",
   "shortcutSelect": "निवडीत जोडा / वाढवा",
   "shortcutEscape": "निवड काढा, पूर्ण स्क्रीन सोडा किंवा बंद करा",
-  "clickLabel": "क्लिक"
+  "clickLabel": "क्लिक",
+  "slideshowSectionTitle": "स्लाइडशो",
+  "slideshowIntervalTitle": "प्रत्येक प्रतिमेसाठी वेळ",
+  "slideshowIntervalValue": "{seconds, plural, =1{1 सेकंद} other{{seconds} सेकंद}}",
+  "slideshowShuffleTitle": "शफल",
+  "slideshowShuffleDescription": "प्रतिमा यादृच्छिक क्रमाने दाखवा.",
+  "slideshowLoopTitle": "पुन्हा सुरू करा",
+  "slideshowLoopDescription": "शेवटच्या प्रतिमेनंतर पुन्हा सुरू करा.",
+  "slideshowFullScreenTitle": "स्लाइडशो दरम्यान पूर्ण स्क्रीन",
+  "slideshowFullScreenDescription": "स्लाइडशो सुरू झाल्यावर पूर्ण स्क्रीनवर जा.",
+  "enterFullScreenTooltip": "पूर्ण स्क्रीन",
+  "exitFullScreenTooltip": "पूर्ण स्क्रीनमधून बाहेर पडा",
+  "fillWindowTooltip": "विंडो भरा",
+  "fitWindowTooltip": "विंडोमध्ये बसवा",
+  "shortcutFullScreen": "पूर्ण स्क्रीन चालू / बंद",
+  "shortcutFitFill": "विंडोमध्ये बसवा / भरा",
+  "dropToOpen": "उघडण्यासाठी सोडा"
 }

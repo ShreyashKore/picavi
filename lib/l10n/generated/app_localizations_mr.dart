@@ -503,4 +503,62 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get clickLabel => 'क्लिक';
+
+  @override
+  String get slideshowSectionTitle => 'स्लाइडशो';
+
+  @override
+  String get slideshowIntervalTitle => 'प्रत्येक प्रतिमेसाठी वेळ';
+
+  @override
+  String slideshowIntervalValue(int seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: '$seconds सेकंद',
+      one: '1 सेकंद',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get slideshowShuffleTitle => 'शफल';
+
+  @override
+  String get slideshowShuffleDescription => 'प्रतिमा यादृच्छिक क्रमाने दाखवा.';
+
+  @override
+  String get slideshowLoopTitle => 'पुन्हा सुरू करा';
+
+  @override
+  String get slideshowLoopDescription =>
+      'शेवटच्या प्रतिमेनंतर पुन्हा सुरू करा.';
+
+  @override
+  String get slideshowFullScreenTitle => 'स्लाइडशो दरम्यान पूर्ण स्क्रीन';
+
+  @override
+  String get slideshowFullScreenDescription =>
+      'स्लाइडशो सुरू झाल्यावर पूर्ण स्क्रीनवर जा.';
+
+  @override
+  String get enterFullScreenTooltip => 'पूर्ण स्क्रीन';
+
+  @override
+  String get exitFullScreenTooltip => 'पूर्ण स्क्रीनमधून बाहेर पडा';
+
+  @override
+  String get fillWindowTooltip => 'विंडो भरा';
+
+  @override
+  String get fitWindowTooltip => 'विंडोमध्ये बसवा';
+
+  @override
+  String get shortcutFullScreen => 'पूर्ण स्क्रीन चालू / बंद';
+
+  @override
+  String get shortcutFitFill => 'विंडोमध्ये बसवा / भरा';
+
+  @override
+  String get dropToOpen => 'उघडण्यासाठी सोडा';
 }

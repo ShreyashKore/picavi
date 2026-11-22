@@ -57,10 +57,7 @@ void main() {
           ),
         ),
       );
-      expect(
-        await File(p.join(source.path, 'b.png')).readAsString(),
-        'second',
-      );
+      expect(await File(p.join(source.path, 'b.png')).readAsString(), 'second');
     });
 
     test('rejects names with separators or a leading dot', () async {

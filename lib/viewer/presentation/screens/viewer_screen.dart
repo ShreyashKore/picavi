@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:window_manager/window_manager.dart';
@@ -17,9 +18,11 @@ import '../../data/repositories/file_system_image_repository.dart';
 import '../../data/services/desktop_file_operations_service.dart';
 import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
+import '../../data/services/slideshow_settings_store.dart';
 import '../../domain/constants/supported_image_extensions.dart';
 import '../../domain/entities/image_sort_order.dart';
 import '../../domain/entities/recent_folder.dart';
+import '../../domain/entities/slideshow_settings.dart';
 import '../../domain/repositories/image_repository.dart';
 import '../../domain/services/image_picker_service.dart';
 import '../controllers/viewer_controller.dart';
@@ -47,10 +50,9 @@ class ViewerScreen extends StatefulWidget {
 }
 
 class _ViewerScreenState extends State<ViewerScreen>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, WindowListener {
   static const double _thumbnailExtent = 72;
   static const double _thumbnailControlsInset = 60;
-  static const Duration _slideshowInterval = Duration(seconds: 3);
   static const int _recentFolderPreviewCount = 4;
 
   final ScrollController _thumbnailScrollController = ScrollController();
@@ -63,6 +65,12 @@ class _ViewerScreenState extends State<ViewerScreen>
   late final DefaultViewerService _defaultViewerService;
   late final InteractiveImageViewerController _imageViewerController;
   Timer? _slideshowTimer;
+  SlideshowSequencer? _slideshowSequencer;
+  SlideshowSettings _slideshowSettings = const SlideshowSettings();
+  late final SlideshowSettingsStore _slideshowSettingsStore;
+  bool _isFullScreen = false;
+  bool _enteredFullScreenForSlideshow = false;
+  bool _isDraggingFiles = false;
 
   List<String> _lastGalleryPaths = const <String>[];
   int _lastSyncedIndex = 0;
@@ -84,6 +92,7 @@ class _ViewerScreenState extends State<ViewerScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    windowManager.addListener(this);
     final nativeFileChannelService = NativeFileChannelService();
     _appPreferencesService = AppPreferencesService();
     _imageRepository = FileSystemImageRepository();
@@ -106,6 +115,9 @@ class _ViewerScreenState extends State<ViewerScreen>
     unawaited(_refreshRestoreLastOpenedImagePreference());
     unawaited(_refreshRecentFolders());
     unawaited(_restoreSortOrder());
+    _slideshowSettingsStore = SlideshowSettingsStore(_appPreferencesService);
+    unawaited(_loadSlideshowSettings());
+    unawaited(_syncFullScreenState());
   }
 
   @override
@@ -144,6 +156,7 @@ class _ViewerScreenState extends State<ViewerScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    windowManager.removeListener(this);
     _stopSlideshow(rebuild: false);
     _imageViewerController
       ..removeListener(_onImageViewerChanged)
@@ -336,7 +349,65 @@ class _ViewerScreenState extends State<ViewerScreen>
       _controller.clearSelection();
       return;
     }
+    if (_isPlaying) {
+      _stopSlideshow();
+      return;
+    }
+    if (_isFullScreen) {
+      unawaited(_setFullScreen(false));
+      return;
+    }
     _closeApp();
+  }
+
+  Future<void> _syncFullScreenState() async {
+    try {
+      final isFullScreen = await windowManager.isFullScreen();
+      if (mounted && isFullScreen != _isFullScreen) {
+        setState(() => _isFullScreen = isFullScreen);
+      }
+    } catch (error) {
+      debugPrint('Unable to read full screen state: $error');
+    }
+  }
+
+  Future<void> _setFullScreen(bool fullScreen) async {
+    try {
+      await windowManager.setFullScreen(fullScreen);
+    } catch (error) {
+      debugPrint('Unable to change full screen: $error');
+    }
+    await _syncFullScreenState();
+  }
+
+  void _toggleFullScreen() {
+    _enteredFullScreenForSlideshow = false;
+    unawaited(_setFullScreen(!_isFullScreen));
+  }
+
+  @override
+  void onWindowEnterFullScreen() {
+    if (mounted) {
+      setState(() => _isFullScreen = true);
+    }
+  }
+
+  @override
+  void onWindowLeaveFullScreen() {
+    if (mounted) {
+      setState(() => _isFullScreen = false);
+    }
+  }
+
+  Future<void> _openDroppedFiles(List<String> paths) async {
+    if (paths.isEmpty) {
+      return;
+    }
+    _stopSlideshow();
+    await _controller.handleOpenPaths(
+      paths,
+      directoryAccessTexts: _directoryAccessTexts,
+    );
   }
 
   Future<void> _handleFileAction(ViewerFileAction action) async {
@@ -591,6 +662,7 @@ class _ViewerScreenState extends State<ViewerScreen>
           appPreferencesService: _appPreferencesService,
           defaultViewerService: _defaultViewerService,
           initialStatus: _defaultViewerStatus,
+          slideshowSettingsStore: _slideshowSettingsStore,
         ),
       ),
     );
@@ -598,6 +670,7 @@ class _ViewerScreenState extends State<ViewerScreen>
     await _refreshDefaultViewerStatus();
     await _refreshRestoreLastOpenedImagePreference();
     await _refreshRecentFolders();
+    await _loadSlideshowSettings();
   }
 
   String _defaultViewerActionLabel(DefaultViewerStatus? status) {
@@ -753,6 +826,13 @@ class _ViewerScreenState extends State<ViewerScreen>
     );
   }
 
+  Future<void> _loadSlideshowSettings() async {
+    final settings = await _slideshowSettingsStore.load();
+    if (mounted) {
+      _slideshowSettings = settings;
+    }
+  }
+
   void _toggleSlideshow() {
     if (_isPlaying) {
       _stopSlideshow();
@@ -764,18 +844,45 @@ class _ViewerScreenState extends State<ViewerScreen>
       return;
     }
 
+    final settings = _slideshowSettings;
     setState(() {
       _isPlaying = true;
     });
+    _slideshowSequencer = SlideshowSequencer(
+      imageCount: state.images.length,
+      startIndex: state.currentIndex,
+      shuffle: settings.shuffle,
+      loop: settings.loop,
+    );
     _slideshowTimer?.cancel();
-    _slideshowTimer = Timer.periodic(_slideshowInterval, (_) {
-      unawaited(_goToRelativeIndex(1));
+    _slideshowTimer = Timer.periodic(settings.interval, (_) {
+      final current = _controller.state;
+      final next = _slideshowSequencer?.next(
+        currentIndex: current.hasImages ? current.currentIndex : null,
+      );
+      if (next == null) {
+        _stopSlideshow();
+        return;
+      }
+      unawaited(_goToIndex(next));
     });
+
+    if (settings.fullScreen && !_isFullScreen) {
+      _enteredFullScreenForSlideshow = true;
+      unawaited(_setFullScreen(true));
+    }
   }
 
   void _stopSlideshow({bool rebuild = true}) {
     _slideshowTimer?.cancel();
     _slideshowTimer = null;
+    _slideshowSequencer = null;
+    if (_enteredFullScreenForSlideshow) {
+      _enteredFullScreenForSlideshow = false;
+      if (mounted) {
+        unawaited(_setFullScreen(false));
+      }
+    }
     if (!_isPlaying) {
       return;
     }
@@ -917,7 +1024,10 @@ class _ViewerScreenState extends State<ViewerScreen>
       return _imageViewerController.zoomToOneToOne;
     }
     if (key == LogicalKeyboardKey.digit0 || key == LogicalKeyboardKey.numpad0) {
-      return _imageViewerController.reset;
+      return _imageViewerController.toggleFitFill;
+    }
+    if (key == LogicalKeyboardKey.keyF || key == LogicalKeyboardKey.f11) {
+      return _toggleFullScreen;
     }
     if (key == LogicalKeyboardKey.keyR) {
       return isShiftPressed
@@ -979,14 +1089,34 @@ class _ViewerScreenState extends State<ViewerScreen>
       },
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: state.hasImages
-            ? Focus(
-                focusNode: _viewerFocusNode,
-                autofocus: true,
-                onKeyEvent: _handleKeyEvent,
-                child: content,
-              )
-            : content,
+        body: DropTarget(
+          onDragEntered: (_) => setState(() => _isDraggingFiles = true),
+          onDragExited: (_) => setState(() => _isDraggingFiles = false),
+          onDragDone: (details) {
+            setState(() => _isDraggingFiles = false);
+            unawaited(
+              _openDroppedFiles(
+                details.files.map((file) => file.path).toList(),
+              ),
+            );
+          },
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (state.hasImages)
+                Focus(
+                  focusNode: _viewerFocusNode,
+                  autofocus: true,
+                  onKeyEvent: _handleKeyEvent,
+                  child: content,
+                )
+              else
+                content,
+              if (_isDraggingFiles)
+                _DropHighlight(label: context.l10n.dropToOpen),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -1119,6 +1249,10 @@ class _ViewerScreenState extends State<ViewerScreen>
                     onRotateLeft: _imageViewerController.rotateLeft,
                     onRotateRight: _imageViewerController.rotateRight,
                     onToggleInfo: _toggleInfoOverlay,
+                    isFillingWindow: imageViewState.isFillingViewport,
+                    onToggleFitFill: _imageViewerController.toggleFitFill,
+                    isFullScreen: _isFullScreen,
+                    onToggleFullScreen: _toggleFullScreen,
                     showInfo: _showInfoOverlay,
                   ),
               ],
@@ -1295,6 +1429,45 @@ class _ViewerBackdrop extends StatelessWidget {
         ),
       ),
       child: SizedBox.expand(),
+    );
+  }
+}
+
+class _DropHighlight extends StatelessWidget {
+  const _DropHighlight({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return IgnorePointer(
+      child: Container(
+        margin: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: primary.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: primary, width: 2),
+        ),
+        alignment: Alignment.center,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.topOverlay,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.file_download_outlined, color: primary),
+                const SizedBox(width: 10),
+                Text(label, style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

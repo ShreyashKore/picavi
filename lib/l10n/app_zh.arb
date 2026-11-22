@@ -136,5 +136,21 @@
   "shortcutSelectAll": "全选图片",
   "shortcutSelect": "添加到 / 扩展选择",
   "shortcutEscape": "清除选择、退出全屏或关闭",
-  "clickLabel": "点击"
+  "clickLabel": "点击",
+  "slideshowSectionTitle": "幻灯片",
+  "slideshowIntervalTitle": "每张图片的时间",
+  "slideshowIntervalValue": "{seconds} 秒",
+  "slideshowShuffleTitle": "随机播放",
+  "slideshowShuffleDescription": "以随机顺序显示图片。",
+  "slideshowLoopTitle": "循环",
+  "slideshowLoopDescription": "播放完最后一张后重新开始。",
+  "slideshowFullScreenTitle": "幻灯片播放时全屏",
+  "slideshowFullScreenDescription": "开始播放幻灯片时切换到全屏。",
+  "enterFullScreenTooltip": "全屏",
+  "exitFullScreenTooltip": "退出全屏",
+  "fillWindowTooltip": "填满窗口",
+  "fitWindowTooltip": "适应窗口",
+  "shortcutFullScreen": "开启 / 关闭全屏",
+  "shortcutFitFill": "适应 / 填满窗口",
+  "dropToOpen": "松开以打开"
 }

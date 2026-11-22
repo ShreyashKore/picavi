@@ -861,6 +861,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Click'**
   String get clickLabel;
+
+  /// Settings section heading for slideshow options.
+  ///
+  /// In en, this message translates to:
+  /// **'Slideshow'**
+  String get slideshowSectionTitle;
+
+  /// Setting: how long each image is shown.
+  ///
+  /// In en, this message translates to:
+  /// **'Time per image'**
+  String get slideshowIntervalTitle;
+
+  /// Value in the time-per-image dropdown.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds, plural, =1{1 second} other{{seconds} seconds}}'**
+  String slideshowIntervalValue(int seconds);
+
+  /// Setting: random order.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle'**
+  String get slideshowShuffleTitle;
+
+  /// Description of the shuffle setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the images in a random order.'**
+  String get slideshowShuffleDescription;
+
+  /// Setting: repeat the slideshow.
+  ///
+  /// In en, this message translates to:
+  /// **'Loop'**
+  String get slideshowLoopTitle;
+
+  /// Description of the loop setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over after the last image.'**
+  String get slideshowLoopDescription;
+
+  /// Setting: go full screen for slideshows.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen during slideshow'**
+  String get slideshowFullScreenTitle;
+
+  /// Description of the slideshow full screen setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to full screen when a slideshow starts.'**
+  String get slideshowFullScreenDescription;
+
+  /// Tooltip for the button that enters full screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen'**
+  String get enterFullScreenTooltip;
+
+  /// Tooltip for the button that leaves full screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit full screen'**
+  String get exitFullScreenTooltip;
+
+  /// Tooltip for the button that zooms the image to fill the window.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill window'**
+  String get fillWindowTooltip;
+
+  /// Tooltip for the button that fits the whole image in the window.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit to window'**
+  String get fitWindowTooltip;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen on / off'**
+  String get shortcutFullScreen;
+
+  /// Shortcut description.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit / fill window'**
+  String get shortcutFitFill;
+
+  /// Shown while files are dragged over the window.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to open'**
+  String get dropToOpen;
 }
 
 class _AppLocalizationsDelegate

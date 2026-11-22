@@ -498,5 +498,74 @@
   "clickLabel": "Click",
   "@clickLabel": {
     "description": "Word for a mouse click, shown on keycaps like \"⌘ Click\"."
+  },
+  "slideshowSectionTitle": "Slideshow",
+  "@slideshowSectionTitle": {
+    "description": "Settings section heading for slideshow options."
+  },
+  "slideshowIntervalTitle": "Time per image",
+  "@slideshowIntervalTitle": {
+    "description": "Setting: how long each image is shown."
+  },
+  "slideshowIntervalValue": "{seconds, plural, =1{1 second} other{{seconds} seconds}}",
+  "@slideshowIntervalValue": {
+    "description": "Value in the time-per-image dropdown.",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "slideshowShuffleTitle": "Shuffle",
+  "@slideshowShuffleTitle": {
+    "description": "Setting: random order."
+  },
+  "slideshowShuffleDescription": "Show the images in a random order.",
+  "@slideshowShuffleDescription": {
+    "description": "Description of the shuffle setting."
+  },
+  "slideshowLoopTitle": "Loop",
+  "@slideshowLoopTitle": {
+    "description": "Setting: repeat the slideshow."
+  },
+  "slideshowLoopDescription": "Start over after the last image.",
+  "@slideshowLoopDescription": {
+    "description": "Description of the loop setting."
+  },
+  "slideshowFullScreenTitle": "Full screen during slideshow",
+  "@slideshowFullScreenTitle": {
+    "description": "Setting: go full screen for slideshows."
+  },
+  "slideshowFullScreenDescription": "Switch to full screen when a slideshow starts.",
+  "@slideshowFullScreenDescription": {
+    "description": "Description of the slideshow full screen setting."
+  },
+  "enterFullScreenTooltip": "Full screen",
+  "@enterFullScreenTooltip": {
+    "description": "Tooltip for the button that enters full screen."
+  },
+  "exitFullScreenTooltip": "Exit full screen",
+  "@exitFullScreenTooltip": {
+    "description": "Tooltip for the button that leaves full screen."
+  },
+  "fillWindowTooltip": "Fill window",
+  "@fillWindowTooltip": {
+    "description": "Tooltip for the button that zooms the image to fill the window."
+  },
+  "fitWindowTooltip": "Fit to window",
+  "@fitWindowTooltip": {
+    "description": "Tooltip for the button that fits the whole image in the window."
+  },
+  "shortcutFullScreen": "Full screen on / off",
+  "@shortcutFullScreen": {
+    "description": "Shortcut description."
+  },
+  "shortcutFitFill": "Fit / fill window",
+  "@shortcutFitFill": {
+    "description": "Shortcut description."
+  },
+  "dropToOpen": "Drop to open",
+  "@dropToOpen": {
+    "description": "Shown while files are dragged over the window."
   }
 }

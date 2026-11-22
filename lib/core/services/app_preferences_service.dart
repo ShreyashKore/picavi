@@ -11,6 +11,10 @@ class AppPreferencesService {
   static const String _showRecentFoldersEnabledKey = 'showRecentFoldersEnabled';
   static const String _recentFoldersKey = 'recentFolders';
   static const String _imageSortOrderKey = 'imageSortOrder';
+  static const String _slideshowIntervalKey = 'slideshowIntervalSeconds';
+  static const String _slideshowShuffleKey = 'slideshowShuffle';
+  static const String _slideshowLoopKey = 'slideshowLoop';
+  static const String _slideshowFullScreenKey = 'slideshowFullScreen';
 
   /// Maximum number of recently opened folders kept in history.
   static const int maxRecentFolders = 10;
@@ -195,6 +199,45 @@ class AppPreferencesService {
     try {
       final preferences = await SharedPreferences.getInstance();
       await preferences.setString(_imageSortOrderKey, key);
+    } catch (_) {
+      // Ignore persistence failures and keep the app usable.
+    }
+  }
+
+  /// Slideshow preferences. Missing values come back as null so the viewer
+  /// feature can apply its own defaults.
+  Future<({int? intervalSeconds, bool? shuffle, bool? loop, bool? fullScreen})>
+  getSlideshowPreferences() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      return (
+        intervalSeconds: preferences.getInt(_slideshowIntervalKey),
+        shuffle: preferences.getBool(_slideshowShuffleKey),
+        loop: preferences.getBool(_slideshowLoopKey),
+        fullScreen: preferences.getBool(_slideshowFullScreenKey),
+      );
+    } catch (_) {
+      return (
+        intervalSeconds: null,
+        shuffle: null,
+        loop: null,
+        fullScreen: null,
+      );
+    }
+  }
+
+  Future<void> setSlideshowPreferences({
+    required int intervalSeconds,
+    required bool shuffle,
+    required bool loop,
+    required bool fullScreen,
+  }) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.setInt(_slideshowIntervalKey, intervalSeconds);
+      await preferences.setBool(_slideshowShuffleKey, shuffle);
+      await preferences.setBool(_slideshowLoopKey, loop);
+      await preferences.setBool(_slideshowFullScreenKey, fullScreen);
     } catch (_) {
       // Ignore persistence failures and keep the app usable.
     }

@@ -21,6 +21,7 @@ class InteractiveImageViewerValue {
   const InteractiveImageViewerValue({
     this.zoomFactor = 1,
     this.oneToOneZoomFactor = 1,
+    this.fillZoomFactor = 1,
     this.rotationQuarterTurns = 0,
     this.imageInfo,
     this.isDragging = false,
@@ -28,6 +29,9 @@ class InteractiveImageViewerValue {
 
   final double zoomFactor;
   final double oneToOneZoomFactor;
+
+  /// Zoom at which the image covers the whole viewport (may crop).
+  final double fillZoomFactor;
   final int rotationQuarterTurns;
   final AppImageInfo? imageInfo;
   final bool isDragging;
@@ -35,9 +39,16 @@ class InteractiveImageViewerValue {
   double get zoomPercent => zoomFactor * 100;
   double get oneToOnePercent => oneToOneZoomFactor * 100;
 
+  /// True when the image is zoomed to (about) fill the viewport and that
+  /// differs from fitting it.
+  bool get isFillingViewport =>
+      (fillZoomFactor - 1).abs() > 0.01 &&
+      (zoomFactor - fillZoomFactor).abs() < 0.01;
+
   InteractiveImageViewerValue copyWith({
     double? zoomFactor,
     double? oneToOneZoomFactor,
+    double? fillZoomFactor,
     int? rotationQuarterTurns,
     AppImageInfo? imageInfo,
     bool clearImageInfo = false,
@@ -46,6 +57,7 @@ class InteractiveImageViewerValue {
     return InteractiveImageViewerValue(
       zoomFactor: zoomFactor ?? this.zoomFactor,
       oneToOneZoomFactor: oneToOneZoomFactor ?? this.oneToOneZoomFactor,
+      fillZoomFactor: fillZoomFactor ?? this.fillZoomFactor,
       rotationQuarterTurns: rotationQuarterTurns ?? this.rotationQuarterTurns,
       imageInfo: clearImageInfo ? null : imageInfo ?? this.imageInfo,
       isDragging: isDragging ?? this.isDragging,
@@ -66,6 +78,18 @@ class InteractiveImageViewerController extends ChangeNotifier {
   void zoomOut() => _state?._zoomBy(1 / 1.2);
 
   void zoomToOneToOne() => _state?._zoomToOneToOne();
+
+  /// Zooms so the image covers the whole viewport.
+  void zoomToFill() => _state?._zoomToFill();
+
+  /// Switches between fitting the whole image and filling the viewport.
+  void toggleFitFill() {
+    if (_value.isFillingViewport) {
+      reset();
+    } else {
+      zoomToFill();
+    }
+  }
 
   void reset() => _state?._resetTransform();
 
@@ -88,6 +112,7 @@ class InteractiveImageViewerController extends ChangeNotifier {
   void _updateValue(InteractiveImageViewerValue nextValue) {
     if (_value.zoomFactor == nextValue.zoomFactor &&
         _value.oneToOneZoomFactor == nextValue.oneToOneZoomFactor &&
+        _value.fillZoomFactor == nextValue.fillZoomFactor &&
         _value.rotationQuarterTurns == nextValue.rotationQuarterTurns &&
         _value.imageInfo == nextValue.imageInfo &&
         _value.isDragging == nextValue.isDragging) {
@@ -150,7 +175,9 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
   double _gestureStartZoom = 1;
   Size _viewportSize = Size.zero;
   late final AnimationController _transformAnimationController =
-      AnimationController(vsync: this)..addListener(_handleTransformAnimation);
+      AnimationController(vsync: this)
+        ..addListener(_handleTransformAnimation)
+        ..addStatusListener(_handleTransformAnimationStatus);
   Curve _transformAnimationCurve = Curves.linear;
   double _animationStartZoom = 1;
   double _animationEndZoom = 1;
@@ -229,6 +256,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
     return InteractiveImageViewerValue(
       zoomFactor: _zoomFactor,
       oneToOneZoomFactor: _oneToOneZoomFactor,
+      fillZoomFactor: _fillZoomFactor,
       rotationQuarterTurns: _rotationQuarterTurns,
       imageInfo: _imageInfo,
       isDragging: _isDragging,
@@ -296,6 +324,25 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
     return 1 / fitScale;
   }
 
+  /// Zoom (relative to fit) at which the rotated image covers the viewport.
+  double get _fillZoomFactor {
+    final imageSize = _rotatedImageBoundsForAngle(_rotationAngle);
+    if (_viewportSize.isEmpty || imageSize == null) {
+      return 1;
+    }
+
+    final fillScale = math.max(
+      _viewportSize.width / imageSize.width,
+      _viewportSize.height / imageSize.height,
+    );
+    final fitScale = _fitScale;
+    if (fitScale <= 0 || !fitScale.isFinite || !fillScale.isFinite) {
+      return 1;
+    }
+
+    return fillScale / fitScale;
+  }
+
   double get _minZoomFactor {
     final oneToOneZoom = _oneToOneZoomFactor;
     final requestedMin = widget.minZoomFactor ?? _defaultMinZoom;
@@ -347,6 +394,14 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
 
   void _notifyController() {
     widget.controller?._updateValue(_currentValue());
+  }
+
+  /// Publishes the final zoom/rotation once an animation lands, so listeners
+  /// (zoom %, fit/fill state) don't keep the pre-animation values.
+  void _handleTransformAnimationStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed && mounted) {
+      _notifyController();
+    }
   }
 
   void _handleTransformAnimation() {
@@ -493,6 +548,10 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
 
   void _zoomToOneToOne() {
     _setZoom(_oneToOneZoomFactor);
+  }
+
+  void _zoomToFill() {
+    _setZoom(_fillZoomFactor);
   }
 
   void _zoomBy(

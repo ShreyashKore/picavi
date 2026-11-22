@@ -46,6 +46,7 @@ dependencies:
   shared_preferences: ^2.5.3
   window_manager: ^0.5.1
   screen_retriever: ^0.2.0
+  desktop_drop: ^0.8.4
 
 dev_dependencies:
   flutter_test:

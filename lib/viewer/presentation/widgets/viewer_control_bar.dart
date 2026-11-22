@@ -18,6 +18,10 @@ class ViewerControlBar extends StatelessWidget {
     required this.onRotateRight,
     required this.onToggleInfo,
     required this.showInfo,
+    required this.isFillingWindow,
+    required this.onToggleFitFill,
+    required this.isFullScreen,
+    required this.onToggleFullScreen,
   });
 
   final bool canNavigate;
@@ -32,6 +36,10 @@ class ViewerControlBar extends StatelessWidget {
   final VoidCallback onRotateRight;
   final VoidCallback onToggleInfo;
   final bool showInfo;
+  final bool isFillingWindow;
+  final VoidCallback onToggleFitFill;
+  final bool isFullScreen;
+  final VoidCallback onToggleFullScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +64,15 @@ class ViewerControlBar extends StatelessWidget {
                 onPressed: onZoomIn,
               ),
               _OneToOneButton(onPressed: onZoomOneToOne),
+              _ControlButton(
+                tooltip: isFillingWindow
+                    ? l10n.fitWindowTooltip
+                    : l10n.fillWindowTooltip,
+                icon: isFillingWindow
+                    ? Icons.fit_screen_outlined
+                    : Icons.crop_free_rounded,
+                onPressed: onToggleFitFill,
+              ),
             ],
           ),
           if (canNavigate)
@@ -84,6 +101,15 @@ class ViewerControlBar extends StatelessWidget {
                     : l10n.showImageInfoTooltip,
                 icon: showInfo ? Icons.info : Icons.info_outline,
                 onPressed: onToggleInfo,
+              ),
+              _ControlButton(
+                tooltip: isFullScreen
+                    ? l10n.exitFullScreenTooltip
+                    : l10n.enterFullScreenTooltip,
+                icon: isFullScreen
+                    ? Icons.fullscreen_exit_rounded
+                    : Icons.fullscreen_rounded,
+                onPressed: onToggleFullScreen,
               ),
             ],
           ),

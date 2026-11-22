@@ -136,5 +136,21 @@
   "shortcutSelectAll": "Seleccionar todas las imágenes",
   "shortcutSelect": "Añadir a / ampliar la selección",
   "shortcutEscape": "Borrar selección, salir de pantalla completa o cerrar",
-  "clickLabel": "Clic"
+  "clickLabel": "Clic",
+  "slideshowSectionTitle": "Presentación",
+  "slideshowIntervalTitle": "Tiempo por imagen",
+  "slideshowIntervalValue": "{seconds, plural, =1{1 segundo} other{{seconds} segundos}}",
+  "slideshowShuffleTitle": "Orden aleatorio",
+  "slideshowShuffleDescription": "Muestra las imágenes en orden aleatorio.",
+  "slideshowLoopTitle": "Repetir",
+  "slideshowLoopDescription": "Vuelve a empezar tras la última imagen.",
+  "slideshowFullScreenTitle": "Pantalla completa durante la presentación",
+  "slideshowFullScreenDescription": "Cambia a pantalla completa al iniciar una presentación.",
+  "enterFullScreenTooltip": "Pantalla completa",
+  "exitFullScreenTooltip": "Salir de pantalla completa",
+  "fillWindowTooltip": "Rellenar ventana",
+  "fitWindowTooltip": "Ajustar a la ventana",
+  "shortcutFullScreen": "Activar / desactivar pantalla completa",
+  "shortcutFitFill": "Ajustar / rellenar ventana",
+  "dropToOpen": "Suelta para abrir"
 }

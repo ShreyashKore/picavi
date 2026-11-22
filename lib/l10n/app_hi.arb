@@ -136,5 +136,21 @@
   "shortcutSelectAll": "सभी छवियाँ चुनें",
   "shortcutSelect": "चयन में जोड़ें / बढ़ाएँ",
   "shortcutEscape": "चयन हटाएँ, फ़ुल स्क्रीन छोड़ें या बंद करें",
-  "clickLabel": "क्लिक"
+  "clickLabel": "क्लिक",
+  "slideshowSectionTitle": "स्लाइड शो",
+  "slideshowIntervalTitle": "प्रति छवि समय",
+  "slideshowIntervalValue": "{seconds, plural, =1{1 सेकंड} other{{seconds} सेकंड}}",
+  "slideshowShuffleTitle": "शफ़ल",
+  "slideshowShuffleDescription": "छवियों को यादृच्छिक क्रम में दिखाएँ।",
+  "slideshowLoopTitle": "दोहराएँ",
+  "slideshowLoopDescription": "अंतिम छवि के बाद फिर से शुरू करें।",
+  "slideshowFullScreenTitle": "स्लाइड शो के दौरान फ़ुल स्क्रीन",
+  "slideshowFullScreenDescription": "स्लाइड शो शुरू होने पर फ़ुल स्क्रीन पर जाएँ।",
+  "enterFullScreenTooltip": "फ़ुल स्क्रीन",
+  "exitFullScreenTooltip": "फ़ुल स्क्रीन से बाहर निकलें",
+  "fillWindowTooltip": "विंडो भरें",
+  "fitWindowTooltip": "विंडो में फ़िट करें",
+  "shortcutFullScreen": "फ़ुल स्क्रीन चालू / बंद",
+  "shortcutFitFill": "विंडो में फ़िट / भरें",
+  "dropToOpen": "खोलने के लिए छोड़ें"
 }

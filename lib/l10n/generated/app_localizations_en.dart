@@ -504,4 +504,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clickLabel => 'Click';
+
+  @override
+  String get slideshowSectionTitle => 'Slideshow';
+
+  @override
+  String get slideshowIntervalTitle => 'Time per image';
+
+  @override
+  String slideshowIntervalValue(int seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: '$seconds seconds',
+      one: '1 second',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get slideshowShuffleTitle => 'Shuffle';
+
+  @override
+  String get slideshowShuffleDescription =>
+      'Show the images in a random order.';
+
+  @override
+  String get slideshowLoopTitle => 'Loop';
+
+  @override
+  String get slideshowLoopDescription => 'Start over after the last image.';
+
+  @override
+  String get slideshowFullScreenTitle => 'Full screen during slideshow';
+
+  @override
+  String get slideshowFullScreenDescription =>
+      'Switch to full screen when a slideshow starts.';
+
+  @override
+  String get enterFullScreenTooltip => 'Full screen';
+
+  @override
+  String get exitFullScreenTooltip => 'Exit full screen';
+
+  @override
+  String get fillWindowTooltip => 'Fill window';
+
+  @override
+  String get fitWindowTooltip => 'Fit to window';
+
+  @override
+  String get shortcutFullScreen => 'Full screen on / off';
+
+  @override
+  String get shortcutFitFill => 'Fit / fill window';
+
+  @override
+  String get dropToOpen => 'Drop to open';
 }

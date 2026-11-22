@@ -502,4 +502,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get clickLabel => 'نقرة';
+
+  @override
+  String get slideshowSectionTitle => 'عرض الشرائح';
+
+  @override
+  String get slideshowIntervalTitle => 'مدة كل صورة';
+
+  @override
+  String slideshowIntervalValue(int seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: '$seconds ثوانٍ',
+      one: 'ثانية واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get slideshowShuffleTitle => 'ترتيب عشوائي';
+
+  @override
+  String get slideshowShuffleDescription => 'اعرض الصور بترتيب عشوائي.';
+
+  @override
+  String get slideshowLoopTitle => 'تكرار';
+
+  @override
+  String get slideshowLoopDescription => 'ابدأ من جديد بعد آخر صورة.';
+
+  @override
+  String get slideshowFullScreenTitle => 'ملء الشاشة أثناء عرض الشرائح';
+
+  @override
+  String get slideshowFullScreenDescription =>
+      'التبديل إلى ملء الشاشة عند بدء عرض الشرائح.';
+
+  @override
+  String get enterFullScreenTooltip => 'ملء الشاشة';
+
+  @override
+  String get exitFullScreenTooltip => 'الخروج من ملء الشاشة';
+
+  @override
+  String get fillWindowTooltip => 'ملء النافذة';
+
+  @override
+  String get fitWindowTooltip => 'ملاءمة النافذة';
+
+  @override
+  String get shortcutFullScreen => 'تشغيل / إيقاف ملء الشاشة';
+
+  @override
+  String get shortcutFitFill => 'ملاءمة / ملء النافذة';
+
+  @override
+  String get dropToOpen => 'أفلت للفتح';
 }
