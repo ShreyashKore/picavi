@@ -1240,4 +1240,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contactSheetFileName => '印样';
+
+  @override
+  String get placesTitle => '地点';
+
+  @override
+  String get placesEmpty => '还没有带位置的照片。手机拍的照片通常带有位置；其他照片可以选中后选择“设置位置”。';
+
+  @override
+  String get placesSetLocation => '设置位置…';
+
+  @override
+  String get placesPickHint => '在地图上点击照片的拍摄地点。滚动缩放，拖动移动。照片文件不会被修改。';
+
+  @override
+  String get placesNoPointYet => '尚未选择地点';
+
+  @override
+  String get placesRemoveLocation => '移除位置';
 }

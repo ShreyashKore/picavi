@@ -328,5 +328,11 @@
   "collageSaved": "{count, plural, =1{Se guardó {name}} other{Se guardaron {count} páginas, empezando por {name}}}",
   "collageFailed": "No se pudo crear el collage",
   "collageFileName": "Collage",
-  "contactSheetFileName": "Hoja de contactos"
+  "contactSheetFileName": "Hoja de contactos",
+  "placesTitle": "Lugares",
+  "placesEmpty": "Aún no hay fotos con ubicación. Las fotos del móvil suelen tenerla; para las demás, selecciónalas y elige Establecer ubicación.",
+  "placesSetLocation": "Establecer ubicación…",
+  "placesPickHint": "Haz clic en el mapa donde se tomaron las fotos. Desplaza para acercar y arrastra para moverte. Los archivos no se modifican.",
+  "placesNoPointYet": "Aún no se ha elegido ningún lugar",
+  "placesRemoveLocation": "Quitar ubicación"
 }

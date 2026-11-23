@@ -328,5 +328,11 @@
   "collageSaved": "{count, plural, =1{تم حفظ {name}} other{تم حفظ {count} صفحات، أولها {name}}}",
   "collageFailed": "تعذّر إنشاء الصورة المجمّعة",
   "collageFileName": "صورة مجمعة",
-  "contactSheetFileName": "ورقة معاينة"
+  "contactSheetFileName": "ورقة معاينة",
+  "placesTitle": "الأماكن",
+  "placesEmpty": "لا توجد صور بموقع بعد. صور الهاتف عادةً تحمل موقعًا؛ أما غيرها فحدّدها واختر تعيين الموقع.",
+  "placesSetLocation": "تعيين الموقع…",
+  "placesPickHint": "انقر على الخريطة حيث التُقطت الصور. مرّر للتكبير واسحب للتحريك. لا تتغير ملفات الصور.",
+  "placesNoPointYet": "لم يتم اختيار مكان بعد",
+  "placesRemoveLocation": "إزالة الموقع"
 }

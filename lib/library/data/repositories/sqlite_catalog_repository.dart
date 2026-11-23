@@ -7,6 +7,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 import '../../../editor/domain/entities/image_edits.dart';
 import '../../domain/entities/catalog_image.dart';
+import '../../domain/entities/geo_point.dart';
 import '../../domain/entities/library_query.dart';
 import '../../domain/entities/photo_info.dart';
 import '../../domain/repositories/catalog_repository.dart';
@@ -38,7 +39,7 @@ class SqliteCatalogRepository implements CatalogRepository {
   factory SqliteCatalogRepository.inMemory() =>
       SqliteCatalogRepository._(sqlite3.openInMemory());
 
-  static const int _schemaVersion = 1;
+  static const int _schemaVersion = 2;
 
   final Database _db;
 
@@ -49,6 +50,24 @@ class SqliteCatalogRepository implements CatalogRepository {
     if (version >= _schemaVersion) {
       return;
     }
+    if (version < 1) {
+      _createVersion1();
+    }
+    if (version < 2) {
+      // Version 2: where photos were taken (camera GPS, and set by hand).
+      _db.execute('''
+        ALTER TABLE images ADD COLUMN gps_lat REAL;
+        ALTER TABLE images ADD COLUMN gps_lon REAL;
+        ALTER TABLE images ADD COLUMN loc_lat REAL;
+        ALTER TABLE images ADD COLUMN loc_lon REAL;
+        CREATE INDEX IF NOT EXISTS images_place ON images(
+          COALESCE(loc_lat, gps_lat), COALESCE(loc_lon, gps_lon));
+      ''');
+    }
+    _db.execute('PRAGMA user_version = $_schemaVersion');
+  }
+
+  void _createVersion1() {
     _db.execute('''
       CREATE TABLE IF NOT EXISTS images (
         path TEXT PRIMARY KEY,
@@ -79,7 +98,6 @@ class SqliteCatalogRepository implements CatalogRepository {
         position INTEGER NOT NULL,
         PRIMARY KEY (album_id, path)
       );
-      PRAGMA user_version = $_schemaVersion;
     ''');
   }
 
@@ -102,15 +120,18 @@ class SqliteCatalogRepository implements CatalogRepository {
     }
     final statement = _db.prepare('''
       INSERT INTO images (path, folder, name, size, modified, taken, camera,
-        starred, caption, tags, hidden, edits, search)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        starred, caption, tags, hidden, edits, search,
+        gps_lat, gps_lon, loc_lat, loc_lon)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(path) DO UPDATE SET
         folder = excluded.folder, name = excluded.name, size = excluded.size,
         modified = excluded.modified, taken = excluded.taken,
         camera = excluded.camera, starred = excluded.starred,
         caption = excluded.caption, tags = excluded.tags,
         hidden = excluded.hidden, edits = excluded.edits,
-        search = excluded.search
+        search = excluded.search, gps_lat = excluded.gps_lat,
+        gps_lon = excluded.gps_lon, loc_lat = excluded.loc_lat,
+        loc_lon = excluded.loc_lon
     ''');
     _transaction(() {
       for (final image in images) {
@@ -128,6 +149,10 @@ class SqliteCatalogRepository implements CatalogRepository {
           image.info.hidden ? 1 : 0,
           jsonEncode(image.edits.toJson()),
           _searchText(image),
+          image.gps?.latitude,
+          image.gps?.longitude,
+          image.info.location?.latitude,
+          image.info.location?.longitude,
         ]);
       }
     });
@@ -354,6 +379,17 @@ class SqliteCatalogRepository implements CatalogRepository {
       );
       arguments.add(query.albumId);
     }
+    if (query.onlyWithLocation || query.bounds != null) {
+      conditions.add('COALESCE(loc_lat, gps_lat) IS NOT NULL');
+    }
+    final bounds = query.bounds;
+    if (bounds != null) {
+      conditions.add(
+        'COALESCE(loc_lat, gps_lat) BETWEEN ? AND ? '
+        'AND COALESCE(loc_lon, gps_lon) BETWEEN ? AND ?',
+      );
+      arguments.addAll([bounds.south, bounds.north, bounds.west, bounds.east]);
+    }
     for (final word in query.words) {
       conditions.add("search LIKE ? ESCAPE '\\'");
       arguments.add('%${_escapeLike(word)}%');
@@ -384,6 +420,13 @@ class SqliteCatalogRepository implements CatalogRepository {
     ].join(' ').toLowerCase();
   }
 
+  static GeoPoint? _point(Object? latitude, Object? longitude) {
+    if (latitude is! num || longitude is! num) {
+      return null;
+    }
+    return GeoPoint(latitude.toDouble(), longitude.toDouble());
+  }
+
   static CatalogImage _fromRow(Row row) {
     final taken = row['taken'] as int?;
     List<String> tags;
@@ -407,11 +450,13 @@ class SqliteCatalogRepository implements CatalogRepository {
       stamp: FileStamp(row['size'] as int, row['modified'] as int),
       taken: taken == null ? null : DateTime.fromMillisecondsSinceEpoch(taken),
       camera: row['camera'] as String?,
+      gps: _point(row['gps_lat'], row['gps_lon']),
       info: PhotoInfo(
         starred: row['starred'] == 1,
         caption: row['caption'] as String,
         tags: tags,
         hidden: row['hidden'] == 1,
+        location: _point(row['loc_lat'], row['loc_lon']),
       ),
       edits: edits,
     );
@@ -422,6 +467,8 @@ extension on LibraryQuery {
   /// Folder lists ignore the folder/album being looked at.
   LibraryQuery copyForFolders() => LibraryQuery(
     text: text,
+    onlyWithLocation: onlyWithLocation,
+    bounds: bounds,
     starredOnly: starredOnly,
     includeHidden: includeHidden,
     hiddenFolders: hiddenFolders,

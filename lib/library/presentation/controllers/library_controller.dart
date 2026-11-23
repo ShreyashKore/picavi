@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 
 import '../../../viewer/domain/services/file_operations_service.dart';
 import '../../domain/entities/catalog_image.dart';
+import '../../domain/entities/geo_point.dart';
 import '../../domain/entities/library_query.dart';
 import '../../domain/entities/photo_info.dart';
 import '../../domain/repositories/catalog_repository.dart';
@@ -132,6 +133,9 @@ class LibraryController extends ChangeNotifier {
 
   Future<void> showStarred() => _show(LibrarySource.starred);
 
+  /// Photos with a location, for the map.
+  Future<void> showPlaces() => _show(LibrarySource.places);
+
   Future<void> showFolder(String folder) =>
       _show(LibrarySource.folder, folder: folder);
 
@@ -172,6 +176,7 @@ class LibraryController extends ChangeNotifier {
     folder: _state.source == LibrarySource.folder ? _state.folder : null,
     albumId: _state.source == LibrarySource.album ? _state.albumId : null,
     starredOnly: _state.source == LibrarySource.starred,
+    onlyWithLocation: _state.source == LibrarySource.places,
     includeHidden: _state.showHidden,
     hiddenFolders: _state.hiddenFolders,
   );
@@ -261,6 +266,15 @@ class LibraryController extends ChangeNotifier {
     }
     final star = !selected.every((image) => image.info.starred);
     await _updateInfo(selected, (info) => info.copyWith(starred: star));
+  }
+
+  /// Sets where the selected photos were taken; null removes a location
+  /// set by hand (the camera's GPS, if any, shows again).
+  Future<void> setSelectionLocation(GeoPoint? location) async {
+    await _updateInfo(
+      _selectedImages,
+      (info) => info.copyWith(location: () => location),
+    );
   }
 
   Future<void> setSelectionHidden(bool hidden) async {

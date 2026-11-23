@@ -20,6 +20,7 @@ import '../models/library_state.dart';
 import '../widgets/library_dialogs.dart';
 import '../widgets/library_grid.dart';
 import '../widgets/library_sidebar.dart';
+import '../widgets/places_map.dart';
 import 'duplicates_screen.dart';
 import 'import_screen.dart';
 
@@ -49,6 +50,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
   final ScrollController _scroll = ScrollController();
   Timer? _searchDebounce;
   final GlobalKey _shareKey = GlobalKey();
+
+  /// Photos of the map marker that was clicked in Places.
+  List<CatalogImage> _placeCluster = const [];
   int? _lastNoticeId;
 
   @override
@@ -422,6 +426,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 state: state,
                 onAllPhotos: () => unawaited(_controller.showAllPhotos()),
                 onStarred: () => unawaited(_controller.showStarred()),
+                onPlaces: () {
+                  setState(() => _placeCluster = const []);
+                  unawaited(_controller.showPlaces());
+                },
                 onFolder: (folder) => unawaited(_controller.showFolder(folder)),
                 onAlbum: (id) => unawaited(_controller.showAlbum(id)),
                 onAddFolder: () => unawaited(_addFolder()),
@@ -481,7 +489,24 @@ class _LibraryScreenState extends State<LibraryScreen> {
         ),
       );
     }
+    if (state.source == LibrarySource.places && state.images.isNotEmpty) {
+      return _buildPlaces(state);
+    }
     if (state.images.isEmpty) {
+      if (state.source == LibrarySource.places && !state.isIndexing) {
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: Text(
+              l10n.placesEmpty,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white70,
+              ),
+            ),
+          ),
+        );
+      }
       return Center(
         child: Text(
           state.isIndexing
@@ -505,6 +530,86 @@ class _LibraryScreenState extends State<LibraryScreen> {
     );
   }
 
+  Widget _buildPlaces(LibraryState state) {
+    final l10n = context.l10n;
+    // Keep the cluster's photos current (stars, selection) after refreshes.
+    final current = {for (final image in state.images) image.path: image};
+    final cluster = [
+      for (final image in _placeCluster)
+        if (current[image.path] != null) current[image.path]!,
+    ];
+    return Column(
+      children: [
+        Expanded(
+          child: PlacesMap(
+            images: state.images,
+            cache: widget.services.thumbnails,
+            onClusterSelected: (images) =>
+                setState(() => _placeCluster = images),
+          ),
+        ),
+        if (cluster.isNotEmpty)
+          SizedBox(
+            height: 230,
+            child: Material(
+              color: AppColors.panel,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(16, 6, 4, 0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(l10n.libraryPhotoCount(cluster.length)),
+                        ),
+                        IconButton(
+                          tooltip: l10n.cancelLabel,
+                          icon: const Icon(Icons.close, size: 18),
+                          onPressed: () =>
+                              setState(() => _placeCluster = const []),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: LibraryGrid(
+                      images: cluster,
+                      selection: state.selection,
+                      cache: widget.services.thumbnails,
+                      tileExtent: 150,
+                      groupByMonth: false,
+                      onTap: _onTap,
+                      onOpen: _open,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Future<void> _setLocation() async {
+    final selected = [
+      for (final image in _controller.state.images)
+        if (_controller.state.selection.contains(image.path)) image,
+    ];
+    if (selected.isEmpty) {
+      return;
+    }
+    final choice = await showLocationPicker(
+      context,
+      initial: selected
+          .map((image) => image.location)
+          .firstWhere((point) => point != null, orElse: () => null),
+      canRemove: selected.any((image) => image.info.location != null),
+    );
+    if (choice != null) {
+      await _controller.setSelectionLocation(choice.point);
+    }
+  }
+
   Widget _buildSelectionBar(LibraryState state) {
     final l10n = context.l10n;
     final selected = [
@@ -519,73 +624,98 @@ class _LibraryScreenState extends State<LibraryScreen> {
       color: AppColors.panel,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        // Actions wrap onto a second line when the window is narrow.
         child: Row(
           children: [
             Text(l10n.selectionCount(count)),
-            const Spacer(),
-            TextButton.icon(
-              onPressed: () => unawaited(_controller.toggleStarSelection()),
-              icon: Icon(
-                allStarred ? Icons.star_rounded : Icons.star_outline_rounded,
-              ),
-              label: Text(allStarred ? l10n.libraryUnstar : l10n.libraryStar),
-            ),
-            PopupMenuButton<int>(
-              tooltip: l10n.libraryAddToAlbum,
-              onSelected: (id) => id < 0
-                  ? unawaited(_createAlbum())
-                  : unawaited(_controller.addSelectionToAlbum(id)),
-              itemBuilder: (context) => [
-                for (final album in state.albums)
-                  PopupMenuItem(value: album.id, child: Text(album.name)),
-                if (state.albums.isNotEmpty) const PopupMenuDivider(),
-                PopupMenuItem(value: -1, child: Text(l10n.libraryNewAlbum)),
-              ],
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  children: [
-                    const Icon(Icons.collections_bookmark_outlined, size: 18),
-                    const SizedBox(width: 6),
-                    Text(l10n.libraryAddToAlbum),
-                  ],
-                ),
-              ),
-            ),
-            if (count > 1)
-              TextButton.icon(
-                onPressed: () => unawaited(_makeCollage()),
-                icon: const Icon(Icons.dashboard_outlined),
-                label: Text(l10n.collageButton),
-              ),
-            if (_controller.canShare)
-              TextButton.icon(
-                key: _shareKey,
-                onPressed: () => unawaited(
-                  _controller.shareSelection(shareAnchorFor(_shareKey)),
-                ),
-                icon: const Icon(Icons.share_outlined),
-                label: Text(l10n.shareAction(count)),
-              ),
-            if (state.source == LibrarySource.album)
-              TextButton.icon(
-                onPressed: () =>
-                    unawaited(_controller.removeSelectionFromAlbum()),
-                icon: const Icon(Icons.remove_circle_outline),
-                label: Text(l10n.libraryRemoveFromAlbum),
-              ),
-            TextButton.icon(
-              onPressed: () =>
-                  unawaited(_controller.setSelectionHidden(!allHidden)),
-              icon: Icon(
-                allHidden
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-              ),
-              label: Text(
-                allHidden
-                    ? l10n.showInLibraryAction(count)
-                    : l10n.hideFromLibraryAction(count),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Wrap(
+                alignment: WrapAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  TextButton.icon(
+                    onPressed: () =>
+                        unawaited(_controller.toggleStarSelection()),
+                    icon: Icon(
+                      allStarred
+                          ? Icons.star_rounded
+                          : Icons.star_outline_rounded,
+                    ),
+                    label: Text(
+                      allStarred ? l10n.libraryUnstar : l10n.libraryStar,
+                    ),
+                  ),
+                  PopupMenuButton<int>(
+                    tooltip: l10n.libraryAddToAlbum,
+                    onSelected: (id) => id < 0
+                        ? unawaited(_createAlbum())
+                        : unawaited(_controller.addSelectionToAlbum(id)),
+                    itemBuilder: (context) => [
+                      for (final album in state.albums)
+                        PopupMenuItem(value: album.id, child: Text(album.name)),
+                      if (state.albums.isNotEmpty) const PopupMenuDivider(),
+                      PopupMenuItem(
+                        value: -1,
+                        child: Text(l10n.libraryNewAlbum),
+                      ),
+                    ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.collections_bookmark_outlined,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(l10n.libraryAddToAlbum),
+                        ],
+                      ),
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => unawaited(_setLocation()),
+                    icon: const Icon(Icons.add_location_alt_outlined),
+                    label: Text(l10n.placesSetLocation),
+                  ),
+                  if (count > 1)
+                    TextButton.icon(
+                      onPressed: () => unawaited(_makeCollage()),
+                      icon: const Icon(Icons.dashboard_outlined),
+                      label: Text(l10n.collageButton),
+                    ),
+                  if (_controller.canShare)
+                    TextButton.icon(
+                      key: _shareKey,
+                      onPressed: () => unawaited(
+                        _controller.shareSelection(shareAnchorFor(_shareKey)),
+                      ),
+                      icon: const Icon(Icons.share_outlined),
+                      label: Text(l10n.shareAction(count)),
+                    ),
+                  if (state.source == LibrarySource.album)
+                    TextButton.icon(
+                      onPressed: () =>
+                          unawaited(_controller.removeSelectionFromAlbum()),
+                      icon: const Icon(Icons.remove_circle_outline),
+                      label: Text(l10n.libraryRemoveFromAlbum),
+                    ),
+                  TextButton.icon(
+                    onPressed: () =>
+                        unawaited(_controller.setSelectionHidden(!allHidden)),
+                    icon: Icon(
+                      allHidden
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                    ),
+                    label: Text(
+                      allHidden
+                          ? l10n.showInLibraryAction(count)
+                          : l10n.hideFromLibraryAction(count),
+                    ),
+                  ),
+                ],
               ),
             ),
             IconButton(

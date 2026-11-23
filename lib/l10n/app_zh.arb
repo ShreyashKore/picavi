@@ -328,5 +328,11 @@
   "collageSaved": "{count, plural, =1{已保存 {name}} other{已保存 {count} 页，第一页为 {name}}}",
   "collageFailed": "无法制作拼贴",
   "collageFileName": "拼贴",
-  "contactSheetFileName": "印样"
+  "contactSheetFileName": "印样",
+  "placesTitle": "地点",
+  "placesEmpty": "还没有带位置的照片。手机拍的照片通常带有位置；其他照片可以选中后选择“设置位置”。",
+  "placesSetLocation": "设置位置…",
+  "placesPickHint": "在地图上点击照片的拍摄地点。滚动缩放，拖动移动。照片文件不会被修改。",
+  "placesNoPointYet": "尚未选择地点",
+  "placesRemoveLocation": "移除位置"
 }

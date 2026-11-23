@@ -1476,5 +1476,29 @@
   "contactSheetFileName": "Contact sheet",
   "@contactSheetFileName": {
     "description": "File name (without extension) for saved contact sheets."
+  },
+  "placesTitle": "Places",
+  "@placesTitle": {
+    "description": "Library sidebar: photos on a map."
+  },
+  "placesEmpty": "No photos with a location yet. Phone photos usually have one; for others, select them and choose Set location.",
+  "@placesEmpty": {
+    "description": "Shown in Places when no photo has a location."
+  },
+  "placesSetLocation": "Set location…",
+  "@placesSetLocation": {
+    "description": "Button and dialog title: set where photos were taken."
+  },
+  "placesPickHint": "Click the map where the photos were taken. Scroll to zoom, drag to move. The photo files are not changed.",
+  "@placesPickHint": {
+    "description": "Hint in the location picker."
+  },
+  "placesNoPointYet": "No place chosen yet",
+  "@placesNoPointYet": {
+    "description": "Shown before a point is chosen on the map."
+  },
+  "placesRemoveLocation": "Remove location",
+  "@placesRemoveLocation": {
+    "description": "Button that removes a location set by hand."
   }
 }

@@ -2013,6 +2013,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contact sheet'**
   String get contactSheetFileName;
+
+  /// Library sidebar: photos on a map.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get placesTitle;
+
+  /// Shown in Places when no photo has a location.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos with a location yet. Phone photos usually have one; for others, select them and choose Set location.'**
+  String get placesEmpty;
+
+  /// Button and dialog title: set where photos were taken.
+  ///
+  /// In en, this message translates to:
+  /// **'Set location…'**
+  String get placesSetLocation;
+
+  /// Hint in the location picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Click the map where the photos were taken. Scroll to zoom, drag to move. The photo files are not changed.'**
+  String get placesPickHint;
+
+  /// Shown before a point is chosen on the map.
+  ///
+  /// In en, this message translates to:
+  /// **'No place chosen yet'**
+  String get placesNoPointYet;
+
+  /// Button that removes a location set by hand.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove location'**
+  String get placesRemoveLocation;
 }
 
 class _AppLocalizationsDelegate

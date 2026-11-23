@@ -1285,4 +1285,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactSheetFileName => 'Contact sheet';
+
+  @override
+  String get placesTitle => 'Places';
+
+  @override
+  String get placesEmpty =>
+      'No photos with a location yet. Phone photos usually have one; for others, select them and choose Set location.';
+
+  @override
+  String get placesSetLocation => 'Set location…';
+
+  @override
+  String get placesPickHint =>
+      'Click the map where the photos were taken. Scroll to zoom, drag to move. The photo files are not changed.';
+
+  @override
+  String get placesNoPointYet => 'No place chosen yet';
+
+  @override
+  String get placesRemoveLocation => 'Remove location';
 }

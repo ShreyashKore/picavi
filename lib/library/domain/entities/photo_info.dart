@@ -1,3 +1,5 @@
+import 'geo_point.dart';
+
 /// What the user said about a photo: Picasa's star, caption and tags, and
 /// whether it is hidden from the library. Stored next to the photo, never
 /// inside it.
@@ -7,6 +9,7 @@ class PhotoInfo {
     this.caption = '',
     this.tags = const <String>[],
     this.hidden = false,
+    this.location,
   });
 
   static const PhotoInfo none = PhotoInfo();
@@ -16,19 +19,29 @@ class PhotoInfo {
   final List<String> tags;
   final bool hidden;
 
-  bool get isEmpty => !starred && caption.isEmpty && tags.isEmpty && !hidden;
+  /// Where the photo was taken, set by hand (overrides the camera's GPS).
+  final GeoPoint? location;
+
+  bool get isEmpty =>
+      !starred &&
+      caption.isEmpty &&
+      tags.isEmpty &&
+      !hidden &&
+      location == null;
 
   PhotoInfo copyWith({
     bool? starred,
     String? caption,
     List<String>? tags,
     bool? hidden,
+    GeoPoint? Function()? location,
   }) {
     return PhotoInfo(
       starred: starred ?? this.starred,
       caption: caption ?? this.caption,
       tags: tags ?? this.tags,
       hidden: hidden ?? this.hidden,
+      location: location != null ? location() : this.location,
     );
   }
 
@@ -48,6 +61,7 @@ class PhotoInfo {
       other.starred == starred &&
       other.caption == caption &&
       other.hidden == hidden &&
+      other.location == location &&
       other.tags.length == tags.length &&
       Iterable<int>.generate(
         tags.length,

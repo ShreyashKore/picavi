@@ -1283,4 +1283,24 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get contactSheetFileName => 'कॉन्टैक्ट शीट';
+
+  @override
+  String get placesTitle => 'स्थान';
+
+  @override
+  String get placesEmpty =>
+      'अभी किसी फ़ोटो में स्थान नहीं है। फ़ोन की फ़ोटो में आमतौर पर होता है; बाकी के लिए उन्हें चुनें और स्थान सेट करें चुनें।';
+
+  @override
+  String get placesSetLocation => 'स्थान सेट करें…';
+
+  @override
+  String get placesPickHint =>
+      'मानचित्र पर वहाँ क्लिक करें जहाँ फ़ोटो ली गई थीं। ज़ूम के लिए स्क्रॉल करें, खिसकाने के लिए खींचें। फ़ोटो फ़ाइलें नहीं बदलतीं।';
+
+  @override
+  String get placesNoPointYet => 'अभी कोई स्थान नहीं चुना गया';
+
+  @override
+  String get placesRemoveLocation => 'स्थान हटाएँ';
 }

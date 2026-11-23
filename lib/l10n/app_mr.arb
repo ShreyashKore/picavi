@@ -328,5 +328,11 @@
   "collageSaved": "{count, plural, =1{{name} जतन केले} other{{name} पासून सुरू होणारी {count} पाने जतन केली}}",
   "collageFailed": "कोलाज तयार करता आला नाही",
   "collageFileName": "कोलाज",
-  "contactSheetFileName": "कॉन्टॅक्ट शीट"
+  "contactSheetFileName": "कॉन्टॅक्ट शीट",
+  "placesTitle": "ठिकाणे",
+  "placesEmpty": "अजून कोणत्याही फोटोला ठिकाण नाही. फोनच्या फोटोंना सहसा असते; इतरांसाठी ते निवडा आणि ठिकाण सेट करा निवडा.",
+  "placesSetLocation": "ठिकाण सेट करा…",
+  "placesPickHint": "फोटो जिथे काढले तिथे नकाशावर क्लिक करा. झूमसाठी स्क्रोल करा, हलवण्यासाठी ओढा. फोटो फाइल्स बदलत नाहीत.",
+  "placesNoPointYet": "अजून ठिकाण निवडलेले नाही",
+  "placesRemoveLocation": "ठिकाण काढा"
 }

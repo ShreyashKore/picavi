@@ -1292,4 +1292,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get contactSheetFileName => 'Hoja de contactos';
+
+  @override
+  String get placesTitle => 'Lugares';
+
+  @override
+  String get placesEmpty =>
+      'Aún no hay fotos con ubicación. Las fotos del móvil suelen tenerla; para las demás, selecciónalas y elige Establecer ubicación.';
+
+  @override
+  String get placesSetLocation => 'Establecer ubicación…';
+
+  @override
+  String get placesPickHint =>
+      'Haz clic en el mapa donde se tomaron las fotos. Desplaza para acercar y arrastra para moverte. Los archivos no se modifican.';
+
+  @override
+  String get placesNoPointYet => 'Aún no se ha elegido ningún lugar';
+
+  @override
+  String get placesRemoveLocation => 'Quitar ubicación';
 }

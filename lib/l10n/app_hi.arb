@@ -328,5 +328,11 @@
   "collageSaved": "{count, plural, =1{{name} सहेजा गया} other{{name} से शुरू होकर {count} पेज सहेजे गए}}",
   "collageFailed": "कोलाज नहीं बन सका",
   "collageFileName": "कोलाज",
-  "contactSheetFileName": "कॉन्टैक्ट शीट"
+  "contactSheetFileName": "कॉन्टैक्ट शीट",
+  "placesTitle": "स्थान",
+  "placesEmpty": "अभी किसी फ़ोटो में स्थान नहीं है। फ़ोन की फ़ोटो में आमतौर पर होता है; बाकी के लिए उन्हें चुनें और स्थान सेट करें चुनें।",
+  "placesSetLocation": "स्थान सेट करें…",
+  "placesPickHint": "मानचित्र पर वहाँ क्लिक करें जहाँ फ़ोटो ली गई थीं। ज़ूम के लिए स्क्रॉल करें, खिसकाने के लिए खींचें। फ़ोटो फ़ाइलें नहीं बदलतीं।",
+  "placesNoPointYet": "अभी कोई स्थान नहीं चुना गया",
+  "placesRemoveLocation": "स्थान हटाएँ"
 }

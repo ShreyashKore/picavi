@@ -1283,4 +1283,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get contactSheetFileName => 'ورقة معاينة';
+
+  @override
+  String get placesTitle => 'الأماكن';
+
+  @override
+  String get placesEmpty =>
+      'لا توجد صور بموقع بعد. صور الهاتف عادةً تحمل موقعًا؛ أما غيرها فحدّدها واختر تعيين الموقع.';
+
+  @override
+  String get placesSetLocation => 'تعيين الموقع…';
+
+  @override
+  String get placesPickHint =>
+      'انقر على الخريطة حيث التُقطت الصور. مرّر للتكبير واسحب للتحريك. لا تتغير ملفات الصور.';
+
+  @override
+  String get placesNoPointYet => 'لم يتم اختيار مكان بعد';
+
+  @override
+  String get placesRemoveLocation => 'إزالة الموقع';
 }
