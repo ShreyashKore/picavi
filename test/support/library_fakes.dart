@@ -1,4 +1,9 @@
+import 'dart:typed_data';
+
+import 'package:image/image.dart' as img;
 import 'package:oiv/library/data/repositories/sqlite_catalog_repository.dart';
+import 'package:oiv/library/domain/entities/face.dart';
+import 'package:oiv/library/domain/services/face_detector.dart';
 import 'package:oiv/library/domain/entities/catalog_image.dart';
 import 'package:oiv/library/domain/entities/library_query.dart';
 import 'package:oiv/library/domain/entities/photo_info.dart';
@@ -123,3 +128,37 @@ class LibraryFixture {
   final FakeDuplicateFinder duplicates = FakeDuplicateFinder();
   final TrashOnlyFileOperations files = TrashOnlyFileOperations();
 }
+
+/// A fingerprint pointing mostly along [axis] (0–7), with a little [noise].
+Float32List facePrint(int axis, {double noise = 0}) {
+  final values = Float32List(8);
+  values[axis] = 1;
+  values[(axis + 1) % 8] = noise;
+  return values;
+}
+
+final Uint8List tinyJpeg = img.encodeJpg(img.Image(width: 8, height: 8));
+
+/// Returns preset faces per path and counts calls.
+class FakeFaceDetector implements FaceDetectorService {
+  FakeFaceDetector(this.faces, {this.isAvailable = true});
+
+  final Map<String, List<DetectedFace>> faces;
+  final List<String> calls = [];
+
+  @override
+  final bool isAvailable;
+
+  @override
+  Future<List<DetectedFace>?> detect(String path) async {
+    calls.add(path);
+    return faces[path] ?? const [];
+  }
+}
+
+DetectedFace detectedFace(int axis, {double left = 0.1, double noise = 0}) =>
+    DetectedFace(
+      box: FaceBox(left, 0.1, 0.2, 0.2),
+      crop: tinyJpeg,
+      print: facePrint(axis, noise: noise),
+    );

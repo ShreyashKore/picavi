@@ -18,6 +18,7 @@ class LibrarySidebar extends StatelessWidget {
     required this.onAllPhotos,
     required this.onStarred,
     required this.onPlaces,
+    required this.onPeople,
     required this.onFolder,
     required this.onAlbum,
     required this.onAddFolder,
@@ -32,6 +33,7 @@ class LibrarySidebar extends StatelessWidget {
   final VoidCallback onAllPhotos;
   final VoidCallback onStarred;
   final VoidCallback onPlaces;
+  final VoidCallback onPeople;
   final ValueChanged<String> onFolder;
   final ValueChanged<int> onAlbum;
   final VoidCallback onAddFolder;
@@ -78,6 +80,12 @@ class LibrarySidebar extends StatelessWidget {
               label: l10n.placesTitle,
               selected: state.source == LibrarySource.places,
               onTap: onPlaces,
+            ),
+            _Entry(
+              icon: Icons.people_outline,
+              label: l10n.peopleTitle,
+              selected: state.source == LibrarySource.people,
+              onTap: onPeople,
             ),
             _Header(
               label: l10n.libraryAlbums,

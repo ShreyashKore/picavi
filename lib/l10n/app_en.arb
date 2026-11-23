@@ -1567,5 +1567,158 @@
   "liveTextSettingDescription": "Hover over text in a photo to select and copy it. Text is recognized on this Mac, nothing is uploaded.",
   "@liveTextSettingDescription": {
     "description": "Explains the select-text-in-images setting."
+  },
+  "peopleTitle": "People",
+  "@peopleTitle": {
+    "description": "Library sidebar / info label: people in photos."
+  },
+  "peopleUnavailable": "Finding faces needs macOS for now.",
+  "@peopleUnavailable": {
+    "description": "Shown where face detection is not available."
+  },
+  "peopleScanning": "Looking for faces… {done} of {total} photos",
+  "@peopleScanning": {
+    "description": "Progress while looking for faces.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "peopleSummary": "{people, plural, =0{No one named yet} =1{1 person} other{{people} people}} · {faces, plural, =0{no unnamed faces} =1{1 unnamed face} other{{faces} unnamed faces}}",
+  "@peopleSummary": {
+    "description": "Summary of people and unnamed faces.",
+    "placeholders": {
+      "people": {
+        "type": "int"
+      },
+      "faces": {
+        "type": "int"
+      }
+    }
+  },
+  "peoplePrivacy": "Faces are found on this Mac; nothing is uploaded.",
+  "@peoplePrivacy": {
+    "description": "Note that face detection is on-device."
+  },
+  "peopleLookingForFaces": "Looking for faces in your photos…",
+  "@peopleLookingForFaces": {
+    "description": "Shown before any face was found during the first scan."
+  },
+  "peopleNoFaces": "No faces found in the library",
+  "@peopleNoFaces": {
+    "description": "Shown when no faces were found."
+  },
+  "peopleNamed": "People",
+  "@peopleNamed": {
+    "description": "Heading for named people."
+  },
+  "peopleUnnamed": "Unnamed faces",
+  "@peopleUnnamed": {
+    "description": "Heading for unnamed faces."
+  },
+  "peopleUnnamedHint": "Faces that look alike are grouped. Name a group, or click faces to pick just those first. Groups are guesses — check before naming.",
+  "@peopleUnnamedHint": {
+    "description": "Explains how to name faces."
+  },
+  "peopleShowMore": "Show more ({count} more groups)",
+  "@peopleShowMore": {
+    "description": "Button that shows more unnamed groups.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "peopleFace": "Face",
+  "@peopleFace": {
+    "description": "Accessibility label for one face."
+  },
+  "peopleFaceCount": "{count, plural, =1{1 face} other{{count} faces}}",
+  "@peopleFaceCount": {
+    "description": "Number of faces in a group.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "peopleFacesPicked": "{picked} of {count} picked",
+  "@peopleFacesPicked": {
+    "description": "Picked faces in a group.",
+    "placeholders": {
+      "picked": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "peopleName": "Name…",
+  "@peopleName": {
+    "description": "Button that names faces."
+  },
+  "peopleIgnore": "Ignore",
+  "@peopleIgnore": {
+    "description": "Button that hides faces from People."
+  },
+  "peopleWhoIsThis": "{count, plural, =1{Who is this?} other{Who are these {count} faces?}}",
+  "@peopleWhoIsThis": {
+    "description": "Naming dialog title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "peopleNameLabel": "Name",
+  "@peopleNameLabel": {
+    "description": "Field label for a person name."
+  },
+  "peopleBack": "All people",
+  "@peopleBack": {
+    "description": "Tooltip: back to all people."
+  },
+  "peopleRename": "Rename",
+  "@peopleRename": {
+    "description": "Button that renames a person."
+  },
+  "peopleForget": "Forget name",
+  "@peopleForget": {
+    "description": "Button that removes a person name."
+  },
+  "peopleForgetTitle": "Forget “{name}”?",
+  "@peopleForgetTitle": {
+    "description": "Confirmation title before forgetting a person.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peopleForgetMessage": "Their faces go back to Unnamed faces. Photos are not changed.",
+  "@peopleForgetMessage": {
+    "description": "Explains forgetting a person."
+  },
+  "peopleIsThis": "Is this {name}?",
+  "@peopleIsThis": {
+    "description": "Heading for suggested faces.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peopleYes": "Yes",
+  "@peopleYes": {
+    "description": "Tooltip: yes, this is the person."
+  },
+  "peopleNo": "No",
+  "@peopleNo": {
+    "description": "Tooltip: no, this is not the person."
   }
 }

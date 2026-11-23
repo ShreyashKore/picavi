@@ -1320,4 +1320,120 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get liveTextSettingDescription =>
       '将指针悬停在照片中的文本上即可选择并复制。文本在这台 Mac 上识别，不会上传任何内容。';
+
+  @override
+  String get peopleTitle => '人物';
+
+  @override
+  String get peopleUnavailable => '目前仅 macOS 支持查找人脸。';
+
+  @override
+  String peopleScanning(int done, int total) {
+    return '正在查找人脸… 第 $done / $total 张照片';
+  }
+
+  @override
+  String peopleSummary(int people, int faces) {
+    String _temp0 = intl.Intl.pluralLogic(
+      people,
+      locale: localeName,
+      other: '$people 人',
+      zero: '尚未命名任何人',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      faces,
+      locale: localeName,
+      other: '$faces 张未命名的人脸',
+      zero: '没有未命名的人脸',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get peoplePrivacy => '人脸在这台 Mac 上识别，不会上传任何内容。';
+
+  @override
+  String get peopleLookingForFaces => '正在照片中查找人脸…';
+
+  @override
+  String get peopleNoFaces => '图库中没有找到人脸';
+
+  @override
+  String get peopleNamed => '人物';
+
+  @override
+  String get peopleUnnamed => '未命名的人脸';
+
+  @override
+  String get peopleUnnamedHint => '相似的人脸会被分为一组。为整组命名，或先点击选择其中几张。分组只是推测，命名前请检查。';
+
+  @override
+  String peopleShowMore(int count) {
+    return '显示更多（还有 $count 组）';
+  }
+
+  @override
+  String get peopleFace => '人脸';
+
+  @override
+  String peopleFaceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 张人脸',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String peopleFacesPicked(int picked, int count) {
+    return '已选 $picked / $count';
+  }
+
+  @override
+  String get peopleName => '命名…';
+
+  @override
+  String get peopleIgnore => '忽略';
+
+  @override
+  String peopleWhoIsThis(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '这是谁？',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get peopleNameLabel => '姓名';
+
+  @override
+  String get peopleBack => '所有人物';
+
+  @override
+  String get peopleRename => '重命名';
+
+  @override
+  String get peopleForget => '忘记名字';
+
+  @override
+  String peopleForgetTitle(String name) {
+    return '忘记“$name”？';
+  }
+
+  @override
+  String get peopleForgetMessage => '其人脸将回到“未命名的人脸”。照片不会改变。';
+
+  @override
+  String peopleIsThis(String name) {
+    return '这是 $name 吗？';
+  }
+
+  @override
+  String get peopleYes => '是';
+
+  @override
+  String get peopleNo => '不是';
 }

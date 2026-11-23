@@ -2127,6 +2127,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hover over text in a photo to select and copy it. Text is recognized on this Mac, nothing is uploaded.'**
   String get liveTextSettingDescription;
+
+  /// Library sidebar / info label: people in photos.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get peopleTitle;
+
+  /// Shown where face detection is not available.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding faces needs macOS for now.'**
+  String get peopleUnavailable;
+
+  /// Progress while looking for faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for faces… {done} of {total} photos'**
+  String peopleScanning(int done, int total);
+
+  /// Summary of people and unnamed faces.
+  ///
+  /// In en, this message translates to:
+  /// **'{people, plural, =0{No one named yet} =1{1 person} other{{people} people}} · {faces, plural, =0{no unnamed faces} =1{1 unnamed face} other{{faces} unnamed faces}}'**
+  String peopleSummary(int people, int faces);
+
+  /// Note that face detection is on-device.
+  ///
+  /// In en, this message translates to:
+  /// **'Faces are found on this Mac; nothing is uploaded.'**
+  String get peoplePrivacy;
+
+  /// Shown before any face was found during the first scan.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for faces in your photos…'**
+  String get peopleLookingForFaces;
+
+  /// Shown when no faces were found.
+  ///
+  /// In en, this message translates to:
+  /// **'No faces found in the library'**
+  String get peopleNoFaces;
+
+  /// Heading for named people.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get peopleNamed;
+
+  /// Heading for unnamed faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed faces'**
+  String get peopleUnnamed;
+
+  /// Explains how to name faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Faces that look alike are grouped. Name a group, or click faces to pick just those first. Groups are guesses — check before naming.'**
+  String get peopleUnnamedHint;
+
+  /// Button that shows more unnamed groups.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more ({count} more groups)'**
+  String peopleShowMore(int count);
+
+  /// Accessibility label for one face.
+  ///
+  /// In en, this message translates to:
+  /// **'Face'**
+  String get peopleFace;
+
+  /// Number of faces in a group.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 face} other{{count} faces}}'**
+  String peopleFaceCount(int count);
+
+  /// Picked faces in a group.
+  ///
+  /// In en, this message translates to:
+  /// **'{picked} of {count} picked'**
+  String peopleFacesPicked(int picked, int count);
+
+  /// Button that names faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Name…'**
+  String get peopleName;
+
+  /// Button that hides faces from People.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore'**
+  String get peopleIgnore;
+
+  /// Naming dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Who is this?} other{Who are these {count} faces?}}'**
+  String peopleWhoIsThis(int count);
+
+  /// Field label for a person name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get peopleNameLabel;
+
+  /// Tooltip: back to all people.
+  ///
+  /// In en, this message translates to:
+  /// **'All people'**
+  String get peopleBack;
+
+  /// Button that renames a person.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get peopleRename;
+
+  /// Button that removes a person name.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget name'**
+  String get peopleForget;
+
+  /// Confirmation title before forgetting a person.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget “{name}”?'**
+  String peopleForgetTitle(String name);
+
+  /// Explains forgetting a person.
+  ///
+  /// In en, this message translates to:
+  /// **'Their faces go back to Unnamed faces. Photos are not changed.'**
+  String get peopleForgetMessage;
+
+  /// Heading for suggested faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this {name}?'**
+  String peopleIsThis(String name);
+
+  /// Tooltip: yes, this is the person.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get peopleYes;
+
+  /// Tooltip: no, this is not the person.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get peopleNo;
 }
 
 class _AppLocalizationsDelegate

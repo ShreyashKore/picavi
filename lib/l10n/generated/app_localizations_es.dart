@@ -1377,4 +1377,127 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get liveTextSettingDescription =>
       'Pasa el puntero sobre el texto de una foto para seleccionarlo y copiarlo. El texto se reconoce en este Mac; no se sube nada.';
+
+  @override
+  String get peopleTitle => 'Personas';
+
+  @override
+  String get peopleUnavailable => 'Por ahora, buscar caras requiere macOS.';
+
+  @override
+  String peopleScanning(int done, int total) {
+    return 'Buscando caras… $done de $total fotos';
+  }
+
+  @override
+  String peopleSummary(int people, int faces) {
+    String _temp0 = intl.Intl.pluralLogic(
+      people,
+      locale: localeName,
+      other: '$people personas',
+      one: '1 persona',
+      zero: 'Nadie con nombre aún',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      faces,
+      locale: localeName,
+      other: '$faces caras sin nombre',
+      one: '1 cara sin nombre',
+      zero: 'ninguna cara sin nombre',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get peoplePrivacy =>
+      'Las caras se detectan en este Mac; no se sube nada.';
+
+  @override
+  String get peopleLookingForFaces => 'Buscando caras en tus fotos…';
+
+  @override
+  String get peopleNoFaces => 'No se encontraron caras en la biblioteca';
+
+  @override
+  String get peopleNamed => 'Personas';
+
+  @override
+  String get peopleUnnamed => 'Caras sin nombre';
+
+  @override
+  String get peopleUnnamedHint =>
+      'Las caras parecidas se agrupan. Pon nombre a un grupo o haz clic en algunas caras para elegir solo esas. Los grupos son estimaciones: revísalos antes.';
+
+  @override
+  String peopleShowMore(int count) {
+    return 'Mostrar más ($count grupos más)';
+  }
+
+  @override
+  String get peopleFace => 'Cara';
+
+  @override
+  String peopleFaceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count caras',
+      one: '1 cara',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String peopleFacesPicked(int picked, int count) {
+    return '$picked de $count elegidas';
+  }
+
+  @override
+  String get peopleName => 'Nombrar…';
+
+  @override
+  String get peopleIgnore => 'Ignorar';
+
+  @override
+  String peopleWhoIsThis(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '¿De quién son estas $count caras?',
+      one: '¿Quién es?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get peopleNameLabel => 'Nombre';
+
+  @override
+  String get peopleBack => 'Todas las personas';
+
+  @override
+  String get peopleRename => 'Cambiar nombre';
+
+  @override
+  String get peopleForget => 'Olvidar nombre';
+
+  @override
+  String peopleForgetTitle(String name) {
+    return '¿Olvidar «$name»?';
+  }
+
+  @override
+  String get peopleForgetMessage =>
+      'Sus caras vuelven a Caras sin nombre. Las fotos no cambian.';
+
+  @override
+  String peopleIsThis(String name) {
+    return '¿Es $name?';
+  }
+
+  @override
+  String get peopleYes => 'Sí';
+
+  @override
+  String get peopleNo => 'No';
 }

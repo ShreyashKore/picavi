@@ -9,6 +9,7 @@ import '../domain/repositories/catalog_repository.dart';
 import '../domain/repositories/library_settings_repository.dart';
 import '../domain/repositories/photo_info_repository.dart';
 import '../domain/services/duplicate_finder.dart';
+import '../domain/services/face_detector.dart';
 import '../domain/services/import_service.dart';
 import '../domain/services/library_indexer.dart';
 import 'repositories/preferences_library_settings_repository.dart';
@@ -17,6 +18,7 @@ import 'repositories/sqlite_catalog_repository.dart';
 import 'services/file_system_import_service.dart';
 import 'services/file_system_library_indexer.dart';
 import 'services/hashing_duplicate_finder.dart';
+import 'services/vision_face_detector_service.dart';
 import 'services/thumbnail_cache.dart';
 
 /// Everything the library needs, opened once and kept for the session.
@@ -32,6 +34,7 @@ class LibraryServices {
     ImportService? importService,
     String? defaultImportDestination,
     this.pixelSource = const FlutterImagePixelSource(),
+    this.faceDetector = const VisionFaceDetectorService(),
   }) : indexer = indexer ?? FileSystemLibraryIndexer(catalog),
        duplicateFinder = duplicateFinder ?? HashingDuplicateFinder(catalog),
        importService = importService ?? FileSystemImportService(),
@@ -67,6 +70,9 @@ class LibraryServices {
 
   /// Decodes photos for collages and similar.
   final ImagePixelSource pixelSource;
+
+  /// Finds faces for the People view.
+  final FaceDetectorService faceDetector;
 
   /// Where imports go until the user picks another folder.
   final String defaultImportDestination;

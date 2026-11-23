@@ -11,6 +11,7 @@ class LibraryQuery {
     this.hiddenFolders = const <String>{},
     this.onlyWithLocation = false,
     this.bounds,
+    this.person,
   });
 
   /// Words that must all appear in the name, folder, camera, caption, tags
@@ -33,6 +34,9 @@ class LibraryQuery {
 
   /// …inside this box.
   final GeoBounds? bounds;
+
+  /// Only photos with a face named this.
+  final String? person;
 
   List<String> get words => text
       .toLowerCase()

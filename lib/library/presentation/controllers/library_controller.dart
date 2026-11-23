@@ -136,6 +136,9 @@ class LibraryController extends ChangeNotifier {
   /// Photos with a location, for the map.
   Future<void> showPlaces() => _show(LibrarySource.places);
 
+  /// The People view (it has its own controller).
+  Future<void> showPeople() => _show(LibrarySource.people);
+
   Future<void> showFolder(String folder) =>
       _show(LibrarySource.folder, folder: folder);
 

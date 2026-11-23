@@ -1367,4 +1367,127 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get liveTextSettingDescription =>
       'फोटोतील मजकुरावर पॉइंटर नेऊन तो निवडा आणि कॉपी करा. मजकूर याच Mac वर ओळखला जातो, काहीही अपलोड होत नाही.';
+
+  @override
+  String get peopleTitle => 'लोक';
+
+  @override
+  String get peopleUnavailable => 'चेहरे शोधण्यासाठी सध्या macOS आवश्यक आहे.';
+
+  @override
+  String peopleScanning(int done, int total) {
+    return 'चेहरे शोधत आहे… $total पैकी $done फोटो';
+  }
+
+  @override
+  String peopleSummary(int people, int faces) {
+    String _temp0 = intl.Intl.pluralLogic(
+      people,
+      locale: localeName,
+      other: '$people व्यक्ती',
+      one: '1 व्यक्ती',
+      zero: 'अजून कोणालाही नाव नाही',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      faces,
+      locale: localeName,
+      other: '$faces निनावी चेहरे',
+      one: '1 निनावी चेहरा',
+      zero: 'निनावी चेहरे नाहीत',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get peoplePrivacy =>
+      'चेहरे याच Mac वर शोधले जातात; काहीही अपलोड होत नाही.';
+
+  @override
+  String get peopleLookingForFaces => 'तुमच्या फोटोंमध्ये चेहरे शोधत आहे…';
+
+  @override
+  String get peopleNoFaces => 'लायब्ररीत चेहरे सापडले नाहीत';
+
+  @override
+  String get peopleNamed => 'लोक';
+
+  @override
+  String get peopleUnnamed => 'निनावी चेहरे';
+
+  @override
+  String get peopleUnnamedHint =>
+      'सारखे दिसणारे चेहरे गटात ठेवले जातात. गटाला नाव द्या, किंवा आधी काही चेहऱ्यांवर क्लिक करून फक्त ते निवडा. गट हे अंदाज आहेत — नाव देण्यापूर्वी तपासा.';
+
+  @override
+  String peopleShowMore(int count) {
+    return 'आणखी दाखवा ($count आणखी गट)';
+  }
+
+  @override
+  String get peopleFace => 'चेहरा';
+
+  @override
+  String peopleFaceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count चेहरे',
+      one: '1 चेहरा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String peopleFacesPicked(int picked, int count) {
+    return '$count पैकी $picked निवडले';
+  }
+
+  @override
+  String get peopleName => 'नाव द्या…';
+
+  @override
+  String get peopleIgnore => 'दुर्लक्ष करा';
+
+  @override
+  String peopleWhoIsThis(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'हे $count चेहरे कोणाचे आहेत?',
+      one: 'हे कोण आहे?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get peopleNameLabel => 'नाव';
+
+  @override
+  String get peopleBack => 'सर्व लोक';
+
+  @override
+  String get peopleRename => 'नाव बदला';
+
+  @override
+  String get peopleForget => 'नाव विसरा';
+
+  @override
+  String peopleForgetTitle(String name) {
+    return '“$name” विसरायचे?';
+  }
+
+  @override
+  String get peopleForgetMessage =>
+      'त्यांचे चेहरे निनावी चेहऱ्यांमध्ये परत जातील. फोटो बदलत नाहीत.';
+
+  @override
+  String peopleIsThis(String name) {
+    return 'हे $name आहे का?';
+  }
+
+  @override
+  String get peopleYes => 'हो';
+
+  @override
+  String get peopleNo => 'नाही';
 }

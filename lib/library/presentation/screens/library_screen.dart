@@ -16,11 +16,13 @@ import '../../../viewer/presentation/widgets/viewer_actions_menu.dart'
 import '../../data/library_services.dart';
 import '../../domain/entities/catalog_image.dart';
 import '../controllers/library_controller.dart';
+import '../controllers/people_controller.dart';
 import '../models/folder_tree.dart';
 import '../models/library_state.dart';
 import '../widgets/library_dialogs.dart';
 import '../widgets/library_grid.dart';
 import '../widgets/library_sidebar.dart';
+import '../widgets/people_view.dart';
 import '../widgets/places_map.dart';
 import 'duplicates_screen.dart';
 import 'import_screen.dart';
@@ -52,6 +54,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
   Timer? _searchDebounce;
   final GlobalKey _shareKey = GlobalKey();
 
+  /// Made when People is first opened; it keeps scanning in the background.
+  PeopleController? _people;
+
   /// Photos of the map marker that was clicked in Places.
   List<CatalogImage> _placeCluster = const [];
   int? _lastNoticeId;
@@ -76,6 +81,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     _searchDebounce?.cancel();
     _search.dispose();
     _scroll.dispose();
+    _people?.dispose();
     _controller
       ..removeListener(_onChanged)
       ..dispose();
@@ -427,6 +433,21 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 state: state,
                 onAllPhotos: () => unawaited(_controller.showAllPhotos()),
                 onStarred: () => unawaited(_controller.showStarred()),
+                onPeople: () {
+                  if (_people == null) {
+                    final services = widget.services;
+                    _people = PeopleController(
+                      catalog: services.catalog,
+                      detector: services.faceDetector,
+                      photoInfo: services.photoInfo,
+                    );
+                    unawaited(_people!.open());
+                  } else {
+                    unawaited(_people!.reload());
+                  }
+                  _controller.clearSelection();
+                  unawaited(_controller.showPeople());
+                },
                 onPlaces: () {
                   setState(() => _placeCluster = const []);
                   unawaited(_controller.showPlaces());
@@ -444,7 +465,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 child: Column(
                   children: [
                     Expanded(child: _buildContent(state)),
-                    if (state.selection.isNotEmpty) _buildSelectionBar(state),
+                    if (state.selection.isNotEmpty &&
+                        state.source != LibrarySource.people)
+                      _buildSelectionBar(state),
                   ],
                 ),
               ),
@@ -488,6 +511,13 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ],
           ),
         ),
+      );
+    }
+    if (state.source == LibrarySource.people && _people != null) {
+      return PeopleView(
+        controller: _people!,
+        cache: widget.services.thumbnails,
+        onOpen: _open,
       );
     }
     if (state.source == LibrarySource.places && state.images.isNotEmpty) {

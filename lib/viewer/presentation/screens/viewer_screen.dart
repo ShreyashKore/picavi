@@ -1668,6 +1668,11 @@ class _ViewerScreenState extends State<ViewerScreen>
                 viewState: imageViewState,
                 caption: state.photoInfoFor(state.currentImage.path).caption,
                 tags: state.photoInfoFor(state.currentImage.path).tags,
+                people: [
+                  for (final tag
+                      in state.photoInfoFor(state.currentImage.path).people)
+                    tag.name,
+                ],
               ),
             ),
 

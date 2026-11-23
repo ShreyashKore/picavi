@@ -1368,4 +1368,127 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get liveTextSettingDescription =>
       'مرّر المؤشر فوق النص في الصورة لتحديده ونسخه. يتم التعرف على النص على جهاز Mac هذا ولا يُرفع أي شيء.';
+
+  @override
+  String get peopleTitle => 'الأشخاص';
+
+  @override
+  String get peopleUnavailable => 'يتطلب البحث عن الوجوه نظام macOS حاليًا.';
+
+  @override
+  String peopleScanning(int done, int total) {
+    return 'جارٍ البحث عن الوجوه… $done من $total صورة';
+  }
+
+  @override
+  String peopleSummary(int people, int faces) {
+    String _temp0 = intl.Intl.pluralLogic(
+      people,
+      locale: localeName,
+      other: '$people أشخاص',
+      one: 'شخص واحد',
+      zero: 'لم يُسمَّ أحد بعد',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      faces,
+      locale: localeName,
+      other: '$faces وجوه بلا اسم',
+      one: 'وجه واحد بلا اسم',
+      zero: 'لا وجوه بلا اسم',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get peoplePrivacy =>
+      'يتم العثور على الوجوه على جهاز Mac هذا؛ ولا يُرفع أي شيء.';
+
+  @override
+  String get peopleLookingForFaces => 'جارٍ البحث عن الوجوه في صورك…';
+
+  @override
+  String get peopleNoFaces => 'لم يتم العثور على وجوه في المكتبة';
+
+  @override
+  String get peopleNamed => 'الأشخاص';
+
+  @override
+  String get peopleUnnamed => 'وجوه بلا اسم';
+
+  @override
+  String get peopleUnnamedHint =>
+      'تُجمَع الوجوه المتشابهة. سمِّ مجموعة، أو انقر على وجوه لاختيارها فقط أولًا. المجموعات تخمين — تحقّق قبل التسمية.';
+
+  @override
+  String peopleShowMore(int count) {
+    return 'عرض المزيد ($count مجموعات أخرى)';
+  }
+
+  @override
+  String get peopleFace => 'وجه';
+
+  @override
+  String peopleFaceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count وجوه',
+      one: 'وجه واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String peopleFacesPicked(int picked, int count) {
+    return 'تم اختيار $picked من $count';
+  }
+
+  @override
+  String get peopleName => 'تسمية…';
+
+  @override
+  String get peopleIgnore => 'تجاهل';
+
+  @override
+  String peopleWhoIsThis(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'لمن هذه الوجوه الـ$count؟',
+      one: 'من هذا؟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get peopleNameLabel => 'الاسم';
+
+  @override
+  String get peopleBack => 'كل الأشخاص';
+
+  @override
+  String get peopleRename => 'إعادة التسمية';
+
+  @override
+  String get peopleForget => 'نسيان الاسم';
+
+  @override
+  String peopleForgetTitle(String name) {
+    return 'نسيان «$name»؟';
+  }
+
+  @override
+  String get peopleForgetMessage =>
+      'تعود وجوههم إلى الوجوه بلا اسم. لا تتغير الصور.';
+
+  @override
+  String peopleIsThis(String name) {
+    return 'هل هذا $name؟';
+  }
+
+  @override
+  String get peopleYes => 'نعم';
+
+  @override
+  String get peopleNo => 'لا';
 }

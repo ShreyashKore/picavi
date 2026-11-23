@@ -92,6 +92,8 @@ class MainFlutterWindow: NSWindow {
         self.recognizeText(arguments: call.arguments, result: result)
       case "shareFiles":
         self.shareFiles(arguments: call.arguments, result: result)
+      case "detectFaces":
+        self.detectFaces(arguments: call.arguments, result: result)
       default:
         result(FlutterMethodNotImplemented)
       }
@@ -281,6 +283,24 @@ class MainFlutterWindow: NSWindow {
       shouldInterpolate: false,
       intent: .defaultIntent
     )
+  }
+
+  /// Finds faces in the image at `path` (EXIF orientation applied). Returns
+  /// `{width, height, faces: [{left, top, width, height, crop, print}]}` with
+  /// boxes normalised to a top-left origin, or nil if it can't be decoded.
+  private func detectFaces(arguments: Any?, result: @escaping FlutterResult) {
+    guard let url = fileURL(from: arguments) else {
+      result(nil)
+      return
+    }
+    DispatchQueue.global(qos: .utility).async {
+      let detected = Self.cgImageForTextRecognition(url: url).map {
+        FaceDetector.detect(in: $0)
+      }
+      DispatchQueue.main.async {
+        result(detected)
+      }
+    }
   }
 
   /// Shows the system share menu for `paths`, pointing at the rectangle
@@ -599,5 +619,129 @@ enum LiveTextRecognizer {
     }
     // Top edge runs TL(0) → TR(2), bottom edge BL(6) → BR(4).
     return lerp(0, 2, t0) + lerp(0, 2, t1) + lerp(6, 4, t1) + lerp(6, 4, t0)
+  }
+}
+
+/// Face detection for the library's People view. Vision finds the faces;
+/// each gets a small JPEG crop to show and a feature print of the crop,
+/// used to suggest which faces look alike. Nothing leaves the Mac.
+enum FaceDetector {
+  static let cropSize = 160
+
+  static func detect(in image: CGImage) -> [String: Any] {
+    let width = CGFloat(image.width)
+    let height = CGFloat(image.height)
+    let request = VNDetectFaceRectanglesRequest()
+    let handler = VNImageRequestHandler(cgImage: image, options: [:])
+    do {
+      try handler.perform([request])
+    } catch {
+      return ["width": image.width, "height": image.height, "faces": []]
+    }
+
+    let minimumSide = max(24, min(width, height) * 0.02)
+    var faces: [[String: Any]] = []
+    for observation in request.results ?? [] {
+      let box = observation.boundingBox  // Normalised, bottom-left origin.
+      let face = CGRect(
+        x: box.minX * width,
+        y: (1 - box.maxY) * height,
+        width: box.width * width,
+        height: box.height * height
+      )
+      if min(face.width, face.height) < minimumSide {
+        continue
+      }
+      let side = max(face.width, face.height) * 1.6
+      let crop = CGRect(
+        x: face.midX - side / 2,
+        y: face.midY - side / 2,
+        width: side,
+        height: side
+      ).integral.intersection(CGRect(x: 0, y: 0, width: width, height: height))
+      guard !crop.isEmpty, let cropped = image.cropping(to: crop) else {
+        continue
+      }
+
+      var entry: [String: Any] = [
+        "left": Double(face.minX / width),
+        "top": Double(face.minY / height),
+        "width": Double(face.width / width),
+        "height": Double(face.height / height),
+      ]
+      if let jpeg = jpegThumbnail(of: cropped) {
+        entry["crop"] = FlutterStandardTypedData(bytes: jpeg)
+      }
+      if let print = featurePrint(of: cropped) {
+        entry["print"] = print
+      }
+      faces.append(entry)
+    }
+    return ["width": image.width, "height": image.height, "faces": faces]
+  }
+
+  private static func jpegThumbnail(of image: CGImage) -> Data? {
+    let size = cropSize
+    guard let context = CGContext(
+      data: nil,
+      width: size,
+      height: size,
+      bitsPerComponent: 8,
+      bytesPerRow: 0,
+      space: CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+    ) else {
+      return nil
+    }
+    // Fill the square, cropping the longer side (edge faces aren't square).
+    let scale = CGFloat(size) / CGFloat(min(image.width, image.height))
+    let drawWidth = CGFloat(image.width) * scale
+    let drawHeight = CGFloat(image.height) * scale
+    context.interpolationQuality = .high
+    context.draw(
+      image,
+      in: CGRect(
+        x: (CGFloat(size) - drawWidth) / 2,
+        y: (CGFloat(size) - drawHeight) / 2,
+        width: drawWidth,
+        height: drawHeight
+      )
+    )
+    guard let scaled = context.makeImage() else {
+      return nil
+    }
+    return NSBitmapImageRep(cgImage: scaled).representation(
+      using: .jpeg,
+      properties: [.compressionFactor: 0.8]
+    )
+  }
+
+  private static func featurePrint(of image: CGImage) -> FlutterStandardTypedData? {
+    let request = VNGenerateImageFeaturePrintRequest()
+    let handler = VNImageRequestHandler(cgImage: image, options: [:])
+    guard (try? handler.perform([request])) != nil,
+          let observation = request.results?.first as? VNFeaturePrintObservation else {
+      return nil
+    }
+    let count = observation.elementCount
+    var floats = [Float](repeating: 0, count: count)
+    observation.data.withUnsafeBytes { raw in
+      switch observation.elementType {
+      case .float:
+        let values = raw.bindMemory(to: Float.self)
+        for i in 0..<min(count, values.count) {
+          floats[i] = values[i]
+        }
+      case .double:
+        let values = raw.bindMemory(to: Double.self)
+        for i in 0..<min(count, values.count) {
+          floats[i] = Float(values[i])
+        }
+      default:
+        break
+      }
+    }
+    let data = floats.withUnsafeBufferPointer { Data(buffer: $0) }
+    return FlutterStandardTypedData(float32: data)
   }
 }

@@ -7,6 +7,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 import '../../../editor/domain/entities/image_edits.dart';
 import '../../domain/entities/catalog_image.dart';
+import '../../domain/entities/face.dart';
 import '../../domain/entities/geo_point.dart';
 import '../../domain/entities/library_query.dart';
 import '../../domain/entities/photo_info.dart';
@@ -39,7 +40,7 @@ class SqliteCatalogRepository implements CatalogRepository {
   factory SqliteCatalogRepository.inMemory() =>
       SqliteCatalogRepository._(sqlite3.openInMemory());
 
-  static const int _schemaVersion = 2;
+  static const int _schemaVersion = 3;
 
   final Database _db;
 
@@ -64,7 +65,38 @@ class SqliteCatalogRepository implements CatalogRepository {
           COALESCE(loc_lat, gps_lat), COALESCE(loc_lon, gps_lon));
       ''');
     }
+    if (version < 3) {
+      // Version 3: faces found in photos, which photos were scanned, and
+      // the named people of each photo (mirrored from its sidecar).
+      _db.execute('''
+        ALTER TABLE images ADD COLUMN people TEXT NOT NULL DEFAULT '[]';
+        CREATE TABLE IF NOT EXISTS faces (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          path TEXT NOT NULL,
+          x REAL NOT NULL, y REAL NOT NULL, w REAL NOT NULL, h REAL NOT NULL,
+          crop BLOB,
+          print BLOB,
+          name TEXT,
+          ignored INTEGER NOT NULL DEFAULT 0
+        );
+        CREATE INDEX IF NOT EXISTS faces_path ON faces(path);
+        CREATE INDEX IF NOT EXISTS faces_name ON faces(name);
+        CREATE TABLE IF NOT EXISTS face_scans (
+          path TEXT PRIMARY KEY,
+          size INTEGER NOT NULL,
+          modified INTEGER NOT NULL
+        );
+      ''');
+    }
     _db.execute('PRAGMA user_version = $_schemaVersion');
+  }
+
+  /// Drops faces of photos that left the catalog.
+  void _pruneFaces() {
+    _db.execute('''
+      DELETE FROM faces WHERE path NOT IN (SELECT path FROM images);
+      DELETE FROM face_scans WHERE path NOT IN (SELECT path FROM images);
+    ''');
   }
 
   void _createVersion1() {
@@ -121,8 +153,8 @@ class SqliteCatalogRepository implements CatalogRepository {
     final statement = _db.prepare('''
       INSERT INTO images (path, folder, name, size, modified, taken, camera,
         starred, caption, tags, hidden, edits, search,
-        gps_lat, gps_lon, loc_lat, loc_lon)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        gps_lat, gps_lon, loc_lat, loc_lon, people)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(path) DO UPDATE SET
         folder = excluded.folder, name = excluded.name, size = excluded.size,
         modified = excluded.modified, taken = excluded.taken,
@@ -131,7 +163,7 @@ class SqliteCatalogRepository implements CatalogRepository {
         hidden = excluded.hidden, edits = excluded.edits,
         search = excluded.search, gps_lat = excluded.gps_lat,
         gps_lon = excluded.gps_lon, loc_lat = excluded.loc_lat,
-        loc_lon = excluded.loc_lon
+        loc_lon = excluded.loc_lon, people = excluded.people
     ''');
     _transaction(() {
       for (final image in images) {
@@ -153,6 +185,7 @@ class SqliteCatalogRepository implements CatalogRepository {
           image.gps?.longitude,
           image.info.location?.latitude,
           image.info.location?.longitude,
+          jsonEncode([for (final tag in image.info.people) tag.toJson()]),
         ]);
       }
     });
@@ -168,12 +201,14 @@ class SqliteCatalogRepository implements CatalogRepository {
       }
     });
     statement.close();
+    _pruneFaces();
   }
 
   @override
   Future<void> removeOutside(List<String> roots) async {
     if (roots.isEmpty) {
       _db.execute('DELETE FROM images');
+      _pruneFaces();
       return;
     }
     final conditions = [
@@ -185,6 +220,7 @@ class SqliteCatalogRepository implements CatalogRepository {
         '${_escapeLike(root)}${p.separator}%',
       ],
     ]);
+    _pruneFaces();
   }
 
   @override
@@ -336,6 +372,173 @@ class SqliteCatalogRepository implements CatalogRepository {
     statement.close();
   }
 
+  // -------------------------------------------------------------------------
+  // Faces
+
+  @override
+  Future<Map<String, FileStamp>> faceScanStamps() async {
+    return {
+      for (final row in _db.select('SELECT * FROM face_scans'))
+        row['path'] as String: FileStamp(
+          row['size'] as int,
+          row['modified'] as int,
+        ),
+    };
+  }
+
+  @override
+  Future<void> replaceFaces(
+    String path,
+    FileStamp stamp,
+    List<(DetectedFace, String?)> faces,
+  ) async {
+    final insert = _db.prepare(
+      'INSERT INTO faces (path, x, y, w, h, crop, print, name) '
+      'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    );
+    _transaction(() {
+      _db.execute('DELETE FROM faces WHERE path = ?', [path]);
+      for (final (face, name) in faces) {
+        final print = face.print;
+        insert.execute([
+          path,
+          face.box.left,
+          face.box.top,
+          face.box.width,
+          face.box.height,
+          face.crop,
+          print?.buffer.asUint8List(print.offsetInBytes, print.lengthInBytes),
+          name,
+        ]);
+      }
+      _db.execute(
+        'INSERT OR REPLACE INTO face_scans (path, size, modified) '
+        'VALUES (?, ?, ?)',
+        [path, stamp.size, stamp.modifiedMs],
+      );
+    });
+    insert.close();
+  }
+
+  @override
+  Future<List<CatalogFace>> faces({
+    String? path,
+    String? name,
+    bool unnamedOnly = false,
+    bool includeIgnored = false,
+    bool withPrints = false,
+  }) async {
+    final conditions = <String>['path IN (SELECT path FROM images)'];
+    final arguments = <Object?>[];
+    if (path != null) {
+      conditions.add('path = ?');
+      arguments.add(path);
+    }
+    if (name != null) {
+      conditions.add('name = ?');
+      arguments.add(name);
+    }
+    if (unnamedOnly) {
+      conditions.add('name IS NULL');
+    }
+    if (!includeIgnored) {
+      conditions.add('ignored = 0');
+    }
+    final columns = withPrints
+        ? '*'
+        : 'id, path, x, y, w, h, crop, name, ignored';
+    return [
+      for (final row in _db.select(
+        'SELECT $columns FROM faces WHERE ${conditions.join(' AND ')} '
+        'ORDER BY id',
+        arguments,
+      ))
+        _faceFromRow(row, withPrint: withPrints),
+    ];
+  }
+
+  @override
+  Future<void> nameFaces(List<int> ids, String? name) async {
+    final statement = _db.prepare(
+      'UPDATE faces SET name = ?, ignored = 0 WHERE id = ?',
+    );
+    _transaction(() {
+      for (final id in ids) {
+        statement.execute([name, id]);
+      }
+    });
+    statement.close();
+  }
+
+  @override
+  Future<void> setFacesIgnored(List<int> ids, bool ignored) async {
+    final statement = _db.prepare(
+      'UPDATE faces SET ignored = ?, name = NULL WHERE id = ?',
+    );
+    _transaction(() {
+      for (final id in ids) {
+        statement.execute([ignored ? 1 : 0, id]);
+      }
+    });
+    statement.close();
+  }
+
+  @override
+  Future<List<PersonSummary>> people() async {
+    final rows = _db.select('''
+      SELECT name, COUNT(DISTINCT path) AS photos, MIN(id) AS cover
+      FROM faces
+      WHERE name IS NOT NULL AND ignored = 0
+        AND path IN (SELECT path FROM images)
+      GROUP BY name
+      ORDER BY photos DESC, name COLLATE NOCASE
+    ''');
+    final result = <PersonSummary>[];
+    for (final row in rows) {
+      final cover = _db.select(
+        'SELECT id, path, x, y, w, h, crop, name, ignored FROM faces '
+        'WHERE id = ?',
+        [row['cover']],
+      );
+      result.add(
+        PersonSummary(
+          name: row['name'] as String,
+          photoCount: row['photos'] as int,
+          cover: _faceFromRow(cover.first, withPrint: false),
+        ),
+      );
+    }
+    return result;
+  }
+
+  static CatalogFace _faceFromRow(Row row, {required bool withPrint}) {
+    final crop = row['crop'];
+    Float32List? print;
+    if (withPrint && row['print'] is Uint8List) {
+      final bytes = row['print'] as Uint8List;
+      // Copy: the blob's buffer may not be 4-byte aligned.
+      print = Float32List.view(
+        Uint8List.fromList(bytes).buffer,
+        0,
+        bytes.length ~/ 4,
+      );
+    }
+    return CatalogFace(
+      id: row['id'] as int,
+      path: row['path'] as String,
+      box: FaceBox(
+        (row['x'] as num).toDouble(),
+        (row['y'] as num).toDouble(),
+        (row['w'] as num).toDouble(),
+        (row['h'] as num).toDouble(),
+      ),
+      crop: crop is Uint8List ? crop : null,
+      print: print,
+      name: row['name'] as String?,
+      ignored: row['ignored'] == 1,
+    );
+  }
+
   @override
   Future<void> close() async {
     _db.close();
@@ -379,6 +582,12 @@ class SqliteCatalogRepository implements CatalogRepository {
       );
       arguments.add(query.albumId);
     }
+    if (query.person != null) {
+      conditions.add(
+        'path IN (SELECT path FROM faces WHERE name = ? AND ignored = 0)',
+      );
+      arguments.add(query.person);
+    }
     if (query.onlyWithLocation || query.bounds != null) {
       conditions.add('COALESCE(loc_lat, gps_lat) IS NOT NULL');
     }
@@ -416,8 +625,23 @@ class SqliteCatalogRepository implements CatalogRepository {
       image.camera ?? '',
       image.info.caption,
       ...image.info.tags,
+      for (final person in image.info.people) person.name,
       date(image.date),
     ].join(' ').toLowerCase();
+  }
+
+  static List<PersonTag> _people(Object? json) {
+    if (json is! String) {
+      return const [];
+    }
+    try {
+      return (jsonDecode(json) as List)
+          .map(PersonTag.fromJson)
+          .whereType<PersonTag>()
+          .toList();
+    } catch (_) {
+      return const [];
+    }
   }
 
   static GeoPoint? _point(Object? latitude, Object? longitude) {
@@ -457,6 +681,7 @@ class SqliteCatalogRepository implements CatalogRepository {
         tags: tags,
         hidden: row['hidden'] == 1,
         location: _point(row['loc_lat'], row['loc_lon']),
+        people: _people(row['people']),
       ),
       edits: edits,
     );
@@ -467,6 +692,7 @@ extension on LibraryQuery {
   /// Folder lists ignore the folder/album being looked at.
   LibraryQuery copyForFolders() => LibraryQuery(
     text: text,
+    person: person,
     onlyWithLocation: onlyWithLocation,
     bounds: bounds,
     starredOnly: starredOnly,

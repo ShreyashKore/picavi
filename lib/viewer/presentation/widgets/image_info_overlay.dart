@@ -16,6 +16,7 @@ class ImageInfoOverlay extends StatefulWidget {
     required this.viewState,
     this.caption = '',
     this.tags = const <String>[],
+    this.people = const <String>[],
   });
 
   final String imagePath;
@@ -25,6 +26,7 @@ class ImageInfoOverlay extends StatefulWidget {
   final InteractiveImageViewerValue viewState;
   final String caption;
   final List<String> tags;
+  final List<String> people;
 
   @override
   State<ImageInfoOverlay> createState() => _ImageInfoOverlayState();
@@ -99,6 +101,11 @@ class _ImageInfoOverlayState extends State<ImageInfoOverlay> {
                       _InfoLine(
                         label: l10n.captionLabel,
                         value: widget.caption,
+                      ),
+                    if (widget.people.isNotEmpty)
+                      _InfoLine(
+                        label: l10n.peopleTitle,
+                        value: widget.people.join(', '),
                       ),
                     if (widget.tags.isNotEmpty)
                       _InfoLine(
