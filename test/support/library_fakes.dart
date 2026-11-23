@@ -100,6 +100,12 @@ class TrashOnlyFileOperations implements FileOperationsService {
   Future<bool> reveal(String path) async => true;
 
   @override
+  bool get canShare => false;
+
+  @override
+  Future<bool> share(List<String> paths, ShareAnchor anchor) async => false;
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
