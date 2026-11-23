@@ -77,6 +77,11 @@ lib/
                        SidecarPhotoInfoRepository, LibraryServices (opens it all)
     presentation/      LibraryController + LibraryState, LibraryScreen, DuplicatesScreen,
                        sidebar, grid, folder tree
+  collage/             collage + contact sheet maker: CollageOptions/CollageService (domain),
+                       collage_renderer.dart (pure-Dart layouts) + RasterCollageService (data),
+                       options dialog (presentation)
+  print_photos/        printing: PrintLayout, print_pdf.dart (PDF via package:pdf), print_flow.dart
+                       (layout dialog → system print dialog via package:printing)
 ```
 
 ### State management
@@ -153,7 +158,8 @@ native side: [macos/Runner/AppDelegate.swift](macos/Runner/AppDelegate.swift) an
 `MainFlutterWindow.swift`. Channel methods: `consumePendingFiles`, `openFiles`,
 `pickImageFile`, `authorizeDirectoryAccess`, `getDefaultViewerStatus`,
 `setAsDefaultViewer`, `moveToTrash`, `revealInFinder`, `copyImageToClipboard`,
-`openWith`, `decodeImage` (used by `SystemDecodedImage`). macOS uses
+`openWith`, `decodeImage` (used by `SystemDecodedImage`), `recognizeText` (Live Text),
+`shareFiles` (share menu). macOS uses
 security-scoped bookmarks for folder access. On Windows/Linux, file actions use
 system tools from `DesktopFileOperationsService` (paths passed via env/args).
 

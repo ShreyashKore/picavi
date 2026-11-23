@@ -64,13 +64,13 @@ falls into one of those three buckets.
 ### 5. Advanced (Picasa's "wow" features)
 | Gap | Notes |
 |---|---|
-| Places | Map view from GPS EXIF; manual geotagging |
+| Places | ✅ Done in Phase 4 (GPS map + setting locations by hand) |
 | People | On-device face detection + clustering (Apple Vision on macOS) |
-| Collage maker | Grid / mosaic / contact sheet |
+| Collage maker | ✅ Mosaic / grid / contact sheet |
 | Movie maker | Slideshow → video export |
-| Print & contact sheets | |
-| Import | From camera / SD card with date-based folders |
-| Share / email | OS share sheet |
+| Print & contact sheets | ✅ 1/2/4/9 per page; contact sheets via the collage maker |
+| Import | ✅ From camera / SD card into date-based folders |
+| Share / email | ✅ macOS share menu |
 
 ### 6. Housekeeping found during the review
 - ~~Control-bar tooltips and info-panel labels were hardcoded English~~ → localized.
@@ -175,13 +175,40 @@ architecture choices, so the decisions are called out up front.
   - Catalog queries run on the UI isolate (fast for tens of thousands of
     photos; move to a worker isolate if libraries get much bigger).
 
-### Phase 4 — Advanced (v2.x)
-- Places (map + GPS), People (faces, macOS first), collage, print,
-  import from device, share sheet, video playback, movie export.
+### Phase 4 — Advanced (v2.x) — in progress
+- ✅ Share sheet: Share… in the viewer menu and library selection bar opens
+  the macOS share menu (`shareFiles` channel method). Hidden on Windows/Linux.
+- ✅ Import: Library → Import photos finds cameras/cards (volumes with a DCIM
+  folder) or any folder, pre-selects new photos, copies them into
+  `<destination>/<year>/<year-month-day>` by date taken, skips ones already
+  there, never overwrites and never touches the card. The destination
+  (default ~/Pictures) is remembered and added to the library.
+- ✅ Collage maker (`lib/collage/`): mosaic (justified rows), grid, and A4
+  contact sheets with file names; edits applied; new JPEGs, never overwritten.
+- ✅ Places: EXIF GPS indexed (catalog schema v2, upgraded in place); a
+  location set by hand lives in the sidecar (`location`) and wins over GPS;
+  Library → Places clusters photos on an OpenStreetMap map (`flutter_map`).
+  Tiles load only while the map or the location picker is open.
+- ✅ Print (`lib/print_photos/`): 1/2/4/9 photos per page with edits applied,
+  through the system print dialog (`printing` package).
+- Not started — each needs a decision first:
+  - **People.** Vision detects faces well, but Apple has no public face
+    identity API, so automatic grouping would be weak. Options: detection
+    plus naming faces by hand with "looks similar" suggestions (macOS only),
+    or skip.
+  - **Video playback.** `video_player` is solid on macOS only;
+    `media_kit` covers all three platforms but bundles libmpv (large).
+  - **Movie maker.** Slideshow → MP4 via AVAssetWriter (macOS) or ffmpeg.
+- Deferred in the finished items: share on Windows/Linux; import doesn't
+  read EXIF of HEIC beyond the first 256 KB (uses the file date); map tiles
+  aren't cached offline; Places has no "set location" in the viewer yet;
+  contact-sheet captions use a built-in font with ASCII only, so other scripts
+  show as gaps.
+- Not tried by hand in the running app yet — covered by unit and widget tests.
 
 ## Decisions
 1. ~~**Sidecar format**~~ — decided: JSON (`.picavi.json`); XMP later if needed.
 2. ~~**Catalog DB**~~ — decided: `sqlite3` package, plain SQL.
 3. **Platform priority** — macOS-first native features, or parity on all three each release?
-   (Phase 3 is all Dart, so it works the same everywhere.)
+   (Phases 3–4 are mostly Dart and work everywhere; share is macOS-only so far.)
 4. ~~**Scope of "library"**~~ — decided: opt-in watched folders.

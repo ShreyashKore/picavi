@@ -68,6 +68,11 @@ lib/
                      SidecarPhotoInfoRepository, LibraryServices (opens it all)
     presentation/    LibraryController + LibraryState, LibraryScreen, DuplicatesScreen,
                      sidebar, grid, folder tree
+  collage/           collage + contact sheet maker: CollageOptions/CollageService (domain),
+                     collage_renderer.dart (pure-Dart layouts) + RasterCollageService (data),
+                     options dialog (presentation)
+  print_photos/      printing: PrintLayout, print_pdf.dart (PDF via package:pdf), print_flow.dart
+                     (layout dialog → system print dialog via package:printing)
 ```
 
 - **State:** plain `ChangeNotifier` + immutable `ViewerState`; no state-management
@@ -121,7 +126,7 @@ macOS forwards Finder "Open With" events into Flutter via
 Swift: `macos/Runner/AppDelegate.swift` + `MainFlutterWindow.swift`. Methods:
 `consumePendingFiles`, `openFiles`, `pickImageFile`, `authorizeDirectoryAccess`,
 `getDefaultViewerStatus`, `setAsDefaultViewer`, `moveToTrash`, `revealInFinder`,
-`copyImageToClipboard`, `openWith`, `decodeImage` (folder access uses security-scoped
+`copyImageToClipboard`, `openWith`, `decodeImage`, `recognizeText`, `shareFiles` (folder access uses security-scoped
 bookmarks). Per-platform "open with" registration: macOS `Info.plist`, Linux
 `linux/oiv.desktop.in`, Windows registry. **Change channel names/payloads on the
 Dart and Swift sides together.**
