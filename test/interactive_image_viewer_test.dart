@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -244,6 +245,118 @@ void main() {
       final overlayRect = tester.getRect(find.byKey(overlayKey));
       expect(overlayRect.width / overlayRect.height, closeTo(2, 0.01));
       expect(overlayRect.height, closeTo(120, 0.5));
+    });
+  });
+
+  group('InteractiveImageViewer padding', () {
+    // A 40x20 image in a 320x240 viewer whose bottom 120 px are padding (like
+    // the thumbnail strip): the fit area is 320x120, the image is centered
+    // in it, 60 px above the viewer's center.
+    const padding = EdgeInsets.only(bottom: 120);
+
+    Future<(InteractiveImageViewerController, AppImage)> pumpPadded(
+      WidgetTester tester,
+    ) async {
+      final controller = InteractiveImageViewerController();
+      final image = _buildSvgImage(
+        const Color(0xFF00897B),
+        width: 40,
+        height: 20,
+      );
+      await _pumpViewer(
+        tester,
+        controller: controller,
+        image: image,
+        imagePadding: padding,
+      );
+      for (var i = 0; i < 20 && controller.value.imageInfo == null; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump();
+      }
+      await tester.pumpAndSettle();
+      return (controller, image);
+    }
+
+    Rect imageRect(WidgetTester tester, AppImage image) {
+      final viewer = tester.getRect(find.byType(InteractiveImageViewer));
+      return tester
+          .getRect(find.byKey(ValueKey<Object>(image.providerIdentity)))
+          .shift(-viewer.topLeft);
+    }
+
+    testWidgets('fits the image inside the padding, unsqueezed', (
+      tester,
+    ) async {
+      final (controller, image) = await pumpPadded(tester);
+
+      final rect = imageRect(tester, image);
+      expect(rect.size, const Size(240, 120));
+      expect(rect.center, const Offset(160, 60));
+      // Covering the whole 320x240 viewer takes 2x the fit.
+      expect(controller.value.fillZoomFactor, closeTo(2, 0.001));
+    });
+
+    testWidgets('1:1 shows one image pixel per logical pixel', (tester) async {
+      final (controller, image) = await pumpPadded(tester);
+
+      controller.zoomToOneToOne();
+      await tester.pumpAndSettle();
+
+      expect(imageRect(tester, image).size.width, closeTo(40, 0.01));
+      expect(imageRect(tester, image).size.height, closeTo(20, 0.01));
+    });
+
+    testWidgets('scroll zoom keeps the point under the cursor in place', (
+      tester,
+    ) async {
+      final (controller, image) = await pumpPadded(tester);
+      for (var i = 0; i < 6; i++) {
+        controller.zoomIn();
+        await tester.pumpAndSettle();
+      }
+
+      final viewer = tester.getRect(find.byType(InteractiveImageViewer));
+      const cursor = Offset(200, 100);
+      final before = imageRect(tester, image);
+      final anchor = Offset(
+        (cursor.dx - before.left) / before.width,
+        (cursor.dy - before.top) / before.height,
+      );
+
+      final pointer = TestPointer(1, PointerDeviceKind.mouse);
+      await tester.sendEventToBinding(pointer.hover(viewer.topLeft + cursor));
+      await tester.sendEventToBinding(pointer.scroll(const Offset(0, -20)));
+      await tester.pumpAndSettle();
+
+      final after = imageRect(tester, image);
+      expect(after.width, greaterThan(before.width));
+      expect(after.left + anchor.dx * after.width, closeTo(cursor.dx, 0.5));
+      expect(after.top + anchor.dy * after.height, closeTo(cursor.dy, 0.5));
+    });
+
+    testWidgets('a zoomed image pans until its edges meet the viewer edges', (
+      tester,
+    ) async {
+      final (controller, image) = await pumpPadded(tester);
+      controller.zoomToFill();
+      await tester.pumpAndSettle();
+      controller.zoomIn();
+      await tester.pumpAndSettle();
+
+      final viewer = tester.getRect(find.byType(InteractiveImageViewer));
+      await tester.dragFrom(viewer.center, const Offset(2000, 2000));
+      await tester.pumpAndSettle();
+      var rect = imageRect(tester, image);
+      expect(rect.left, closeTo(0, 0.5));
+      expect(rect.top, closeTo(0, 0.5));
+
+      await tester.dragFrom(viewer.center, const Offset(-4000, -4000));
+      await tester.pumpAndSettle();
+      rect = imageRect(tester, image);
+      expect(rect.right, closeTo(320, 0.5));
+      expect(rect.bottom, closeTo(240, 0.5));
     });
   });
 }
