@@ -493,7 +493,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => 'Copiar imagen';
+  String get shortcutCopyImage => 'Copiar imagen o el texto seleccionado';
 
   @override
   String get shortcutSelectAll => 'Seleccionar todas las imágenes';
@@ -1361,4 +1361,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get printFailed => 'No se pudieron imprimir estas fotos';
+
+  @override
+  String get liveTextCopy => 'Copiar texto';
+
+  @override
+  String get liveTextSelectAll => 'Seleccionar todo el texto';
+
+  @override
+  String get liveTextCopiedNotice => 'Texto copiado al portapapeles';
+
+  @override
+  String get liveTextSettingTitle => 'Seleccionar texto en imágenes';
+
+  @override
+  String get liveTextSettingDescription =>
+      'Pasa el puntero sobre el texto de una foto para seleccionarlo y copiarlo. El texto se reconoce en este Mac; no se sube nada.';
 }

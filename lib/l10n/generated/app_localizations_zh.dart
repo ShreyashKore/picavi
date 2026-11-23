@@ -473,7 +473,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => '复制图片';
+  String get shortcutCopyImage => '复制图片或所选文本';
 
   @override
   String get shortcutSelectAll => '全选图片';
@@ -1304,4 +1304,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get printFailed => '无法打印这些照片';
+
+  @override
+  String get liveTextCopy => '复制文本';
+
+  @override
+  String get liveTextSelectAll => '全选文本';
+
+  @override
+  String get liveTextCopiedNotice => '文本已复制到剪贴板';
+
+  @override
+  String get liveTextSettingTitle => '选择图片中的文本';
+
+  @override
+  String get liveTextSettingDescription =>
+      '将指针悬停在照片中的文本上即可选择并复制。文本在这台 Mac 上识别，不会上传任何内容。';
 }

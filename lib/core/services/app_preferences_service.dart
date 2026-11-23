@@ -9,6 +9,7 @@ class AppPreferencesService {
       'restoreLastOpenedImageEnabled';
   static const String _lastOpenedImagePathKey = 'lastOpenedImagePath';
   static const String _showRecentFoldersEnabledKey = 'showRecentFoldersEnabled';
+  static const String _liveTextEnabledKey = 'liveTextEnabled';
   static const String _recentFoldersKey = 'recentFolders';
   static const String _imageSortOrderKey = 'imageSortOrder';
   static const String _slideshowIntervalKey = 'slideshowIntervalSeconds';
@@ -120,6 +121,25 @@ class AppPreferencesService {
       if (!enabled) {
         await preferences.remove(_recentFoldersKey);
       }
+    } catch (_) {
+      // Ignore persistence failures and keep the app usable.
+    }
+  }
+
+  /// Whether text in images can be selected (Live Text). On by default.
+  Future<bool> isLiveTextEnabled() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      return preferences.getBool(_liveTextEnabledKey) ?? true;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  Future<void> setLiveTextEnabled(bool enabled) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.setBool(_liveTextEnabledKey, enabled);
     } catch (_) {
       // Ignore persistence failures and keep the app usable.
     }

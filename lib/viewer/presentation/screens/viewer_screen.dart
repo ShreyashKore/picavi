@@ -21,6 +21,7 @@ import '../../../editor/data/repositories/sidecar_image_edit_repository.dart';
 import '../../../print_photos/presentation/print_flow.dart';
 import '../../../editor/data/services/edited_image_provider.dart';
 import '../../../editor/data/services/flutter_image_pixel_source.dart';
+import '../../../editor/data/services/isolate_edit_render_service.dart';
 import '../../../editor/data/services/raster_image_export_service.dart';
 import '../../../editor/data/services/rendering_quick_fix_service.dart';
 import '../../../editor/domain/entities/image_edits.dart';
@@ -36,18 +37,22 @@ import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
 import '../../data/services/raster_image_transform_service.dart';
 import '../../data/services/slideshow_settings_store.dart';
+import '../../data/services/vision_text_recognition_service.dart';
 import '../../data/platform_image_formats.dart';
 import '../../domain/entities/image_sort_order.dart';
+import '../../domain/entities/recognized_text.dart';
 import '../../domain/entities/recent_folder.dart';
 import '../../domain/entities/slideshow_settings.dart';
 import '../../domain/repositories/image_repository.dart';
 import '../../domain/services/image_picker_service.dart';
+import '../controllers/live_text_controller.dart';
 import '../controllers/viewer_controller.dart';
 import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
 import '../widgets/caption_tags_dialog.dart';
 import '../widgets/image_info_overlay.dart';
 import '../widgets/interactive_image_viewer.dart';
+import '../widgets/live_text_overlay.dart';
 import '../widgets/keyboard_shortcuts_dialog.dart';
 import '../widgets/recent_folders_panel.dart';
 import '../widgets/rename_image_dialog.dart';
@@ -108,6 +113,15 @@ class _ViewerScreenState extends State<ViewerScreen>
   bool _suppressDefaultViewerHintUntilRestart = false;
   bool _restoreLastOpenedImageEnabled = false;
   bool _showRecentFoldersEnabled = false;
+
+  /// Live Text: recognizes text in the current image once it settles.
+  static const Duration _liveTextDelay = Duration(milliseconds: 350);
+  final LiveTextController _liveTextController = LiveTextController(
+    const VisionTextRecognitionService(),
+  );
+  bool _liveTextEnabled = true;
+  Timer? _liveTextTimer;
+  String? _pendingLiveTextKey;
   List<RecentFolder> _recentFolders = const <RecentFolder>[];
   String? _lastImagePath;
   DefaultViewerStatus? _defaultViewerStatus;
@@ -146,6 +160,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       ..addListener(_onImageViewerChanged);
     unawaited(_initializeDefaultViewerState());
     unawaited(_refreshRestoreLastOpenedImagePreference());
+    unawaited(_refreshLiveTextPreference());
     unawaited(_refreshRecentFolders());
     unawaited(_restoreSortOrder());
     _slideshowSettingsStore = SlideshowSettingsStore(_appPreferencesService);
@@ -191,6 +206,8 @@ class _ViewerScreenState extends State<ViewerScreen>
     WidgetsBinding.instance.removeObserver(this);
     windowManager.removeListener(this);
     _stopSlideshow(rebuild: false);
+    _liveTextTimer?.cancel();
+    _liveTextController.dispose();
     _imageViewerController
       ..removeListener(_onImageViewerChanged)
       ..dispose();
@@ -218,6 +235,7 @@ class _ViewerScreenState extends State<ViewerScreen>
 
     final state = _controller.state;
     _syncPresentationState(state);
+    _scheduleLiveText();
     _handleNotice(state.notice);
     setState(() {});
   }
@@ -379,6 +397,10 @@ class _ViewerScreenState extends State<ViewerScreen>
   }
 
   void _handleEscape() {
+    if (_liveTextController.hasSelection) {
+      _liveTextController.clearSelection();
+      return;
+    }
     if (_controller.state.hasSelection) {
       _controller.clearSelection();
       return;
@@ -913,6 +935,7 @@ class _ViewerScreenState extends State<ViewerScreen>
           defaultViewerService: _defaultViewerService,
           initialStatus: _defaultViewerStatus,
           slideshowSettingsStore: _slideshowSettingsStore,
+          showLiveTextSetting: _liveTextController.isAvailable,
         ),
       ),
     );
@@ -921,6 +944,143 @@ class _ViewerScreenState extends State<ViewerScreen>
     await _refreshRestoreLastOpenedImagePreference();
     await _refreshRecentFolders();
     await _loadSlideshowSettings();
+    await _refreshLiveTextPreference();
+  }
+
+  Future<void> _refreshLiveTextPreference() async {
+    final enabled = await _appPreferencesService.isLiveTextEnabled();
+    if (!mounted || enabled == _liveTextEnabled) {
+      return;
+    }
+    setState(() => _liveTextEnabled = enabled);
+    _scheduleLiveText();
+  }
+
+  bool get _isLiveTextActive =>
+      _liveTextEnabled && !_isPlaying && _liveTextController.isAvailable;
+
+  /// Identifies what is on screen: the file, its revision and its edits.
+  String? _liveTextKeyFor(ViewerState state) {
+    if (!state.hasImages) {
+      return null;
+    }
+    final image = state.currentImage;
+    if (p.extension(image.path).toLowerCase() == '.svg') {
+      return null;
+    }
+    final edits = state.editsFor(image.path);
+    return '${image.path}|${image.revision}|${edits.hashCode}';
+  }
+
+  /// Hides text from the previous image at once and recognizes the current
+  /// one after a short pause, so flicking through images stays cheap.
+  void _scheduleLiveText() {
+    final state = _controller.state;
+    final key = _isLiveTextActive ? _liveTextKeyFor(state) : null;
+    if (key == null) {
+      _liveTextTimer?.cancel();
+      _pendingLiveTextKey = null;
+      if (_liveTextController.key != null) {
+        _liveTextController.clear();
+      }
+      return;
+    }
+    if (key == _liveTextController.key || key == _pendingLiveTextKey) {
+      return;
+    }
+
+    _liveTextController.clear();
+    _liveTextTimer?.cancel();
+    _pendingLiveTextKey = key;
+    final path = state.currentImage.path;
+    final edits = state.editsFor(path);
+    _liveTextTimer = Timer(_liveTextDelay, () {
+      _pendingLiveTextKey = null;
+      if (!mounted) {
+        return;
+      }
+      unawaited(
+        _liveTextController.analyze(key, () => _liveTextSourceFor(path, edits)),
+      );
+    });
+  }
+
+  /// The file itself, or the image with its edits applied (what the viewer
+  /// shows), so text positions line up with the display.
+  Future<TextRecognitionSource?> _liveTextSourceFor(
+    String path,
+    ImageEdits edits,
+  ) async {
+    if (edits.isEmpty) {
+      return FileTextRecognitionSource(path);
+    }
+    final source = await _pixelSource.load(
+      path,
+      maxDimension: EditedImageProvider.viewerMaxDimension,
+    );
+    if (source == null) {
+      return null;
+    }
+    final rendered = await const IsolateEditRenderService().render(
+      source,
+      edits.operations,
+    );
+    return PixelTextRecognitionSource(
+      width: rendered.width,
+      height: rendered.height,
+      rgba: rendered.pixels,
+    );
+  }
+
+  Future<void> _copyLiveText() async {
+    final text = _liveTextController.selectedText;
+    if (text == null || text.isEmpty) {
+      return;
+    }
+    await Clipboard.setData(ClipboardData(text: text));
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.maybeOf(context)
+      ?..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(context.l10n.liveTextCopiedNotice)),
+      );
+  }
+
+  Future<void> _showLiveTextMenu(Offset globalPosition) async {
+    final overlay = Overlay.of(context).context.findRenderObject();
+    if (overlay is! RenderBox) {
+      return;
+    }
+    final copyLabel = context.l10n.liveTextCopy;
+    final selectAllLabel = context.l10n.liveTextSelectAll;
+    final action = await showMenu<_LiveTextMenuAction>(
+      context: context,
+      position: RelativeRect.fromRect(
+        globalPosition & const Size(1, 1),
+        Offset.zero & overlay.size,
+      ),
+      items: [
+        PopupMenuItem(value: _LiveTextMenuAction.copy, child: Text(copyLabel)),
+        PopupMenuItem(
+          value: _LiveTextMenuAction.selectAll,
+          child: Text(selectAllLabel),
+        ),
+      ],
+    );
+    if (!mounted) {
+      return;
+    }
+    switch (action) {
+      case _LiveTextMenuAction.copy:
+        await _copyLiveText();
+      case _LiveTextMenuAction.selectAll:
+        _liveTextController.selectAll();
+      case null:
+        break;
+    }
+    _viewerFocusNode.requestFocus();
   }
 
   String _defaultViewerActionLabel(DefaultViewerStatus? status) {
@@ -1115,6 +1275,7 @@ class _ViewerScreenState extends State<ViewerScreen>
     setState(() {
       _isPlaying = true;
     });
+    _scheduleLiveText();
     _slideshowSequencer = SlideshowSequencer(
       imageCount: state.images.length,
       startIndex: state.currentIndex,
@@ -1158,6 +1319,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       setState(() {
         _isPlaying = false;
       });
+      _scheduleLiveText();
     } else {
       _isPlaying = false;
     }
@@ -1251,9 +1413,15 @@ class _ViewerScreenState extends State<ViewerScreen>
   /// `keyboard_shortcuts_dialog.dart`.
   VoidCallback? _commandShortcutActionFor(LogicalKeyboardKey key) {
     if (key == LogicalKeyboardKey.keyC) {
+      if (_liveTextController.hasSelection) {
+        return () => unawaited(_copyLiveText());
+      }
       return () => unawaited(_controller.copyCurrentImageToClipboard());
     }
     if (key == LogicalKeyboardKey.keyA) {
+      if (_liveTextController.hasSelection) {
+        return _liveTextController.selectAll;
+      }
       return _controller.selectAll;
     }
     if (key == LogicalKeyboardKey.backspace) {
@@ -1478,6 +1646,13 @@ class _ViewerScreenState extends State<ViewerScreen>
                 left: 20,
                 right: 20,
               ),
+              overlayBuilder: _isLiveTextActive
+                  ? (context, _) => LiveTextOverlay(
+                      controller: _liveTextController,
+                      onContextMenu: (position) =>
+                          unawaited(_showLiveTextMenu(position)),
+                    )
+                  : null,
             ),
           ),
 
@@ -1807,3 +1982,5 @@ class _DropHighlight extends StatelessWidget {
     );
   }
 }
+
+enum _LiveTextMenuAction { copy, selectAll }

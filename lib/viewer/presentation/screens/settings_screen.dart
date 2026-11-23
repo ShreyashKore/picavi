@@ -17,12 +17,16 @@ class SettingsScreen extends StatefulWidget {
     required this.defaultViewerService,
     required this.slideshowSettingsStore,
     this.initialStatus,
+    this.showLiveTextSetting = false,
   });
 
   final AppPreferencesService appPreferencesService;
   final DefaultViewerService defaultViewerService;
   final SlideshowSettingsStore slideshowSettingsStore;
   final DefaultViewerStatus? initialStatus;
+
+  /// Shows the "Select text in images" switch (platforms with Live Text).
+  final bool showLiveTextSetting;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -38,6 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _restoreLastOpenedImageEnabled = false;
   bool _isUpdatingRecentFoldersPreference = false;
   bool _showRecentFoldersEnabled = false;
+  bool _liveTextEnabled = true;
   String _versionLabel = '—';
   bool _isVersionUnavailable = false;
   SlideshowSettings? _slideshowSettings;
@@ -74,6 +79,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     final showRecentFoldersEnabledFuture = widget.appPreferencesService
         .isShowRecentFoldersEnabled();
     final slideshowSettingsFuture = widget.slideshowSettingsStore.load();
+    final liveTextEnabledFuture = widget.appPreferencesService
+        .isLiveTextEnabled();
 
     final versionLabel = await versionFuture;
     final status = await statusFuture;
@@ -81,6 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen>
         await restoreLastOpenedImageEnabledFuture;
     final showRecentFoldersEnabled = await showRecentFoldersEnabledFuture;
     final slideshowSettings = await slideshowSettingsFuture;
+    final liveTextEnabled = await liveTextEnabledFuture;
     if (!mounted) {
       return;
     }
@@ -93,6 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       _restoreLastOpenedImageEnabled = restoreLastOpenedImageEnabled;
       _showRecentFoldersEnabled = showRecentFoldersEnabled;
       _slideshowSettings = slideshowSettings;
+      _liveTextEnabled = liveTextEnabled;
       _isLoadingResumePreference = false;
     });
   }
@@ -189,6 +198,11 @@ class _SettingsScreenState extends State<SettingsScreen>
       _showRecentFoldersEnabled = enabled;
       _isUpdatingRecentFoldersPreference = false;
     });
+  }
+
+  Future<void> _setLiveTextEnabled(bool enabled) async {
+    setState(() => _liveTextEnabled = enabled);
+    await widget.appPreferencesService.setLiveTextEnabled(enabled);
   }
 
   Future<void> _updateSlideshowSettings(SlideshowSettings settings) async {
@@ -423,6 +437,24 @@ class _SettingsScreenState extends State<SettingsScreen>
                               child: LinearProgressIndicator(minHeight: 2),
                             ),
                           const Divider(height: 28),
+                          if (widget.showLiveTextSetting) ...[
+                            SwitchListTile.adaptive(
+                              contentPadding: EdgeInsets.zero,
+                              secondary: const CircleAvatar(
+                                child: Icon(Icons.text_fields),
+                              ),
+                              value: _liveTextEnabled,
+                              onChanged: _isLoadingResumePreference
+                                  ? null
+                                  : (value) =>
+                                        unawaited(_setLiveTextEnabled(value)),
+                              title: Text(context.l10n.liveTextSettingTitle),
+                              subtitle: Text(
+                                context.l10n.liveTextSettingDescription,
+                              ),
+                            ),
+                            const Divider(height: 28),
+                          ],
                           if (_slideshowSettings case final settings?) ...[
                             ..._buildSlideshowSection(settings),
                             const Divider(height: 28),

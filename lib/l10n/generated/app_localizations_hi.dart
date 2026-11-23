@@ -489,7 +489,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => 'छवि कॉपी करें';
+  String get shortcutCopyImage => 'छवि या चुना गया टेक्स्ट कॉपी करें';
 
   @override
   String get shortcutSelectAll => 'सभी छवियाँ चुनें';
@@ -1352,4 +1352,20 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get printFailed => 'ये फ़ोटो प्रिंट नहीं हो सकीं';
+
+  @override
+  String get liveTextCopy => 'टेक्स्ट कॉपी करें';
+
+  @override
+  String get liveTextSelectAll => 'सारा टेक्स्ट चुनें';
+
+  @override
+  String get liveTextCopiedNotice => 'टेक्स्ट क्लिपबोर्ड पर कॉपी किया गया';
+
+  @override
+  String get liveTextSettingTitle => 'छवियों में टेक्स्ट चुनें';
+
+  @override
+  String get liveTextSettingDescription =>
+      'फ़ोटो के टेक्स्ट पर पॉइंटर ले जाकर उसे चुनें और कॉपी करें। टेक्स्ट इसी Mac पर पहचाना जाता है, कुछ भी अपलोड नहीं होता।';
 }

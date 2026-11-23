@@ -132,7 +132,7 @@
   "clearSelectionTooltip": "Borrar selección",
   "shortcutRename": "Cambiar nombre de la imagen",
   "shortcutTrash": "Mover a la {bin}",
-  "shortcutCopyImage": "Copiar imagen",
+  "shortcutCopyImage": "Copiar imagen o el texto seleccionado",
   "shortcutSelectAll": "Seleccionar todas las imágenes",
   "shortcutSelect": "Añadir a / ampliar la selección",
   "shortcutEscape": "Borrar selección, salir de pantalla completa o cerrar",
@@ -342,5 +342,10 @@
   "printContinue": "Continuar…",
   "printPreparing": "Preparando las fotos para imprimir…",
   "printJobName": "{count, plural, =1{Foto de Picavi} other{Fotos de Picavi ({count})}}",
-  "printFailed": "No se pudieron imprimir estas fotos"
+  "printFailed": "No se pudieron imprimir estas fotos",
+  "liveTextCopy": "Copiar texto",
+  "liveTextSelectAll": "Seleccionar todo el texto",
+  "liveTextCopiedNotice": "Texto copiado al portapapeles",
+  "liveTextSettingTitle": "Seleccionar texto en imágenes",
+  "liveTextSettingDescription": "Pasa el puntero sobre el texto de una foto para seleccionarlo y copiarlo. El texto se reconoce en este Mac; no se sube nada."
 }

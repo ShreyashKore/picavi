@@ -491,7 +491,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => 'Copy image';
+  String get shortcutCopyImage => 'Copy image, or the selected text';
 
   @override
   String get shortcutSelectAll => 'Select all images';
@@ -1354,4 +1354,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get printFailed => 'Couldn\'t print these photos';
+
+  @override
+  String get liveTextCopy => 'Copy Text';
+
+  @override
+  String get liveTextSelectAll => 'Select All Text';
+
+  @override
+  String get liveTextCopiedNotice => 'Text copied to the clipboard';
+
+  @override
+  String get liveTextSettingTitle => 'Select text in images';
+
+  @override
+  String get liveTextSettingDescription =>
+      'Hover over text in a photo to select and copy it. Text is recognized on this Mac, nothing is uploaded.';
 }

@@ -48,16 +48,14 @@ languages; English, Spanish, Chinese and Arabic are.
 ## Integration steps
 
 1. ✅ Native `recognizeText`, domain/data, controller, overlay, viewer hook, tests.
-2. Wire into `ViewerScreen`: own a `LiveTextController`, trigger analysis
-   when the current image changes and settles (debounced), pass
-   `overlayBuilder`, clear the selection on navigation, Escape and slideshow.
-   Disable it during slideshow.
-3. Cmd+C copies the selected text when there is a selection, otherwise the
-   image. Add a right-click menu (Copy Text, Select All Text). Update
-   `keyboard_shortcuts_dialog.dart`.
-4. Settings toggle "Select text in images" (default on, macOS only) in
-   `AppPreferencesService` + `SettingsScreen`; strings in all ARB files.
-5. Optional: a subtle "text found" indicator in the control bar, and Cmd+A
-   selects all text while text is selected.
-6. Later: Windows `Windows.Media.Ocr`, Linux Tesseract, and VisionKit
-   extras (Look Up, data detectors) via a native menu.
+2. ✅ Wired into `ViewerScreen`: recognition runs 350 ms after the image
+   settles (edited images are rendered through the edit pipeline first; SVGs
+   are skipped), stale text hides at once on navigation, and it is off during
+   slideshows.
+3. ✅ Cmd+C copies the selected text (otherwise the image), Cmd+A selects all
+   text while text is selected, Escape clears the text selection first, and a
+   right-click on text offers Copy Text / Select All Text.
+4. ✅ Settings switch "Select text in images" (on by default, macOS only),
+   strings in all ARB files.
+5. Later: a subtle "text found" hint, Windows `Windows.Media.Ocr`, Linux
+   Tesseract, and VisionKit extras (Look Up, data detectors).

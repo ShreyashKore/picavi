@@ -835,7 +835,7 @@ abstract class AppLocalizations {
   /// Shortcut description.
   ///
   /// In en, this message translates to:
-  /// **'Copy image'**
+  /// **'Copy image, or the selected text'**
   String get shortcutCopyImage;
 
   /// Shortcut description.
@@ -2097,6 +2097,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t print these photos'**
   String get printFailed;
+
+  /// Context menu item that copies the text selected in an image.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Text'**
+  String get liveTextCopy;
+
+  /// Context menu item that selects all text recognized in an image.
+  ///
+  /// In en, this message translates to:
+  /// **'Select All Text'**
+  String get liveTextSelectAll;
+
+  /// Shown after the text selected in an image was copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Text copied to the clipboard'**
+  String get liveTextCopiedNotice;
+
+  /// Settings switch for selecting text inside images (Live Text).
+  ///
+  /// In en, this message translates to:
+  /// **'Select text in images'**
+  String get liveTextSettingTitle;
+
+  /// Explains the select-text-in-images setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hover over text in a photo to select and copy it. Text is recognized on this Mac, nothing is uploaded.'**
+  String get liveTextSettingDescription;
 }
 
 class _AppLocalizationsDelegate

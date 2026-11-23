@@ -132,7 +132,7 @@
   "clearSelectionTooltip": "清除选择",
   "shortcutRename": "重命名图片",
   "shortcutTrash": "移到{bin}",
-  "shortcutCopyImage": "复制图片",
+  "shortcutCopyImage": "复制图片或所选文本",
   "shortcutSelectAll": "全选图片",
   "shortcutSelect": "添加到 / 扩展选择",
   "shortcutEscape": "清除选择、退出全屏或关闭",
@@ -342,5 +342,10 @@
   "printContinue": "继续…",
   "printPreparing": "正在准备打印照片…",
   "printJobName": "{count, plural, other{Picavi 照片（{count}）}}",
-  "printFailed": "无法打印这些照片"
+  "printFailed": "无法打印这些照片",
+  "liveTextCopy": "复制文本",
+  "liveTextSelectAll": "全选文本",
+  "liveTextCopiedNotice": "文本已复制到剪贴板",
+  "liveTextSettingTitle": "选择图片中的文本",
+  "liveTextSettingDescription": "将指针悬停在照片中的文本上即可选择并复制。文本在这台 Mac 上识别，不会上传任何内容。"
 }

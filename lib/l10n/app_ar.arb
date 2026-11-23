@@ -132,7 +132,7 @@
   "clearSelectionTooltip": "مسح التحديد",
   "shortcutRename": "إعادة تسمية الصورة",
   "shortcutTrash": "نقل إلى {bin}",
-  "shortcutCopyImage": "نسخ الصورة",
+  "shortcutCopyImage": "نسخ الصورة أو النص المحدد",
   "shortcutSelectAll": "تحديد كل الصور",
   "shortcutSelect": "إضافة إلى التحديد / توسيعه",
   "shortcutEscape": "مسح التحديد أو الخروج من ملء الشاشة أو الإغلاق",
@@ -342,5 +342,10 @@
   "printContinue": "متابعة…",
   "printPreparing": "جارٍ تجهيز الصور للطباعة…",
   "printJobName": "{count, plural, =1{صورة Picavi} other{صور Picavi ({count})}}",
-  "printFailed": "تعذّرت طباعة هذه الصور"
+  "printFailed": "تعذّرت طباعة هذه الصور",
+  "liveTextCopy": "نسخ النص",
+  "liveTextSelectAll": "تحديد كل النص",
+  "liveTextCopiedNotice": "تم نسخ النص إلى الحافظة",
+  "liveTextSettingTitle": "تحديد النص في الصور",
+  "liveTextSettingDescription": "مرّر المؤشر فوق النص في الصورة لتحديده ونسخه. يتم التعرف على النص على جهاز Mac هذا ولا يُرفع أي شيء."
 }

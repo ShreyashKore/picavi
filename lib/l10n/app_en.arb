@@ -479,7 +479,7 @@
       }
     }
   },
-  "shortcutCopyImage": "Copy image",
+  "shortcutCopyImage": "Copy image, or the selected text",
   "@shortcutCopyImage": {
     "description": "Shortcut description."
   },
@@ -1547,5 +1547,25 @@
   "printFailed": "Couldn't print these photos",
   "@printFailed": {
     "description": "Shown when printing could not start."
+  },
+  "liveTextCopy": "Copy Text",
+  "@liveTextCopy": {
+    "description": "Context menu item that copies the text selected in an image."
+  },
+  "liveTextSelectAll": "Select All Text",
+  "@liveTextSelectAll": {
+    "description": "Context menu item that selects all text recognized in an image."
+  },
+  "liveTextCopiedNotice": "Text copied to the clipboard",
+  "@liveTextCopiedNotice": {
+    "description": "Shown after the text selected in an image was copied."
+  },
+  "liveTextSettingTitle": "Select text in images",
+  "@liveTextSettingTitle": {
+    "description": "Settings switch for selecting text inside images (Live Text)."
+  },
+  "liveTextSettingDescription": "Hover over text in a photo to select and copy it. Text is recognized on this Mac, nothing is uploaded.",
+  "@liveTextSettingDescription": {
+    "description": "Explains the select-text-in-images setting."
   }
 }

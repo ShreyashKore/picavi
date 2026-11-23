@@ -490,7 +490,7 @@ class AppLocalizationsMr extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => 'प्रतिमा कॉपी करा';
+  String get shortcutCopyImage => 'प्रतिमा किंवा निवडलेला मजकूर कॉपी करा';
 
   @override
   String get shortcutSelectAll => 'सर्व प्रतिमा निवडा';
@@ -1351,4 +1351,20 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get printFailed => 'हे फोटो प्रिंट करता आले नाहीत';
+
+  @override
+  String get liveTextCopy => 'मजकूर कॉपी करा';
+
+  @override
+  String get liveTextSelectAll => 'सर्व मजकूर निवडा';
+
+  @override
+  String get liveTextCopiedNotice => 'मजकूर क्लिपबोर्डवर कॉपी केला';
+
+  @override
+  String get liveTextSettingTitle => 'प्रतिमांमधील मजकूर निवडा';
+
+  @override
+  String get liveTextSettingDescription =>
+      'फोटोतील मजकुरावर पॉइंटर नेऊन तो निवडा आणि कॉपी करा. मजकूर याच Mac वर ओळखला जातो, काहीही अपलोड होत नाही.';
 }

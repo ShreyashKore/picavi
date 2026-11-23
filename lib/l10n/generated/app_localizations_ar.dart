@@ -489,7 +489,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => 'نسخ الصورة';
+  String get shortcutCopyImage => 'نسخ الصورة أو النص المحدد';
 
   @override
   String get shortcutSelectAll => 'تحديد كل الصور';
@@ -1352,4 +1352,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get printFailed => 'تعذّرت طباعة هذه الصور';
+
+  @override
+  String get liveTextCopy => 'نسخ النص';
+
+  @override
+  String get liveTextSelectAll => 'تحديد كل النص';
+
+  @override
+  String get liveTextCopiedNotice => 'تم نسخ النص إلى الحافظة';
+
+  @override
+  String get liveTextSettingTitle => 'تحديد النص في الصور';
+
+  @override
+  String get liveTextSettingDescription =>
+      'مرّر المؤشر فوق النص في الصورة لتحديده ونسخه. يتم التعرف على النص على جهاز Mac هذا ولا يُرفع أي شيء.';
 }

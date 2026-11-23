@@ -132,7 +132,7 @@
   "clearSelectionTooltip": "चयन हटाएँ",
   "shortcutRename": "छवि का नाम बदलें",
   "shortcutTrash": "{bin} में ले जाएँ",
-  "shortcutCopyImage": "छवि कॉपी करें",
+  "shortcutCopyImage": "छवि या चुना गया टेक्स्ट कॉपी करें",
   "shortcutSelectAll": "सभी छवियाँ चुनें",
   "shortcutSelect": "चयन में जोड़ें / बढ़ाएँ",
   "shortcutEscape": "चयन हटाएँ, फ़ुल स्क्रीन छोड़ें या बंद करें",
@@ -342,5 +342,10 @@
   "printContinue": "जारी रखें…",
   "printPreparing": "फ़ोटो प्रिंट के लिए तैयार हो रही हैं…",
   "printJobName": "{count, plural, =1{Picavi फ़ोटो} other{Picavi फ़ोटो ({count})}}",
-  "printFailed": "ये फ़ोटो प्रिंट नहीं हो सकीं"
+  "printFailed": "ये फ़ोटो प्रिंट नहीं हो सकीं",
+  "liveTextCopy": "टेक्स्ट कॉपी करें",
+  "liveTextSelectAll": "सारा टेक्स्ट चुनें",
+  "liveTextCopiedNotice": "टेक्स्ट क्लिपबोर्ड पर कॉपी किया गया",
+  "liveTextSettingTitle": "छवियों में टेक्स्ट चुनें",
+  "liveTextSettingDescription": "फ़ोटो के टेक्स्ट पर पॉइंटर ले जाकर उसे चुनें और कॉपी करें। टेक्स्ट इसी Mac पर पहचाना जाता है, कुछ भी अपलोड नहीं होता।"
 }
