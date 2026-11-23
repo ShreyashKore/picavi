@@ -16,6 +16,7 @@ Open Image Viewer / Picavi desktop viewer.
 - Edits never touch your originals: they are kept in a hidden `.picavi.json` file in the folder (like Picasa's `.picasa.ini`) and follow images you rename, move or copy in Picavi.
 - Star photos (`S`), add captions and tags, and hide photos from the library — saved in the same `.picavi.json`, so they travel with the folder.
 - Library (`L`): add the folders where you keep photos and browse everything by month, folder, album or star; search names, captions, tags, cameras and dates; make albums; find exact duplicates and move extra copies to the Trash. The catalog and thumbnails are kept in the app's support folder; your files stay where they are.
+- People (macOS): faces are found on your Mac, grouped by likeness and named by you; names are saved next to the photos and are searchable.
 - Places: photos with GPS (or a location you set) on a map — map tiles come from OpenStreetMap and load only while the map is open.
 - Import photos from a camera or memory card into dated folders; already-imported photos are skipped and nothing on the card is changed.
 - Make collages (mosaic or grid) and contact sheets, print photos 1–9 per page, and share through the macOS share menu.

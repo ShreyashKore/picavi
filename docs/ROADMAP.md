@@ -65,7 +65,7 @@ falls into one of those three buckets.
 | Gap | Notes |
 |---|---|
 | Places | ✅ Done in Phase 4 (GPS map + setting locations by hand) |
-| People | On-device face detection + clustering (Apple Vision on macOS) |
+| People | ✅ macOS: Vision face detection, look-alike grouping, naming with suggestions |
 | Collage maker | ✅ Mosaic / grid / contact sheet |
 | Movie maker | Slideshow → video export |
 | Print & contact sheets | ✅ 1/2/4/9 per page; contact sheets via the collage maker |
@@ -191,15 +191,23 @@ architecture choices, so the decisions are called out up front.
   Tiles load only while the map or the location picker is open.
 - ✅ Print (`lib/print_photos/`): 1/2/4/9 photos per page with edits applied,
   through the system print dialog (`printing` package).
+- ✅ People (macOS): native `detectFaces` (Vision) returns face boxes, a
+  160 px crop and a feature print per face. Catalog schema v3 stores faces;
+  names live in the sidecar (`people: [{name, box}]`) and are matched back to
+  rescanned faces by overlap, so they survive a rebuilt catalog. Library →
+  People scans in the background, groups unnamed faces by likeness, names
+  groups or picked faces, ignores faces, renames/merges/forgets people, and
+  offers "Is this …?" suggestions. Names are searchable and shown in the
+  viewer's info panel. Vision's feature print is a general image fingerprint,
+  not face identity, so groups and suggestions are guesses for the user to
+  confirm; the thresholds (`face_grouping.dart`) are strict and untuned.
 - Not started — each needs a decision first:
-  - **People.** Vision detects faces well, but Apple has no public face
-    identity API, so automatic grouping would be weak. Options: detection
-    plus naming faces by hand with "looks similar" suggestions (macOS only),
-    or skip.
   - **Video playback.** `video_player` is solid on macOS only;
     `media_kit` covers all three platforms but bundles libmpv (large).
   - **Movie maker.** Slideshow → MP4 via AVAssetWriter (macOS) or ffmpeg.
-- Deferred in the finished items: share on Windows/Linux; import doesn't
+- Deferred in the finished items: People on Windows/Linux, re-checking
+  rejected suggestions after a restart (rejections last one session), and
+  tuning the face thresholds on real photos; share on Windows/Linux; import doesn't
   read EXIF of HEIC beyond the first 256 KB (uses the file date); map tiles
   aren't cached offline; Places has no "set location" in the viewer yet;
   contact-sheet captions use a built-in font with ASCII only, so other scripts

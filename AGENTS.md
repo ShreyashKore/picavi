@@ -104,7 +104,7 @@ lib/
   new files that never overwrite.
 - Sidecar is the source of truth, the catalog a cache: `PicaviSidecarStore`
   (`lib/core/sidecar/`) owns `.picavi.json`; each feature owns its fields of an
-  image's entry (`edits`; `starred`/`caption`/`tags`/`hidden`) and keeps unknown
+  image's entry (`edits`; `starred`/`caption`/`tags`/`hidden`/`location`/`people`) and keeps unknown
   ones. The SQLite catalog is rebuildable by re-indexing, except albums.
 - One pixel pipeline: preview, viewer display (`EditedImageProvider`) and export
   all run `applyEdits` (`editor/data/pipeline/edit_pipeline.dart`) in an isolate.
@@ -126,7 +126,7 @@ macOS forwards Finder "Open With" events into Flutter via
 Swift: `macos/Runner/AppDelegate.swift` + `MainFlutterWindow.swift`. Methods:
 `consumePendingFiles`, `openFiles`, `pickImageFile`, `authorizeDirectoryAccess`,
 `getDefaultViewerStatus`, `setAsDefaultViewer`, `moveToTrash`, `revealInFinder`,
-`copyImageToClipboard`, `openWith`, `decodeImage`, `recognizeText`, `shareFiles` (folder access uses security-scoped
+`copyImageToClipboard`, `openWith`, `decodeImage`, `recognizeText`, `shareFiles`, `detectFaces` (folder access uses security-scoped
 bookmarks). Per-platform "open with" registration: macOS `Info.plist`, Linux
 `linux/oiv.desktop.in`, Windows registry. **Change channel names/payloads on the
 Dart and Swift sides together.**

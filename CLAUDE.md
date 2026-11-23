@@ -130,7 +130,7 @@ dependencies behind a `domain/` interface so they stay swappable.
   are produced only by Export, which never overwrites.
 - **Sidecar = source of truth, catalog = cache.** `PicaviSidecarStore`
   (`lib/core/sidecar/`) owns `.picavi.json`; each feature owns its own fields of
-  an image's entry (`edits`; `starred`/`caption`/`tags`/`hidden`) and must keep
+  an image's entry (`edits`; `starred`/`caption`/`tags`/`hidden`/`location`/`people`) and must keep
   unknown fields. The SQLite catalog can always be rebuilt by re-indexing —
   except albums, which live only in the catalog.
 - **One pixel pipeline.** Preview, viewer display (`EditedImageProvider`) and
@@ -159,7 +159,7 @@ native side: [macos/Runner/AppDelegate.swift](macos/Runner/AppDelegate.swift) an
 `pickImageFile`, `authorizeDirectoryAccess`, `getDefaultViewerStatus`,
 `setAsDefaultViewer`, `moveToTrash`, `revealInFinder`, `copyImageToClipboard`,
 `openWith`, `decodeImage` (used by `SystemDecodedImage`), `recognizeText` (Live Text),
-`shareFiles` (share menu). macOS uses
+`shareFiles` (share menu), `detectFaces` (People). macOS uses
 security-scoped bookmarks for folder access. On Windows/Linux, file actions use
 system tools from `DesktopFileOperationsService` (paths passed via env/args).
 
