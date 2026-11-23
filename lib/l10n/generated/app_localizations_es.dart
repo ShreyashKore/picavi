@@ -1120,4 +1120,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get libraryOpenFailed => 'No se pudo abrir la biblioteca';
+
+  @override
+  String shareAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Compartir $count imágenes…',
+      one: 'Compartir…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareFailedNotice => 'No se pudo abrir el menú de compartir';
 }

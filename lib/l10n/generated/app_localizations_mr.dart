@@ -1110,4 +1110,18 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get libraryOpenFailed => 'लायब्ररी उघडता आली नाही';
+
+  @override
+  String shareAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा शेअर करा…',
+      one: 'शेअर करा…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareFailedNotice => 'शेअर मेनू उघडता आला नाही';
 }

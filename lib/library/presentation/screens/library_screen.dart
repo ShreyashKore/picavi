@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import '../../../core/l10n/l10n_extensions.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../viewer/presentation/widgets/viewer_actions_menu.dart'
-    show trashNameFor;
+    show shareAnchorFor, trashNameFor;
 import '../../data/library_services.dart';
 import '../../domain/entities/catalog_image.dart';
 import '../controllers/library_controller.dart';
@@ -43,6 +43,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   final TextEditingController _search = TextEditingController();
   final ScrollController _scroll = ScrollController();
   Timer? _searchDebounce;
+  final GlobalKey _shareKey = GlobalKey();
   int? _lastNoticeId;
 
   @override
@@ -470,6 +471,15 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 ),
               ),
             ),
+            if (_controller.canShare)
+              TextButton.icon(
+                key: _shareKey,
+                onPressed: () => unawaited(
+                  _controller.shareSelection(shareAnchorFor(_shareKey)),
+                ),
+                icon: const Icon(Icons.share_outlined),
+                label: Text(l10n.shareAction(count)),
+              ),
             if (state.source == LibrarySource.album)
               TextButton.icon(
                 onPressed: () =>

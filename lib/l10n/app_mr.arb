@@ -288,5 +288,7 @@
   "duplicatesSummary": "{count, plural, =1{एकसारख्या फोटोंचा 1 गट. एक प्रत ठेवा आणि बाकी {bin} मध्ये हलवा.} other{एकसारख्या फोटोंचे {count} गट. प्रत्येकाची एक प्रत ठेवा आणि बाकी {bin} मध्ये हलवा.}}",
   "duplicatesKeepOnly": "फक्त हे ठेवा",
   "libraryPickFolderMessage": "फोटो असलेला फोल्डर निवडा. त्याचे उप-फोल्डरही समाविष्ट होतील.",
-  "libraryOpenFailed": "लायब्ररी उघडता आली नाही"
+  "libraryOpenFailed": "लायब्ररी उघडता आली नाही",
+  "shareAction": "{count, plural, =1{शेअर करा…} other{{count} प्रतिमा शेअर करा…}}",
+  "shareFailedNotice": "शेअर मेनू उघडता आला नाही"
 }

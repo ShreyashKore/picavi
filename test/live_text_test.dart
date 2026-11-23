@@ -36,7 +36,11 @@ void main() {
             'quad': _quad(0, 0, 1, 0.1),
             'words': [
               {'start': 0, 'end': 9, 'quad': _quad(0, 0, 1, 0.1)},
-              {'start': 0, 'end': 3, 'quad': <double>[1, 2]},
+              {
+                'start': 0,
+                'end': 3,
+                'quad': <double>[1, 2],
+              },
               {'start': 0, 'end': 3, 'quad': _quad(0, 0, 1, 0.1)},
             ],
           },

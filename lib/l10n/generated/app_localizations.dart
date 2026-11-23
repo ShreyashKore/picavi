@@ -1773,6 +1773,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t open the library'**
   String get libraryOpenFailed;
+
+  /// Menu item / button that opens the system share menu.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Share…} other{Share {count} images…}}'**
+  String shareAction(int count);
+
+  /// Shown when the share menu could not be opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the share menu'**
+  String get shareFailedNotice;
 }
 
 class _AppLocalizationsDelegate

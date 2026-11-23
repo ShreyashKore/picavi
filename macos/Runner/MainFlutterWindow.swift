@@ -90,6 +90,8 @@ class MainFlutterWindow: NSWindow {
         self.presentOpenWithPanel(arguments: call.arguments, result: result)
       case "recognizeText":
         self.recognizeText(arguments: call.arguments, result: result)
+      case "shareFiles":
+        self.shareFiles(arguments: call.arguments, result: result)
       default:
         result(FlutterMethodNotImplemented)
       }
@@ -279,6 +281,37 @@ class MainFlutterWindow: NSWindow {
       shouldInterpolate: false,
       intent: .defaultIntent
     )
+  }
+
+  /// Shows the system share menu for `paths`, pointing at the rectangle
+  /// (Flutter logical coordinates, top-left origin) of the button that asked.
+  private func shareFiles(arguments: Any?, result: FlutterResult) {
+    guard let arguments = arguments as? [String: Any],
+          let paths = arguments["paths"] as? [String],
+          let view = contentViewController?.view else {
+      result(false)
+      return
+    }
+    let urls = paths
+      .map { URL(fileURLWithPath: $0) }
+      .filter { FileManager.default.fileExists(atPath: $0.path) }
+    guard !urls.isEmpty else {
+      result(false)
+      return
+    }
+
+    func number(_ key: String) -> CGFloat {
+      CGFloat((arguments[key] as? NSNumber)?.doubleValue ?? 0)
+    }
+    let width = max(number("width"), 1)
+    let height = max(number("height"), 1)
+    let top = number("top")
+    let y = view.isFlipped ? top : view.bounds.height - top - height
+    let anchor = NSRect(x: number("left"), y: y, width: width, height: height)
+
+    let picker = NSSharingServicePicker(items: urls)
+    picker.show(relativeTo: anchor, of: view, preferredEdge: .minY)
+    result(true)
   }
 
   private func moveToTrash(arguments: Any?, result: FlutterResult) {

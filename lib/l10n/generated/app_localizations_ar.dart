@@ -1111,4 +1111,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get libraryOpenFailed => 'تعذّر فتح المكتبة';
+
+  @override
+  String shareAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'مشاركة $count صور…',
+      one: 'مشاركة…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareFailedNotice => 'تعذّر فتح قائمة المشاركة';
 }

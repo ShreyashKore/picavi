@@ -372,6 +372,20 @@ class ViewerController extends ChangeNotifier {
     }
   }
 
+  bool get canShare => _fileOperations.canShare;
+
+  /// Opens the system share menu for the selected images (or the current
+  /// one), pointing at [anchor].
+  Future<void> shareTargets(ShareAnchor anchor) async {
+    final targets = _state.actionTargets;
+    if (targets.isEmpty || !_fileOperations.canShare) {
+      return;
+    }
+    if (!await _fileOperations.share(targets, anchor)) {
+      _pushNotice(ViewerNoticeType.shareFailed);
+    }
+  }
+
   Future<void> revealCurrent() async {
     if (!_state.hasImages) {
       return;

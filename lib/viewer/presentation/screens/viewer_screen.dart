@@ -80,6 +80,7 @@ class _ViewerScreenState extends State<ViewerScreen>
   static const FlutterImagePixelSource _pixelSource = FlutterImagePixelSource();
   late final DesktopFileOperationsService _fileOperations;
   Future<LibraryServices>? _libraryServices;
+  final GlobalKey _actionsMenuKey = GlobalKey();
   late final AppPreferencesService _appPreferencesService;
   late final DefaultViewerService _defaultViewerService;
   late final InteractiveImageViewerController _imageViewerController;
@@ -452,6 +453,8 @@ class _ViewerScreenState extends State<ViewerScreen>
         await _openEditor();
       case ViewerFileAction.export:
         await _exportTargets();
+      case ViewerFileAction.share:
+        await _controller.shareTargets(shareAnchorFor(_actionsMenuKey));
       case ViewerFileAction.feelingLucky:
         await _controller.quickFixTargets(QuickFix.feelingLucky);
       case ViewerFileAction.autoContrast:
@@ -993,6 +996,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       ),
       ViewerNoticeType.editsRemoved => l10n.editsRemovedNotice(notice.count),
       ViewerNoticeType.photoInfoSaveFailed => l10n.photoInfoSaveFailedNotice,
+      ViewerNoticeType.shareFailed => l10n.shareFailedNotice,
     };
   }
 
@@ -1530,6 +1534,8 @@ class _ViewerScreenState extends State<ViewerScreen>
       onSortOrderChanged: (sortOrder) => unawaited(_changeSortOrder(sortOrder)),
       onShowShortcuts: () => unawaited(_showKeyboardShortcuts()),
       actionsMenu: ViewerActionsMenu(
+        key: _actionsMenuKey,
+        canShare: _controller.canShare,
         targetCount: state.actionTargets.length,
         canEdit: _canEditCurrent,
         hasEdits: state.actionTargets.any(

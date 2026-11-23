@@ -127,6 +127,22 @@ class NativeFileChannelService {
   Future<bool> openWith(String path, {required String prompt}) =>
       _invokeBool('openWith', {'path': path, 'prompt': prompt});
 
+  /// Shows the macOS share menu for [paths] next to the given rectangle
+  /// (logical pixels, top-left origin of the window).
+  Future<bool> shareFiles(
+    List<String> paths, {
+    required double left,
+    required double top,
+    required double width,
+    required double height,
+  }) => _invokeBool('shareFiles', {
+    'paths': paths,
+    'left': left,
+    'top': top,
+    'width': width,
+    'height': height,
+  });
+
   Future<bool> _invokeBool(
     String method,
     Map<String, Object?> arguments,

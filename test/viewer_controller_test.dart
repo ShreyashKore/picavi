@@ -383,6 +383,25 @@ void main() {
       expect(fixture.controller.state.notice, isNull);
     });
 
+    test('share passes every target and reports failures', () async {
+      final fixture = await _openFolder(abcd, open: '/images/a.png');
+      fixture.controller.selectRange(1);
+
+      await fixture.controller.shareTargets(const ShareAnchor(0, 0, 10, 10));
+      expect(fixture.fileOperations.shared.single, [
+        '/images/a.png',
+        '/images/b.png',
+      ]);
+      expect(fixture.controller.state.notice, isNull);
+
+      fixture.fileOperations.failingPaths.add('/images/b.png');
+      await fixture.controller.shareTargets(const ShareAnchor(0, 0, 10, 10));
+      expect(
+        fixture.controller.state.notice?.type,
+        ViewerNoticeType.shareFailed,
+      );
+    });
+
     test('clipboard and reveal failures surface as notices', () async {
       final fixture = await _openFolder(abcd, open: '/images/a.png');
 
@@ -903,6 +922,17 @@ class _FakeNativeFileChannelService extends NativeFileChannelService {
 }
 
 class _FakeFileOperations implements FileOperationsService {
+  final List<List<String>> shared = <List<String>>[];
+
+  @override
+  bool get canShare => true;
+
+  @override
+  Future<bool> share(List<String> paths, ShareAnchor anchor) async {
+    shared.add(paths);
+    return !paths.any(failingPaths.contains);
+  }
+
   final Set<String> failingPaths = <String>{};
   final List<String> trashed = <String>[];
   FileOperationError? renameError;

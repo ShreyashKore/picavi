@@ -288,5 +288,7 @@
   "duplicatesSummary": "{count, plural, other{{count} 组完全相同的照片。每组保留一份，其余移到{bin}。}}",
   "duplicatesKeepOnly": "只保留这张",
   "libraryPickFolderMessage": "选择一个存放照片的文件夹，其子文件夹也会包含在内。",
-  "libraryOpenFailed": "无法打开图库"
+  "libraryOpenFailed": "无法打开图库",
+  "shareAction": "{count, plural, =1{共享…} other{共享 {count} 张图片…}}",
+  "shareFailedNotice": "无法打开共享菜单"
 }

@@ -340,6 +340,17 @@ class LibraryController extends ChangeNotifier {
     await refresh();
   }
 
+  bool get canShare => _fileOperations.canShare;
+
+  /// Opens the system share menu for the selection.
+  Future<bool> shareSelection(ShareAnchor anchor) async {
+    final selected = _state.selectedInOrder;
+    if (selected.isEmpty || !canShare) {
+      return false;
+    }
+    return _fileOperations.share(selected, anchor);
+  }
+
   // -------------------------------------------------------------------------
   // Duplicates
 

@@ -288,5 +288,7 @@
   "duplicatesSummary": "{count, plural, =1{1 grupo de fotos idénticas. Conserva una copia y mueve las demás a {bin}.} other{{count} grupos de fotos idénticas. Conserva una copia de cada uno y mueve las demás a {bin}.}}",
   "duplicatesKeepOnly": "Conservar solo esta",
   "libraryPickFolderMessage": "Elige una carpeta con fotos. Se incluyen sus subcarpetas.",
-  "libraryOpenFailed": "No se pudo abrir la biblioteca"
+  "libraryOpenFailed": "No se pudo abrir la biblioteca",
+  "shareAction": "{count, plural, =1{Compartir…} other{Compartir {count} imágenes…}}",
+  "shareFailedNotice": "No se pudo abrir el menú de compartir"
 }

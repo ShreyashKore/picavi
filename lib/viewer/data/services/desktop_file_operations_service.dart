@@ -18,6 +18,23 @@ class DesktopFileOperationsService implements FileOperationsService {
   final NativeFileChannelService _nativeChannel;
 
   @override
+  bool get canShare => Platform.isMacOS;
+
+  @override
+  Future<bool> share(List<String> paths, ShareAnchor anchor) async {
+    if (!canShare || paths.isEmpty) {
+      return false;
+    }
+    return _nativeChannel.shareFiles(
+      paths,
+      left: anchor.left,
+      top: anchor.top,
+      width: anchor.width,
+      height: anchor.height,
+    );
+  }
+
+  @override
   Future<bool> moveToTrash(String path) async {
     try {
       if (Platform.isMacOS) {

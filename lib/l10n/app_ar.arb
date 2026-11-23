@@ -288,5 +288,7 @@
   "duplicatesSummary": "{count, plural, =1{مجموعة واحدة من الصور المتطابقة. احتفظ بنسخة واحدة وانقل الباقي إلى {bin}.} other{{count} مجموعات من الصور المتطابقة. احتفظ بنسخة واحدة من كل مجموعة وانقل الباقي إلى {bin}.}}",
   "duplicatesKeepOnly": "الاحتفاظ بهذه فقط",
   "libraryPickFolderMessage": "اختر مجلدًا يحتوي على صور. ستُضمَّن مجلداته الفرعية.",
-  "libraryOpenFailed": "تعذّر فتح المكتبة"
+  "libraryOpenFailed": "تعذّر فتح المكتبة",
+  "shareAction": "{count, plural, =1{مشاركة…} other{مشاركة {count} صور…}}",
+  "shareFailedNotice": "تعذّر فتح قائمة المشاركة"
 }

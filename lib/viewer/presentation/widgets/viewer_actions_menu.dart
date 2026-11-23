@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 import '../../../core/l10n/l10n_extensions.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../domain/services/file_operations_service.dart';
 
 enum ViewerFileAction {
   edit,
   export,
+  share,
   feelingLucky,
   autoContrast,
   autoColor,
@@ -49,6 +51,7 @@ class ViewerActionsMenu extends StatelessWidget {
     this.canEdit = false,
     this.hasEdits = false,
     this.allHidden = false,
+    this.canShare = false,
   });
 
   /// How many images multi-image actions apply to.
@@ -62,6 +65,9 @@ class ViewerActionsMenu extends StatelessWidget {
 
   /// Every target is hidden from the library (offer "Show" instead of "Hide").
   final bool allHidden;
+
+  /// The platform has a share menu.
+  final bool canShare;
   final ValueChanged<ViewerFileAction> onSelected;
 
   @override
@@ -105,6 +111,12 @@ class ViewerActionsMenu extends StatelessWidget {
           Icons.ios_share,
           l10n.exportAction(targetCount),
         ),
+        if (canShare)
+          item(
+            ViewerFileAction.share,
+            Icons.share_outlined,
+            l10n.shareAction(targetCount),
+          ),
         PopupMenuItem<ViewerFileAction>(
           enabled: false,
           height: 32,
@@ -208,4 +220,15 @@ class ViewerActionsMenu extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Where a share menu should point: the widget with [key], or the window's
+/// top centre if it isn't laid out.
+ShareAnchor shareAnchorFor(GlobalKey key) {
+  final box = key.currentContext?.findRenderObject();
+  if (box is RenderBox && box.hasSize) {
+    final origin = box.localToGlobal(Offset.zero);
+    return ShareAnchor(origin.dx, origin.dy, box.size.width, box.size.height);
+  }
+  return const ShareAnchor(0, 0, 1, 1);
 }

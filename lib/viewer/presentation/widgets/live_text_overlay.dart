@@ -166,14 +166,15 @@ class _LiveTextOverlayState extends State<LiveTextOverlay> {
                     _TextSelectGestureRecognizer:
                         GestureRecognizerFactoryWithHandlers<
                           _TextSelectGestureRecognizer
-                        >(() => _TextSelectGestureRecognizer(debugOwner: this), (
-                          recognizer,
-                        ) {
-                          recognizer
-                            ..onStart = _handleSelectStart
-                            ..onUpdate = _handleSelectUpdate
-                            ..onEnd = _handleSelectEnd;
-                        }),
+                        >(
+                          () => _TextSelectGestureRecognizer(debugOwner: this),
+                          (recognizer) {
+                            recognizer
+                              ..onStart = _handleSelectStart
+                              ..onUpdate = _handleSelectUpdate
+                              ..onEnd = _handleSelectEnd;
+                          },
+                        ),
                   },
                   child: MouseRegion(
                     cursor: SystemMouseCursors.text,
@@ -291,9 +292,8 @@ class _WordGeometry {
     if (lengthSquared == 0) {
       return (p - a).distance;
     }
-    final t =
-        (((p.dx - a.dx) * ab.dx + (p.dy - a.dy) * ab.dy) / lengthSquared)
-            .clamp(0.0, 1.0);
+    final t = (((p.dx - a.dx) * ab.dx + (p.dy - a.dy) * ab.dy) / lengthSquared)
+        .clamp(0.0, 1.0);
     return (p - (a + ab * t)).distance;
   }
 }

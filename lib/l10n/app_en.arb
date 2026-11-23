@@ -1229,5 +1229,18 @@
   "libraryOpenFailed": "Couldn't open the library",
   "@libraryOpenFailed": {
     "description": "Shown when the library database cannot be opened."
+  },
+  "shareAction": "{count, plural, =1{Share…} other{Share {count} images…}}",
+  "@shareAction": {
+    "description": "Menu item / button that opens the system share menu.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareFailedNotice": "Couldn't open the share menu",
+  "@shareFailedNotice": {
+    "description": "Shown when the share menu could not be opened."
   }
 }

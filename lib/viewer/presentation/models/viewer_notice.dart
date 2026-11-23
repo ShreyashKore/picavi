@@ -21,6 +21,7 @@ enum ViewerNoticeType {
   quickFixFailed,
   editsRemoved,
   photoInfoSaveFailed,
+  shareFailed,
 }
 
 class ViewerNotice {

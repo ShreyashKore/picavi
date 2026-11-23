@@ -288,5 +288,7 @@
   "duplicatesSummary": "{count, plural, =1{एक जैसी फ़ोटो का 1 समूह। एक प्रति रखें और बाकी को {bin} में भेजें।} other{एक जैसी फ़ोटो के {count} समूह। हर एक की एक प्रति रखें और बाकी को {bin} में भेजें।}}",
   "duplicatesKeepOnly": "केवल इसे रखें",
   "libraryPickFolderMessage": "फ़ोटो वाला फ़ोल्डर चुनें। इसके उप-फ़ोल्डर भी शामिल होंगे।",
-  "libraryOpenFailed": "लाइब्रेरी नहीं खुल सकी"
+  "libraryOpenFailed": "लाइब्रेरी नहीं खुल सकी",
+  "shareAction": "{count, plural, =1{साझा करें…} other{{count} छवियाँ साझा करें…}}",
+  "shareFailedNotice": "साझा करने का मेनू नहीं खुल सका"
 }

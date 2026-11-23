@@ -1073,4 +1073,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get libraryOpenFailed => '无法打开图库';
+
+  @override
+  String shareAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '共享 $count 张图片…',
+      one: '共享…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareFailedNotice => '无法打开共享菜单';
 }
