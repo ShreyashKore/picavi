@@ -1343,5 +1343,138 @@
         "type": "int"
       }
     }
+  },
+  "collageAction": "Make a collage…",
+  "@collageAction": {
+    "description": "Viewer menu item: make a collage of the selection or folder."
+  },
+  "collageButton": "Collage…",
+  "@collageButton": {
+    "description": "Library selection bar button: make a collage."
+  },
+  "collageTitle": "{count, plural, =1{Collage of 1 photo} other{Collage of {count} photos}}",
+  "@collageTitle": {
+    "description": "Collage dialog title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "collageMosaic": "Mosaic",
+  "@collageMosaic": {
+    "description": "Collage layout: justified rows."
+  },
+  "collageGrid": "Grid",
+  "@collageGrid": {
+    "description": "Collage layout: equal cells."
+  },
+  "collageContactSheet": "Contact sheet",
+  "@collageContactSheet": {
+    "description": "Collage layout: contact sheet pages."
+  },
+  "collageHint": "Mosaic keeps each photo whole; grid crops them to equal cells.",
+  "@collageHint": {
+    "description": "Explains grid and mosaic."
+  },
+  "collageContactSheetHint": "A4 pages of 35 thumbnails with their file names, ready to print.",
+  "@collageContactSheetHint": {
+    "description": "Explains contact sheets."
+  },
+  "collageSpacing": "Spacing",
+  "@collageSpacing": {
+    "description": "Collage option: gap between photos."
+  },
+  "collageBackground": "Background",
+  "@collageBackground": {
+    "description": "Collage option: background colour."
+  },
+  "collageWhite": "White",
+  "@collageWhite": {
+    "description": "Background colour: white."
+  },
+  "collageBlack": "Black",
+  "@collageBlack": {
+    "description": "Background colour: black."
+  },
+  "collageCharcoal": "Charcoal",
+  "@collageCharcoal": {
+    "description": "Background colour: dark grey."
+  },
+  "collageSizeWide": "Widescreen ({width} × {height})",
+  "@collageSizeWide": {
+    "description": "Collage size option.",
+    "placeholders": {
+      "width": {
+        "type": "int"
+      },
+      "height": {
+        "type": "int"
+      }
+    }
+  },
+  "collageSizeLarge": "Large 3:2 ({width} × {height})",
+  "@collageSizeLarge": {
+    "description": "Collage size option.",
+    "placeholders": {
+      "width": {
+        "type": "int"
+      },
+      "height": {
+        "type": "int"
+      }
+    }
+  },
+  "collageSizeSquare": "Square ({width} × {height})",
+  "@collageSizeSquare": {
+    "description": "Collage size option.",
+    "placeholders": {
+      "width": {
+        "type": "int"
+      },
+      "height": {
+        "type": "int"
+      }
+    }
+  },
+  "collageSizePortrait": "Portrait 2:3 ({width} × {height})",
+  "@collageSizePortrait": {
+    "description": "Collage size option.",
+    "placeholders": {
+      "width": {
+        "type": "int"
+      },
+      "height": {
+        "type": "int"
+      }
+    }
+  },
+  "collageWorking": "Making the collage…",
+  "@collageWorking": {
+    "description": "Shown while the collage is made."
+  },
+  "collageSaved": "{count, plural, =1{Saved {name}} other{Saved {count} pages, starting with {name}}}",
+  "@collageSaved": {
+    "description": "Notice after a collage was saved.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "collageFailed": "Couldn't make the collage",
+  "@collageFailed": {
+    "description": "Notice when the collage could not be made."
+  },
+  "collageFileName": "Collage",
+  "@collageFileName": {
+    "description": "File name (without extension) for a saved collage."
+  },
+  "contactSheetFileName": "Contact sheet",
+  "@contactSheetFileName": {
+    "description": "File name (without extension) for saved contact sheets."
   }
 }

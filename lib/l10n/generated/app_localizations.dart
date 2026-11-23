@@ -1881,6 +1881,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Imported {copied}, skipped {skipped} already there, {failed} failed'**
   String importDone(int copied, int skipped, int failed);
+
+  /// Viewer menu item: make a collage of the selection or folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a collage…'**
+  String get collageAction;
+
+  /// Library selection bar button: make a collage.
+  ///
+  /// In en, this message translates to:
+  /// **'Collage…'**
+  String get collageButton;
+
+  /// Collage dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Collage of 1 photo} other{Collage of {count} photos}}'**
+  String collageTitle(int count);
+
+  /// Collage layout: justified rows.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic'**
+  String get collageMosaic;
+
+  /// Collage layout: equal cells.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid'**
+  String get collageGrid;
+
+  /// Collage layout: contact sheet pages.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact sheet'**
+  String get collageContactSheet;
+
+  /// Explains grid and mosaic.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic keeps each photo whole; grid crops them to equal cells.'**
+  String get collageHint;
+
+  /// Explains contact sheets.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 pages of 35 thumbnails with their file names, ready to print.'**
+  String get collageContactSheetHint;
+
+  /// Collage option: gap between photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Spacing'**
+  String get collageSpacing;
+
+  /// Collage option: background colour.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get collageBackground;
+
+  /// Background colour: white.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get collageWhite;
+
+  /// Background colour: black.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get collageBlack;
+
+  /// Background colour: dark grey.
+  ///
+  /// In en, this message translates to:
+  /// **'Charcoal'**
+  String get collageCharcoal;
+
+  /// Collage size option.
+  ///
+  /// In en, this message translates to:
+  /// **'Widescreen ({width} × {height})'**
+  String collageSizeWide(int width, int height);
+
+  /// Collage size option.
+  ///
+  /// In en, this message translates to:
+  /// **'Large 3:2 ({width} × {height})'**
+  String collageSizeLarge(int width, int height);
+
+  /// Collage size option.
+  ///
+  /// In en, this message translates to:
+  /// **'Square ({width} × {height})'**
+  String collageSizeSquare(int width, int height);
+
+  /// Collage size option.
+  ///
+  /// In en, this message translates to:
+  /// **'Portrait 2:3 ({width} × {height})'**
+  String collageSizePortrait(int width, int height);
+
+  /// Shown while the collage is made.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the collage…'**
+  String get collageWorking;
+
+  /// Notice after a collage was saved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Saved {name}} other{Saved {count} pages, starting with {name}}}'**
+  String collageSaved(int count, String name);
+
+  /// Notice when the collage could not be made.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t make the collage'**
+  String get collageFailed;
+
+  /// File name (without extension) for a saved collage.
+  ///
+  /// In en, this message translates to:
+  /// **'Collage'**
+  String get collageFileName;
+
+  /// File name (without extension) for saved contact sheets.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact sheet'**
+  String get contactSheetFileName;
 }
 
 class _AppLocalizationsDelegate

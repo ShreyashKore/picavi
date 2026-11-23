@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 
+import '../../../collage/data/raster_collage_service.dart';
+import '../../../collage/domain/collage_options.dart';
+import '../../../collage/presentation/collage_dialogs.dart';
 import '../../../core/l10n/l10n_extensions.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../viewer/presentation/widgets/viewer_actions_menu.dart'
@@ -227,6 +230,50 @@ class _LibraryScreenState extends State<LibraryScreen> {
     } else {
       await _controller.addRoot(destination);
     }
+  }
+
+  Future<void> _makeCollage() async {
+    final selected = [
+      for (final image in _controller.state.images)
+        if (_controller.state.selection.contains(image.path)) image,
+    ];
+    if (selected.length < 2) {
+      return;
+    }
+    final options = await showCollageOptionsDialog(
+      context,
+      photoCount: selected.length,
+    );
+    if (options == null || !mounted) {
+      return;
+    }
+    final directory = await widget.pickFolder();
+    if (directory == null || !mounted) {
+      return;
+    }
+    final written = await createCollageWithProgress(
+      context,
+      service: RasterCollageService(pixelSource: widget.services.pixelSource),
+      photos: [
+        for (final image in selected) CollagePhoto(image.path, image.edits),
+      ],
+      options: options,
+      directory: directory,
+    );
+    if (!mounted) {
+      return;
+    }
+    final l10n = context.l10n;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          written.isEmpty
+              ? l10n.collageFailed
+              : l10n.collageSaved(written.length, p.basename(written.first)),
+        ),
+      ),
+    );
+    _controller.reindex();
   }
 
   Future<void> _openDuplicates() async {
@@ -505,6 +552,12 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 ),
               ),
             ),
+            if (count > 1)
+              TextButton.icon(
+                onPressed: () => unawaited(_makeCollage()),
+                icon: const Icon(Icons.dashboard_outlined),
+                label: Text(l10n.collageButton),
+              ),
             if (_controller.canShare)
               TextButton.icon(
                 key: _shareKey,

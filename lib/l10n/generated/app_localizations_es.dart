@@ -1200,4 +1200,96 @@ class AppLocalizationsEs extends AppLocalizations {
   String importDone(int copied, int skipped, int failed) {
     return 'Importadas $copied, omitidas $skipped que ya estaban, $failed con error';
   }
+
+  @override
+  String get collageAction => 'Crear un collage…';
+
+  @override
+  String get collageButton => 'Collage…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Collage de $count fotos',
+      one: 'Collage de 1 foto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => 'Mosaico';
+
+  @override
+  String get collageGrid => 'Cuadrícula';
+
+  @override
+  String get collageContactSheet => 'Hoja de contactos';
+
+  @override
+  String get collageHint =>
+      'El mosaico muestra cada foto entera; la cuadrícula las recorta en celdas iguales.';
+
+  @override
+  String get collageContactSheetHint =>
+      'Páginas A4 con 35 miniaturas y sus nombres de archivo, listas para imprimir.';
+
+  @override
+  String get collageSpacing => 'Espaciado';
+
+  @override
+  String get collageBackground => 'Fondo';
+
+  @override
+  String get collageWhite => 'Blanco';
+
+  @override
+  String get collageBlack => 'Negro';
+
+  @override
+  String get collageCharcoal => 'Carbón';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return 'Panorámico ($width × $height)';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return 'Grande 3:2 ($width × $height)';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return 'Cuadrado ($width × $height)';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return 'Vertical 2:3 ($width × $height)';
+  }
+
+  @override
+  String get collageWorking => 'Creando el collage…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Se guardaron $count páginas, empezando por $name',
+      one: 'Se guardó $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => 'No se pudo crear el collage';
+
+  @override
+  String get collageFileName => 'Collage';
+
+  @override
+  String get contactSheetFileName => 'Hoja de contactos';
 }

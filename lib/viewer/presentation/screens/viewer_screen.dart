@@ -14,6 +14,9 @@ import '../../../../core/services/app_preferences_service.dart';
 import '../../../../core/services/default_viewer_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_image.dart';
+import '../../../collage/data/raster_collage_service.dart';
+import '../../../collage/domain/collage_options.dart';
+import '../../../collage/presentation/collage_dialogs.dart';
 import '../../../editor/data/repositories/sidecar_image_edit_repository.dart';
 import '../../../editor/data/services/edited_image_provider.dart';
 import '../../../editor/data/services/flutter_image_pixel_source.dart';
@@ -453,6 +456,8 @@ class _ViewerScreenState extends State<ViewerScreen>
         await _openEditor();
       case ViewerFileAction.export:
         await _exportTargets();
+      case ViewerFileAction.collage:
+        await _makeCollage();
       case ViewerFileAction.share:
         await _controller.shareTargets(shareAnchorFor(_actionsMenuKey));
       case ViewerFileAction.feelingLucky:
@@ -596,6 +601,52 @@ class _ViewerScreenState extends State<ViewerScreen>
     if (mounted) {
       _viewerFocusNode.requestFocus();
     }
+  }
+
+  /// Makes a collage of the selection, or of the whole folder when nothing
+  /// is selected.
+  Future<void> _makeCollage() async {
+    final state = _controller.state;
+    final paths = state.hasSelection
+        ? state.actionTargets
+        : [for (final image in state.images) image.path];
+    if (paths.isEmpty) {
+      return;
+    }
+    _stopSlideshow();
+    final options = await showCollageOptionsDialog(
+      context,
+      photoCount: paths.length,
+    );
+    if (options == null || !mounted) {
+      return;
+    }
+    final directory = await _controller.pickFolder(_exportFolderTexts);
+    if (directory == null || !mounted) {
+      return;
+    }
+    final written = await createCollageWithProgress(
+      context,
+      service: const RasterCollageService(),
+      photos: [
+        for (final path in paths) CollagePhoto(path, state.editsFor(path)),
+      ],
+      options: options,
+      directory: directory,
+    );
+    if (!mounted) {
+      return;
+    }
+    final l10n = context.l10n;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          written.isEmpty
+              ? l10n.collageFailed
+              : l10n.collageSaved(written.length, p.basename(written.first)),
+        ),
+      ),
+    );
   }
 
   Future<void> _exportTargets() async {

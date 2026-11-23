@@ -1151,4 +1151,93 @@ class AppLocalizationsZh extends AppLocalizations {
   String importDone(int copied, int skipped, int failed) {
     return '已导入 $copied 张，跳过已存在的 $skipped 张，失败 $failed 张';
   }
+
+  @override
+  String get collageAction => '制作拼贴…';
+
+  @override
+  String get collageButton => '拼贴…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 张照片的拼贴',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => '马赛克';
+
+  @override
+  String get collageGrid => '网格';
+
+  @override
+  String get collageContactSheet => '印样';
+
+  @override
+  String get collageHint => '马赛克保留每张照片的完整画面；网格会把照片裁成相同的格子。';
+
+  @override
+  String get collageContactSheetHint => '每页 35 张缩略图并附文件名的 A4 页面，可直接打印。';
+
+  @override
+  String get collageSpacing => '间距';
+
+  @override
+  String get collageBackground => '背景';
+
+  @override
+  String get collageWhite => '白色';
+
+  @override
+  String get collageBlack => '黑色';
+
+  @override
+  String get collageCharcoal => '炭灰';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return '宽屏（$width × $height）';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return '大 3:2（$width × $height）';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return '正方形（$width × $height）';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return '纵向 2:3（$width × $height）';
+  }
+
+  @override
+  String get collageWorking => '正在制作拼贴…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已保存 $count 页，第一页为 $name',
+      one: '已保存 $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => '无法制作拼贴';
+
+  @override
+  String get collageFileName => '拼贴';
+
+  @override
+  String get contactSheetFileName => '印样';
 }

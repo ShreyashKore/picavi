@@ -1191,4 +1191,96 @@ class AppLocalizationsHi extends AppLocalizations {
   String importDone(int copied, int skipped, int failed) {
     return '$copied इंपोर्ट हुईं, पहले से मौजूद $skipped छोड़ी गईं, $failed विफल';
   }
+
+  @override
+  String get collageAction => 'कोलाज बनाएँ…';
+
+  @override
+  String get collageButton => 'कोलाज…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोटो का कोलाज',
+      one: '1 फ़ोटो का कोलाज',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => 'मोज़ेक';
+
+  @override
+  String get collageGrid => 'ग्रिड';
+
+  @override
+  String get collageContactSheet => 'कॉन्टैक्ट शीट';
+
+  @override
+  String get collageHint =>
+      'मोज़ेक हर फ़ोटो को पूरा रखता है; ग्रिड उन्हें बराबर खानों में काटता है।';
+
+  @override
+  String get collageContactSheetHint =>
+      '35 थंबनेल और उनके फ़ाइल नामों वाले A4 पेज, प्रिंट के लिए तैयार।';
+
+  @override
+  String get collageSpacing => 'अंतराल';
+
+  @override
+  String get collageBackground => 'पृष्ठभूमि';
+
+  @override
+  String get collageWhite => 'सफ़ेद';
+
+  @override
+  String get collageBlack => 'काला';
+
+  @override
+  String get collageCharcoal => 'गहरा स्लेटी';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return 'वाइडस्क्रीन ($width × $height)';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return 'बड़ा 3:2 ($width × $height)';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return 'वर्गाकार ($width × $height)';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return 'पोर्ट्रेट 2:3 ($width × $height)';
+  }
+
+  @override
+  String get collageWorking => 'कोलाज बन रहा है…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$name से शुरू होकर $count पेज सहेजे गए',
+      one: '$name सहेजा गया',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => 'कोलाज नहीं बन सका';
+
+  @override
+  String get collageFileName => 'कोलाज';
+
+  @override
+  String get contactSheetFileName => 'कॉन्टैक्ट शीट';
 }

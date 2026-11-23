@@ -1193,4 +1193,96 @@ class AppLocalizationsEn extends AppLocalizations {
   String importDone(int copied, int skipped, int failed) {
     return 'Imported $copied, skipped $skipped already there, $failed failed';
   }
+
+  @override
+  String get collageAction => 'Make a collage…';
+
+  @override
+  String get collageButton => 'Collage…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Collage of $count photos',
+      one: 'Collage of 1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => 'Mosaic';
+
+  @override
+  String get collageGrid => 'Grid';
+
+  @override
+  String get collageContactSheet => 'Contact sheet';
+
+  @override
+  String get collageHint =>
+      'Mosaic keeps each photo whole; grid crops them to equal cells.';
+
+  @override
+  String get collageContactSheetHint =>
+      'A4 pages of 35 thumbnails with their file names, ready to print.';
+
+  @override
+  String get collageSpacing => 'Spacing';
+
+  @override
+  String get collageBackground => 'Background';
+
+  @override
+  String get collageWhite => 'White';
+
+  @override
+  String get collageBlack => 'Black';
+
+  @override
+  String get collageCharcoal => 'Charcoal';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return 'Widescreen ($width × $height)';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return 'Large 3:2 ($width × $height)';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return 'Square ($width × $height)';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return 'Portrait 2:3 ($width × $height)';
+  }
+
+  @override
+  String get collageWorking => 'Making the collage…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Saved $count pages, starting with $name',
+      one: 'Saved $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => 'Couldn\'t make the collage';
+
+  @override
+  String get collageFileName => 'Collage';
+
+  @override
+  String get contactSheetFileName => 'Contact sheet';
 }

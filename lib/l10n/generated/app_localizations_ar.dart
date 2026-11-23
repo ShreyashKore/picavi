@@ -1191,4 +1191,96 @@ class AppLocalizationsAr extends AppLocalizations {
   String importDone(int copied, int skipped, int failed) {
     return 'تم استيراد $copied، وتخطي $skipped موجودة، وفشل $failed';
   }
+
+  @override
+  String get collageAction => 'إنشاء صورة مجمّعة…';
+
+  @override
+  String get collageButton => 'صورة مجمّعة…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'صورة مجمّعة من $count صور',
+      one: 'صورة مجمّعة من صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => 'فسيفساء';
+
+  @override
+  String get collageGrid => 'شبكة';
+
+  @override
+  String get collageContactSheet => 'ورقة معاينة';
+
+  @override
+  String get collageHint =>
+      'تُبقي الفسيفساء كل صورة كاملة؛ وتقصّ الشبكة الصور إلى خلايا متساوية.';
+
+  @override
+  String get collageContactSheetHint =>
+      'صفحات A4 تحوي 35 صورة مصغّرة مع أسماء ملفاتها، جاهزة للطباعة.';
+
+  @override
+  String get collageSpacing => 'التباعد';
+
+  @override
+  String get collageBackground => 'الخلفية';
+
+  @override
+  String get collageWhite => 'أبيض';
+
+  @override
+  String get collageBlack => 'أسود';
+
+  @override
+  String get collageCharcoal => 'فحمي';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return 'شاشة عريضة ($width × $height)';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return 'كبير 3:2 ($width × $height)';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return 'مربع ($width × $height)';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return 'عمودي 2:3 ($width × $height)';
+  }
+
+  @override
+  String get collageWorking => 'جارٍ إنشاء الصورة المجمّعة…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم حفظ $count صفحات، أولها $name',
+      one: 'تم حفظ $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => 'تعذّر إنشاء الصورة المجمّعة';
+
+  @override
+  String get collageFileName => 'صورة مجمعة';
+
+  @override
+  String get contactSheetFileName => 'ورقة معاينة';
 }

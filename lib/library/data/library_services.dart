@@ -2,6 +2,8 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../../core/services/app_preferences_service.dart';
+import '../../editor/data/services/flutter_image_pixel_source.dart';
+import '../../editor/domain/services/image_pixel_source.dart';
 import '../../viewer/domain/services/file_operations_service.dart';
 import '../domain/repositories/catalog_repository.dart';
 import '../domain/repositories/library_settings_repository.dart';
@@ -29,6 +31,7 @@ class LibraryServices {
     DuplicateFinder? duplicateFinder,
     ImportService? importService,
     String? defaultImportDestination,
+    this.pixelSource = const FlutterImagePixelSource(),
   }) : indexer = indexer ?? FileSystemLibraryIndexer(catalog),
        duplicateFinder = duplicateFinder ?? HashingDuplicateFinder(catalog),
        importService = importService ?? FileSystemImportService(),
@@ -61,6 +64,9 @@ class LibraryServices {
   final LibraryIndexer indexer;
   final DuplicateFinder duplicateFinder;
   final ImportService importService;
+
+  /// Decodes photos for collages and similar.
+  final ImagePixelSource pixelSource;
 
   /// Where imports go until the user picks another folder.
   final String defaultImportDestination;
