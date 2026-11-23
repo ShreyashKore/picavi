@@ -19,7 +19,7 @@ thumbnail rail, zoom/pan, keyboard navigation, and slideshow.
 ```bash
 flutter pub get                       # install deps
 flutter run -d macos                  # run (also -d linux / -d windows)
-flutter run -d macos -- /path/img.jpg # run with an image path argument
+flutter run -d macos --dart-entrypoint-args=/path/img.jpg  # run with an image path argument
 flutter analyze                       # static analysis — must pass clean
 flutter test                          # run all tests
 flutter test test/viewer_controller_test.dart   # single test file

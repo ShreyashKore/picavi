@@ -95,7 +95,7 @@ flutter run -d macos
 You can also pass a file path directly:
 
 ```bash
-flutter run -d macos -- /absolute/path/to/image.jpg
+flutter run -d macos --dart-entrypoint-args=/absolute/path/to/image.jpg
 ```
 
 ## Quality checks
