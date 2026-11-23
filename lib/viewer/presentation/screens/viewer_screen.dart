@@ -74,7 +74,7 @@ class ViewerScreen extends StatefulWidget {
 
 class _ViewerScreenState extends State<ViewerScreen>
     with WidgetsBindingObserver, WindowListener {
-  static const double _thumbnailExtent = 72;
+  static const double _thumbnailExtent = 84;
   static const double _thumbnailControlsInset = 60;
   static const int _recentFolderPreviewCount = 4;
 
@@ -1148,7 +1148,6 @@ class _ViewerScreenState extends State<ViewerScreen>
           return;
         }
 
-        _centerThumbnailOn(state.currentIndex, animate: false);
         _viewerFocusNode.requestFocus();
       });
       return;
@@ -1165,7 +1164,6 @@ class _ViewerScreenState extends State<ViewerScreen>
           return;
         }
 
-        _centerThumbnailOn(state.currentIndex);
         _viewerFocusNode.requestFocus();
       });
     }
@@ -1323,31 +1321,6 @@ class _ViewerScreenState extends State<ViewerScreen>
     } else {
       _isPlaying = false;
     }
-  }
-
-  void _centerThumbnailOn(int index, {bool animate = true}) {
-    if (!_thumbnailScrollController.hasClients) {
-      return;
-    }
-
-    final viewportWidth = _thumbnailScrollController.position.viewportDimension;
-    final rawOffset =
-        (index * _thumbnailExtent) - ((viewportWidth - _thumbnailExtent) / 2);
-    final targetOffset = rawOffset.clamp(
-      0.0,
-      _thumbnailScrollController.position.maxScrollExtent,
-    );
-
-    if (animate) {
-      _thumbnailScrollController.animateTo(
-        targetOffset,
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOutCubic,
-      );
-      return;
-    }
-
-    _thumbnailScrollController.jumpTo(targetOffset);
   }
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {

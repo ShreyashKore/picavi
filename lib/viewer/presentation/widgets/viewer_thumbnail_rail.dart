@@ -8,7 +8,9 @@ import '../../../editor/data/services/edited_image_provider.dart';
 import '../../../editor/domain/entities/image_edits.dart';
 import '../../domain/entities/gallery_image.dart';
 
-class ViewerThumbnailRail extends StatelessWidget {
+/// Bottom film strip. The current image is always scrolled to the middle and
+/// drawn larger than its neighbours; both changes animate quickly.
+class ViewerThumbnailRail extends StatefulWidget {
   const ViewerThumbnailRail({
     super.key,
     required this.images,
@@ -44,6 +46,103 @@ class ViewerThumbnailRail extends StatelessWidget {
   /// Long edge for rendering edited thumbnails (fits portrait ones too).
   static const int editedThumbnailDimension = 330;
 
+  /// How long the size change and the re-centring scroll take.
+  static const Duration transitionDuration = Duration(milliseconds: 170);
+  static const Curve transitionCurve = Curves.easeOutCubic;
+
+  static const double _topPadding = 8;
+  static const double _bottomPadding = 14; // room for the scrollbar
+  static const double _gap = 4;
+
+  /// Extra space either side of the current thumbnail.
+  static const double _selectedGap = 4;
+  static const double _aspectRatio = 4 / 3;
+
+  /// Unselected thumbnails are this fraction of the current one's size.
+  static const double _unselectedScale = 0.74;
+
+  static double _selectedHeight(double extent) =>
+      extent - _topPadding - _bottomPadding;
+
+  /// Size of the current image's thumbnail.
+  static Size selectedSize(double extent) {
+    final height = _selectedHeight(extent);
+    return Size(height * _aspectRatio, height);
+  }
+
+  /// Size of every other thumbnail.
+  static Size unselectedSize(double extent) =>
+      selectedSize(extent) * _unselectedScale;
+
+  /// Width of every slot in the strip; the scroll offset that centres image
+  /// `i` is `i * itemStride`.
+  static double itemStride(double extent) =>
+      unselectedSize(extent).width + _gap;
+
+  @override
+  State<ViewerThumbnailRail> createState() => _ViewerThumbnailRailState();
+}
+
+class _ViewerThumbnailRailState extends State<ViewerThumbnailRail> {
+  @override
+  void initState() {
+    super.initState();
+    _scheduleCentering(animate: false);
+  }
+
+  @override
+  void didUpdateWidget(ViewerThumbnailRail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.scrollController != widget.scrollController ||
+        oldWidget.thumbnailExtent != widget.thumbnailExtent) {
+      _scheduleCentering(animate: false);
+    } else if (oldWidget.currentIndex != widget.currentIndex ||
+        !identical(oldWidget.images, widget.images)) {
+      _scheduleCentering(animate: true);
+    }
+  }
+
+  void _scheduleCentering({required bool animate}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _centerOnCurrent(animate: animate);
+      }
+    });
+  }
+
+  void _centerOnCurrent({required bool animate}) {
+    final controller = widget.scrollController;
+    if (!controller.hasClients || widget.images.isEmpty) {
+      return;
+    }
+
+    final position = controller.position;
+    // Slots have a fixed width and the list is padded by half the viewport on
+    // each side, so the offset that centres an image does not depend on the
+    // window width.
+    final target =
+        (widget.currentIndex *
+                ViewerThumbnailRail.itemStride(widget.thumbnailExtent))
+            .clamp(0.0, double.infinity);
+    final distance = (target - position.pixels).abs();
+    if (distance < 0.5) {
+      return;
+    }
+
+    // Long hops (Home/End, opening a folder) jump instead of whipping
+    // across the whole strip.
+    if (!animate || distance > position.viewportDimension * 2) {
+      controller.jumpTo(target);
+      return;
+    }
+
+    controller.animateTo(
+      target,
+      duration: ViewerThumbnailRail.transitionDuration,
+      curve: ViewerThumbnailRail.transitionCurve,
+    );
+  }
+
   Widget _thumbnail(
     GalleryImage image,
     ImageEdits? edits, {
@@ -73,7 +172,7 @@ class ViewerThumbnailRail extends StatelessWidget {
         image.path,
         fit: BoxFit.cover,
         revision: image.revision,
-        cacheWidth: cacheWidth,
+        cacheWidth: ViewerThumbnailRail.cacheWidth,
         errorBuilder: errorBuilder,
       );
     }
@@ -84,7 +183,7 @@ class ViewerThumbnailRail extends StatelessWidget {
           image: EditedImageProvider(
             image.path,
             edits,
-            maxDimension: editedThumbnailDimension,
+            maxDimension: ViewerThumbnailRail.editedThumbnailDimension,
             revision: image.revision,
           ),
           filePath: image.path,
@@ -98,7 +197,7 @@ class ViewerThumbnailRail extends StatelessWidget {
   }
 
   void _handlePointerSignal(PointerSignalEvent event) {
-    if (event is! PointerScrollEvent || images.length < 2) {
+    if (event is! PointerScrollEvent || widget.images.length < 2) {
       return;
     }
 
@@ -109,13 +208,107 @@ class ViewerThumbnailRail extends StatelessWidget {
       return;
     }
 
-    onScrollImageChange(primaryDelta > 0 ? 1 : -1);
+    widget.onScrollImageChange(primaryDelta > 0 ? 1 : -1);
+  }
+
+  Widget _buildItem(BuildContext context, int index) {
+    final image = widget.images[index];
+    final isSelected = index == widget.currentIndex;
+    final isPicked = widget.selectedPaths.contains(image.path);
+    final primary = Theme.of(context).colorScheme.primary;
+    final extent = widget.thumbnailExtent;
+    final selectedSize = ViewerThumbnailRail.selectedSize(extent);
+    final size = isSelected
+        ? selectedSize
+        : ViewerThumbnailRail.unselectedSize(extent);
+    final borderRadius = BorderRadius.circular(isSelected ? 6 : 4);
+
+    // Every slot is the same width (so scroll offsets stay exact); the current
+    // thumbnail overflows its slot and its neighbours slide apart to make room.
+    final push =
+        (selectedSize.width -
+                ViewerThumbnailRail.unselectedSize(extent).width) /
+            2 +
+        ViewerThumbnailRail._selectedGap;
+    final shift = index < widget.currentIndex
+        ? -push
+        : index > widget.currentIndex
+        ? push
+        : 0.0;
+
+    return AnimatedContainer(
+      duration: ViewerThumbnailRail.transitionDuration,
+      curve: ViewerThumbnailRail.transitionCurve,
+      transform: Matrix4.translationValues(shift, 0, 0),
+      child: OverflowBox(
+        minWidth: 0,
+        minHeight: 0,
+        maxWidth: selectedSize.width,
+        maxHeight: selectedSize.height,
+        child: InkWell(
+          borderRadius: borderRadius,
+          onTap: () => widget.onTap(index),
+          child: AnimatedOpacity(
+            duration: ViewerThumbnailRail.transitionDuration,
+            curve: ViewerThumbnailRail.transitionCurve,
+            opacity: isSelected || isPicked ? 1 : 0.72,
+            child: AnimatedContainer(
+              key: ValueKey<String>('thumbnail-${image.path}'),
+              duration: ViewerThumbnailRail.transitionDuration,
+              curve: ViewerThumbnailRail.transitionCurve,
+              width: size.width,
+              height: size.height,
+              decoration: BoxDecoration(
+                borderRadius: borderRadius,
+                border: Border.all(
+                  color: isSelected
+                      ? primary
+                      : Colors.white.withValues(alpha: 0.05),
+                  width: isSelected ? 3 : 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: isSelected
+                        ? primary.withValues(alpha: 0.55)
+                        : Colors.transparent,
+                    blurRadius: isSelected ? 8 : 0,
+                  ),
+                ],
+              ),
+              foregroundDecoration: isPicked
+                  ? BoxDecoration(
+                      borderRadius: borderRadius,
+                      color: primary.withValues(alpha: 0.28),
+                      border: Border.all(color: primary, width: 2),
+                    )
+                  : null,
+              child: ClipRRect(
+                borderRadius: borderRadius,
+                child: _thumbnail(
+                  image,
+                  widget.edits[image.path],
+                  starred: widget.starredPaths.contains(image.path),
+                  errorBuilder: (_, _, _) => const ColoredBox(
+                    color: AppColors.brokenImage,
+                    child: Center(
+                      child: Icon(Icons.broken_image_outlined, size: 18),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final stride = ViewerThumbnailRail.itemStride(widget.thumbnailExtent);
+
     return SizedBox(
-      height: thumbnailExtent,
+      height: widget.thumbnailExtent,
       child: Listener(
         onPointerSignal: _handlePointerSignal,
         child: DecoratedBox(
@@ -124,85 +317,36 @@ class ViewerThumbnailRail extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
-          child: Scrollbar(
-            controller: scrollController,
-            thumbVisibility: true,
-            trackVisibility: true,
-            interactive: true,
-            thickness: 6,
-            radius: const Radius.circular(999),
-            child: ListView.builder(
-              controller: scrollController,
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 16),
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                final isSelected = index == currentIndex;
-                final isPicked = selectedPaths.contains(images[index].path);
-                final borderRadius = BorderRadius.circular(4);
-
-                return Padding(
-                  padding: const EdgeInsets.only(right: 2),
-                  child: InkWell(
-                    borderRadius: borderRadius,
-                    onTap: () => onTap(index),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 140),
-                      width: thumbnailExtent - 8,
-                      decoration: BoxDecoration(
-                        borderRadius: borderRadius,
-                        border: Border.all(
-                          color: isSelected
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.white.withValues(alpha: 0.05),
-                          width: isSelected ? 4 : 1,
-                        ),
-                        boxShadow: isSelected
-                            ? [
-                                BoxShadow(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withValues(alpha: 0.6),
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
-                                ),
-                              ]
-                            : const [],
-                      ),
-                      foregroundDecoration: isPicked
-                          ? BoxDecoration(
-                              borderRadius: borderRadius,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.primary.withValues(alpha: 0.28),
-                              border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 2,
-                              ),
-                            )
-                          : null,
-                      child: ClipRRect(
-                        borderRadius: borderRadius,
-                        child: _thumbnail(
-                          images[index],
-                          edits[images[index].path],
-                          starred: starredPaths.contains(images[index].path),
-                          errorBuilder: (_, _, _) => const ColoredBox(
-                            color: AppColors.brokenImage,
-                            child: Center(
-                              child: Icon(
-                                Icons.broken_image_outlined,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Half a viewport of padding on each side lets the first and
+              // last images reach the middle too.
+              final sidePadding = ((constraints.maxWidth - stride) / 2).clamp(
+                0.0,
+                double.infinity,
+              );
+              return Scrollbar(
+                controller: widget.scrollController,
+                thumbVisibility: true,
+                trackVisibility: true,
+                interactive: true,
+                thickness: 6,
+                radius: const Radius.circular(999),
+                child: ListView.builder(
+                  controller: widget.scrollController,
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.fromLTRB(
+                    sidePadding,
+                    ViewerThumbnailRail._topPadding,
+                    sidePadding,
+                    ViewerThumbnailRail._bottomPadding,
                   ),
-                );
-              },
-            ),
+                  itemExtent: stride,
+                  itemCount: widget.images.length,
+                  itemBuilder: _buildItem,
+                ),
+              );
+            },
           ),
         ),
       ),
