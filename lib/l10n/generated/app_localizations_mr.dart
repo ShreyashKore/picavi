@@ -1302,4 +1302,53 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get placesRemoveLocation => 'ठिकाण काढा';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count प्रतिमा प्रिंट करा…',
+      one: 'प्रिंट करा…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फोटो प्रिंट करा',
+      one: '1 फोटो प्रिंट करा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => 'प्रति पान फोटो';
+
+  @override
+  String get printHint =>
+      'फोटो न कापता त्यांच्या जागेत बसवले जातात, तुमच्या संपादनांसह. कागदाचा आकार आणि दिशा पुढील विंडोमध्ये निवडा.';
+
+  @override
+  String get printContinue => 'पुढे जा…';
+
+  @override
+  String get printPreparing => 'फोटो छपाईसाठी तयार होत आहेत…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Picavi फोटो ($count)',
+      one: 'Picavi फोटो',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => 'हे फोटो प्रिंट करता आले नाहीत';
 }

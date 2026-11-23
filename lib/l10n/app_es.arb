@@ -334,5 +334,13 @@
   "placesSetLocation": "Establecer ubicación…",
   "placesPickHint": "Haz clic en el mapa donde se tomaron las fotos. Desplaza para acercar y arrastra para moverte. Los archivos no se modifican.",
   "placesNoPointYet": "Aún no se ha elegido ningún lugar",
-  "placesRemoveLocation": "Quitar ubicación"
+  "placesRemoveLocation": "Quitar ubicación",
+  "printAction": "{count, plural, =1{Imprimir…} other{Imprimir {count} imágenes…}}",
+  "printTitle": "{count, plural, =1{Imprimir 1 foto} other{Imprimir {count} fotos}}",
+  "printPerPage": "Fotos por página",
+  "printHint": "Las fotos se ajustan a su espacio sin recortarse y con tus ediciones. El tamaño y la orientación del papel se eligen en la siguiente ventana.",
+  "printContinue": "Continuar…",
+  "printPreparing": "Preparando las fotos para imprimir…",
+  "printJobName": "{count, plural, =1{Foto de Picavi} other{Fotos de Picavi ({count})}}",
+  "printFailed": "No se pudieron imprimir estas fotos"
 }

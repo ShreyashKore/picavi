@@ -1258,4 +1258,50 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get placesRemoveLocation => '移除位置';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '打印 $count 张图片…',
+      one: '打印…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '打印 $count 张照片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => '每页照片数';
+
+  @override
+  String get printHint => '照片会在不裁剪的情况下适应所在区域，并应用你的编辑。纸张大小和方向在下一个窗口中选择。';
+
+  @override
+  String get printContinue => '继续…';
+
+  @override
+  String get printPreparing => '正在准备打印照片…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Picavi 照片（$count）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => '无法打印这些照片';
 }

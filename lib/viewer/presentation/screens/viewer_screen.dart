@@ -18,6 +18,7 @@ import '../../../collage/data/raster_collage_service.dart';
 import '../../../collage/domain/collage_options.dart';
 import '../../../collage/presentation/collage_dialogs.dart';
 import '../../../editor/data/repositories/sidecar_image_edit_repository.dart';
+import '../../../print_photos/presentation/print_flow.dart';
 import '../../../editor/data/services/edited_image_provider.dart';
 import '../../../editor/data/services/flutter_image_pixel_source.dart';
 import '../../../editor/data/services/raster_image_export_service.dart';
@@ -458,6 +459,8 @@ class _ViewerScreenState extends State<ViewerScreen>
         await _exportTargets();
       case ViewerFileAction.collage:
         await _makeCollage();
+      case ViewerFileAction.print:
+        await _printTargets();
       case ViewerFileAction.share:
         await _controller.shareTargets(shareAnchorFor(_actionsMenuKey));
       case ViewerFileAction.feelingLucky:
@@ -647,6 +650,23 @@ class _ViewerScreenState extends State<ViewerScreen>
         ),
       ),
     );
+  }
+
+  Future<void> _printTargets() async {
+    final state = _controller.state;
+    final targets = state.actionTargets;
+    if (targets.isEmpty) {
+      return;
+    }
+    _stopSlideshow();
+    final ok = await printPhotos(context, [
+      for (final path in targets) CollagePhoto(path, state.editsFor(path)),
+    ]);
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.printFailed)));
+    }
   }
 
   Future<void> _exportTargets() async {

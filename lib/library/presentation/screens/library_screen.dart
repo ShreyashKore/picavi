@@ -9,6 +9,7 @@ import '../../../collage/data/raster_collage_service.dart';
 import '../../../collage/domain/collage_options.dart';
 import '../../../collage/presentation/collage_dialogs.dart';
 import '../../../core/l10n/l10n_extensions.dart';
+import '../../../print_photos/presentation/print_flow.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../viewer/presentation/widgets/viewer_actions_menu.dart'
     show shareAnchorFor, trashNameFor;
@@ -590,6 +591,21 @@ class _LibraryScreenState extends State<LibraryScreen> {
     );
   }
 
+  Future<void> _print() async {
+    final selected = [
+      for (final image in _controller.state.images)
+        if (_controller.state.selection.contains(image.path)) image,
+    ];
+    final ok = await printPhotos(context, [
+      for (final image in selected) CollagePhoto(image.path, image.edits),
+    ], pixelSource: widget.services.pixelSource);
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.printFailed)));
+    }
+  }
+
   Future<void> _setLocation() async {
     final selected = [
       for (final image in _controller.state.images)
@@ -678,6 +694,11 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     onPressed: () => unawaited(_setLocation()),
                     icon: const Icon(Icons.add_location_alt_outlined),
                     label: Text(l10n.placesSetLocation),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => unawaited(_print()),
+                    icon: const Icon(Icons.print_outlined),
+                    label: Text(l10n.printAction(count)),
                   ),
                   if (count > 1)
                     TextButton.icon(

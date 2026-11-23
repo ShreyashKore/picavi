@@ -334,5 +334,13 @@
   "placesSetLocation": "设置位置…",
   "placesPickHint": "在地图上点击照片的拍摄地点。滚动缩放，拖动移动。照片文件不会被修改。",
   "placesNoPointYet": "尚未选择地点",
-  "placesRemoveLocation": "移除位置"
+  "placesRemoveLocation": "移除位置",
+  "printAction": "{count, plural, =1{打印…} other{打印 {count} 张图片…}}",
+  "printTitle": "{count, plural, other{打印 {count} 张照片}}",
+  "printPerPage": "每页照片数",
+  "printHint": "照片会在不裁剪的情况下适应所在区域，并应用你的编辑。纸张大小和方向在下一个窗口中选择。",
+  "printContinue": "继续…",
+  "printPreparing": "正在准备打印照片…",
+  "printJobName": "{count, plural, other{Picavi 照片（{count}）}}",
+  "printFailed": "无法打印这些照片"
 }

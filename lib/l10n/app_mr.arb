@@ -334,5 +334,13 @@
   "placesSetLocation": "ठिकाण सेट करा…",
   "placesPickHint": "फोटो जिथे काढले तिथे नकाशावर क्लिक करा. झूमसाठी स्क्रोल करा, हलवण्यासाठी ओढा. फोटो फाइल्स बदलत नाहीत.",
   "placesNoPointYet": "अजून ठिकाण निवडलेले नाही",
-  "placesRemoveLocation": "ठिकाण काढा"
+  "placesRemoveLocation": "ठिकाण काढा",
+  "printAction": "{count, plural, =1{प्रिंट करा…} other{{count} प्रतिमा प्रिंट करा…}}",
+  "printTitle": "{count, plural, =1{1 फोटो प्रिंट करा} other{{count} फोटो प्रिंट करा}}",
+  "printPerPage": "प्रति पान फोटो",
+  "printHint": "फोटो न कापता त्यांच्या जागेत बसवले जातात, तुमच्या संपादनांसह. कागदाचा आकार आणि दिशा पुढील विंडोमध्ये निवडा.",
+  "printContinue": "पुढे जा…",
+  "printPreparing": "फोटो छपाईसाठी तयार होत आहेत…",
+  "printJobName": "{count, plural, =1{Picavi फोटो} other{Picavi फोटो ({count})}}",
+  "printFailed": "हे फोटो प्रिंट करता आले नाहीत"
 }

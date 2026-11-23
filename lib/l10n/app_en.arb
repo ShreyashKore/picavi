@@ -1500,5 +1500,52 @@
   "placesRemoveLocation": "Remove location",
   "@placesRemoveLocation": {
     "description": "Button that removes a location set by hand."
+  },
+  "printAction": "{count, plural, =1{Print…} other{Print {count} images…}}",
+  "@printAction": {
+    "description": "Menu item / button that prints photos.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "printTitle": "{count, plural, =1{Print 1 photo} other{Print {count} photos}}",
+  "@printTitle": {
+    "description": "Print layout dialog title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "printPerPage": "Photos per page",
+  "@printPerPage": {
+    "description": "Print option label: photos on each page."
+  },
+  "printHint": "Photos are fitted to their space without cropping, with your edits applied. Paper size and orientation are chosen in the next window.",
+  "@printHint": {
+    "description": "Explains the print layout."
+  },
+  "printContinue": "Continue…",
+  "@printContinue": {
+    "description": "Button that continues to the system print dialog."
+  },
+  "printPreparing": "Preparing photos for printing…",
+  "@printPreparing": {
+    "description": "Shown while photos are prepared for printing."
+  },
+  "printJobName": "{count, plural, =1{Picavi photo} other{Picavi photos ({count})}}",
+  "@printJobName": {
+    "description": "Name of the print job shown by the system.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "printFailed": "Couldn't print these photos",
+  "@printFailed": {
+    "description": "Shown when printing could not start."
   }
 }

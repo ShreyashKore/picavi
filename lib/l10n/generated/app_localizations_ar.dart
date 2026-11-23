@@ -1303,4 +1303,53 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get placesRemoveLocation => 'إزالة الموقع';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'طباعة $count صور…',
+      one: 'طباعة…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'طباعة $count صور',
+      one: 'طباعة صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => 'الصور في كل صفحة';
+
+  @override
+  String get printHint =>
+      'تُوضع الصور في مساحتها دون قصّ ومع تطبيق تعديلاتك. يُختار حجم الورق واتجاهه في النافذة التالية.';
+
+  @override
+  String get printContinue => 'متابعة…';
+
+  @override
+  String get printPreparing => 'جارٍ تجهيز الصور للطباعة…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'صور Picavi ($count)',
+      one: 'صورة Picavi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => 'تعذّرت طباعة هذه الصور';
 }

@@ -2049,6 +2049,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove location'**
   String get placesRemoveLocation;
+
+  /// Menu item / button that prints photos.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Print…} other{Print {count} images…}}'**
+  String printAction(int count);
+
+  /// Print layout dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Print 1 photo} other{Print {count} photos}}'**
+  String printTitle(int count);
+
+  /// Print option label: photos on each page.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos per page'**
+  String get printPerPage;
+
+  /// Explains the print layout.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos are fitted to their space without cropping, with your edits applied. Paper size and orientation are chosen in the next window.'**
+  String get printHint;
+
+  /// Button that continues to the system print dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue…'**
+  String get printContinue;
+
+  /// Shown while photos are prepared for printing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing photos for printing…'**
+  String get printPreparing;
+
+  /// Name of the print job shown by the system.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Picavi photo} other{Picavi photos ({count})}}'**
+  String printJobName(int count);
+
+  /// Shown when printing could not start.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t print these photos'**
+  String get printFailed;
 }
 
 class _AppLocalizationsDelegate

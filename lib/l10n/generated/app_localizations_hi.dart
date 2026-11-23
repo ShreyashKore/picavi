@@ -1303,4 +1303,53 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get placesRemoveLocation => 'स्थान हटाएँ';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ प्रिंट करें…',
+      one: 'प्रिंट करें…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोटो प्रिंट करें',
+      one: '1 फ़ोटो प्रिंट करें',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => 'प्रति पेज फ़ोटो';
+
+  @override
+  String get printHint =>
+      'फ़ोटो बिना काटे अपनी जगह में फिट होती हैं, आपके संपादन के साथ। काग़ज़ का आकार और दिशा अगली विंडो में चुनें।';
+
+  @override
+  String get printContinue => 'जारी रखें…';
+
+  @override
+  String get printPreparing => 'फ़ोटो प्रिंट के लिए तैयार हो रही हैं…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Picavi फ़ोटो ($count)',
+      one: 'Picavi फ़ोटो',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => 'ये फ़ोटो प्रिंट नहीं हो सकीं';
 }

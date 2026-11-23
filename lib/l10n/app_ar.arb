@@ -334,5 +334,13 @@
   "placesSetLocation": "تعيين الموقع…",
   "placesPickHint": "انقر على الخريطة حيث التُقطت الصور. مرّر للتكبير واسحب للتحريك. لا تتغير ملفات الصور.",
   "placesNoPointYet": "لم يتم اختيار مكان بعد",
-  "placesRemoveLocation": "إزالة الموقع"
+  "placesRemoveLocation": "إزالة الموقع",
+  "printAction": "{count, plural, =1{طباعة…} other{طباعة {count} صور…}}",
+  "printTitle": "{count, plural, =1{طباعة صورة واحدة} other{طباعة {count} صور}}",
+  "printPerPage": "الصور في كل صفحة",
+  "printHint": "تُوضع الصور في مساحتها دون قصّ ومع تطبيق تعديلاتك. يُختار حجم الورق واتجاهه في النافذة التالية.",
+  "printContinue": "متابعة…",
+  "printPreparing": "جارٍ تجهيز الصور للطباعة…",
+  "printJobName": "{count, plural, =1{صورة Picavi} other{صور Picavi ({count})}}",
+  "printFailed": "تعذّرت طباعة هذه الصور"
 }

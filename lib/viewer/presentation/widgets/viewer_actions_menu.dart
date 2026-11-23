@@ -11,6 +11,7 @@ enum ViewerFileAction {
   export,
   share,
   collage,
+  print,
   feelingLucky,
   autoContrast,
   autoColor,
@@ -116,6 +117,11 @@ class ViewerActionsMenu extends StatelessWidget {
           ViewerFileAction.collage,
           Icons.dashboard_outlined,
           l10n.collageAction,
+        ),
+        item(
+          ViewerFileAction.print,
+          Icons.print_outlined,
+          l10n.printAction(targetCount),
         ),
         if (canShare)
           item(

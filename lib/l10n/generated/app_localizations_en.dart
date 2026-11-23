@@ -1305,4 +1305,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get placesRemoveLocation => 'Remove location';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Print $count images…',
+      one: 'Print…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Print $count photos',
+      one: 'Print 1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => 'Photos per page';
+
+  @override
+  String get printHint =>
+      'Photos are fitted to their space without cropping, with your edits applied. Paper size and orientation are chosen in the next window.';
+
+  @override
+  String get printContinue => 'Continue…';
+
+  @override
+  String get printPreparing => 'Preparing photos for printing…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Picavi photos ($count)',
+      one: 'Picavi photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => 'Couldn\'t print these photos';
 }

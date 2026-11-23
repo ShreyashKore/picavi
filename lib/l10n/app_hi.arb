@@ -334,5 +334,13 @@
   "placesSetLocation": "स्थान सेट करें…",
   "placesPickHint": "मानचित्र पर वहाँ क्लिक करें जहाँ फ़ोटो ली गई थीं। ज़ूम के लिए स्क्रॉल करें, खिसकाने के लिए खींचें। फ़ोटो फ़ाइलें नहीं बदलतीं।",
   "placesNoPointYet": "अभी कोई स्थान नहीं चुना गया",
-  "placesRemoveLocation": "स्थान हटाएँ"
+  "placesRemoveLocation": "स्थान हटाएँ",
+  "printAction": "{count, plural, =1{प्रिंट करें…} other{{count} छवियाँ प्रिंट करें…}}",
+  "printTitle": "{count, plural, =1{1 फ़ोटो प्रिंट करें} other{{count} फ़ोटो प्रिंट करें}}",
+  "printPerPage": "प्रति पेज फ़ोटो",
+  "printHint": "फ़ोटो बिना काटे अपनी जगह में फिट होती हैं, आपके संपादन के साथ। काग़ज़ का आकार और दिशा अगली विंडो में चुनें।",
+  "printContinue": "जारी रखें…",
+  "printPreparing": "फ़ोटो प्रिंट के लिए तैयार हो रही हैं…",
+  "printJobName": "{count, plural, =1{Picavi फ़ोटो} other{Picavi फ़ोटो ({count})}}",
+  "printFailed": "ये फ़ोटो प्रिंट नहीं हो सकीं"
 }

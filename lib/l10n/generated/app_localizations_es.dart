@@ -1312,4 +1312,53 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get placesRemoveLocation => 'Quitar ubicación';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Imprimir $count imágenes…',
+      one: 'Imprimir…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Imprimir $count fotos',
+      one: 'Imprimir 1 foto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => 'Fotos por página';
+
+  @override
+  String get printHint =>
+      'Las fotos se ajustan a su espacio sin recortarse y con tus ediciones. El tamaño y la orientación del papel se eligen en la siguiente ventana.';
+
+  @override
+  String get printContinue => 'Continuar…';
+
+  @override
+  String get printPreparing => 'Preparando las fotos para imprimir…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Fotos de Picavi ($count)',
+      one: 'Foto de Picavi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => 'No se pudieron imprimir estas fotos';
 }
