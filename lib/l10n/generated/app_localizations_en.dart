@@ -1127,4 +1127,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareFailedNotice => 'Couldn\'t open the share menu';
+
+  @override
+  String get importTitle => 'Import photos';
+
+  @override
+  String get importDevices => 'Cameras and cards';
+
+  @override
+  String get importRefreshDevices => 'Look for cameras and cards';
+
+  @override
+  String get importNoDevices =>
+      'None connected. Plug in a camera or insert a memory card.';
+
+  @override
+  String get importFromFolder => 'From a folder…';
+
+  @override
+  String get importChooseSource =>
+      'Choose a camera, card or folder on the left. Photos are copied into dated folders; nothing on the card is changed.';
+
+  @override
+  String importDestination(String folder) {
+    return 'Into $folder / year / date';
+  }
+
+  @override
+  String get importChangeDestination => 'Change…';
+
+  @override
+  String get importNothingFound => 'No photos found here';
+
+  @override
+  String get importAlreadyImported => 'Imported';
+
+  @override
+  String importSelectedCount(int selected, int total) {
+    return '$selected of $total selected';
+  }
+
+  @override
+  String get importSelectNew => 'Select new';
+
+  @override
+  String get importSelectNone => 'Select none';
+
+  @override
+  String importButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Import $count photos',
+      one: 'Import 1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importProgress(int done, int total) {
+    return 'Copying $done of $total…';
+  }
+
+  @override
+  String importDone(int copied, int skipped, int failed) {
+    return 'Imported $copied, skipped $skipped already there, $failed failed';
+  }
 }

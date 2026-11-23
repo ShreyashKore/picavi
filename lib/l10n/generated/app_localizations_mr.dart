@@ -1124,4 +1124,70 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get shareFailedNotice => 'शेअर मेनू उघडता आला नाही';
+
+  @override
+  String get importTitle => 'फोटो आयात करा';
+
+  @override
+  String get importDevices => 'कॅमेरे आणि कार्ड';
+
+  @override
+  String get importRefreshDevices => 'कॅमेरे आणि कार्ड शोधा';
+
+  @override
+  String get importNoDevices =>
+      'काहीही जोडलेले नाही. कॅमेरा जोडा किंवा मेमरी कार्ड घाला.';
+
+  @override
+  String get importFromFolder => 'फोल्डरमधून…';
+
+  @override
+  String get importChooseSource =>
+      'डावीकडे कॅमेरा, कार्ड किंवा फोल्डर निवडा. फोटो तारखेच्या फोल्डरमध्ये कॉपी होतात; कार्डवर काहीही बदलत नाही.';
+
+  @override
+  String importDestination(String folder) {
+    return '$folder / वर्ष / तारीख मध्ये';
+  }
+
+  @override
+  String get importChangeDestination => 'बदला…';
+
+  @override
+  String get importNothingFound => 'येथे फोटो सापडले नाहीत';
+
+  @override
+  String get importAlreadyImported => 'आयात केलेला';
+
+  @override
+  String importSelectedCount(int selected, int total) {
+    return '$total पैकी $selected निवडले';
+  }
+
+  @override
+  String get importSelectNew => 'नवीन निवडा';
+
+  @override
+  String get importSelectNone => 'काहीही निवडू नका';
+
+  @override
+  String importButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फोटो आयात करा',
+      one: '1 फोटो आयात करा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importProgress(int done, int total) {
+    return '$total पैकी $done कॉपी होत आहेत…';
+  }
+
+  @override
+  String importDone(int copied, int skipped, int failed) {
+    return '$copied आयात केले, आधीपासून असलेले $skipped वगळले, $failed अयशस्वी';
+  }
 }

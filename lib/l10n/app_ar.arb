@@ -290,5 +290,21 @@
   "libraryPickFolderMessage": "اختر مجلدًا يحتوي على صور. ستُضمَّن مجلداته الفرعية.",
   "libraryOpenFailed": "تعذّر فتح المكتبة",
   "shareAction": "{count, plural, =1{مشاركة…} other{مشاركة {count} صور…}}",
-  "shareFailedNotice": "تعذّر فتح قائمة المشاركة"
+  "shareFailedNotice": "تعذّر فتح قائمة المشاركة",
+  "importTitle": "استيراد الصور",
+  "importDevices": "الكاميرات والبطاقات",
+  "importRefreshDevices": "البحث عن الكاميرات والبطاقات",
+  "importNoDevices": "لا يوجد جهاز متصل. وصّل كاميرا أو أدخل بطاقة ذاكرة.",
+  "importFromFolder": "من مجلد…",
+  "importChooseSource": "اختر كاميرا أو بطاقة أو مجلدًا على اليسار. تُنسخ الصور إلى مجلدات مؤرخة؛ ولا يتغير شيء على البطاقة.",
+  "importDestination": "إلى {folder} / السنة / التاريخ",
+  "importChangeDestination": "تغيير…",
+  "importNothingFound": "لم يتم العثور على صور هنا",
+  "importAlreadyImported": "مستوردة",
+  "importSelectedCount": "تم تحديد {selected} من {total}",
+  "importSelectNew": "تحديد الجديدة",
+  "importSelectNone": "إلغاء التحديد",
+  "importButton": "{count, plural, =1{استيراد صورة واحدة} other{استيراد {count} صور}}",
+  "importProgress": "جارٍ نسخ {done} من {total}…",
+  "importDone": "تم استيراد {copied}، وتخطي {skipped} موجودة، وفشل {failed}"
 }

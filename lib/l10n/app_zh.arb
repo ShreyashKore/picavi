@@ -290,5 +290,21 @@
   "libraryPickFolderMessage": "选择一个存放照片的文件夹，其子文件夹也会包含在内。",
   "libraryOpenFailed": "无法打开图库",
   "shareAction": "{count, plural, =1{共享…} other{共享 {count} 张图片…}}",
-  "shareFailedNotice": "无法打开共享菜单"
+  "shareFailedNotice": "无法打开共享菜单",
+  "importTitle": "导入照片",
+  "importDevices": "相机和存储卡",
+  "importRefreshDevices": "查找相机和存储卡",
+  "importNoDevices": "未连接任何设备。请连接相机或插入存储卡。",
+  "importFromFolder": "从文件夹…",
+  "importChooseSource": "在左侧选择相机、存储卡或文件夹。照片会复制到按日期命名的文件夹中，卡上的内容不会改变。",
+  "importDestination": "到 {folder} / 年 / 日期",
+  "importChangeDestination": "更改…",
+  "importNothingFound": "这里没有找到照片",
+  "importAlreadyImported": "已导入",
+  "importSelectedCount": "已选择 {selected} / {total}",
+  "importSelectNew": "选择新照片",
+  "importSelectNone": "全不选",
+  "importButton": "{count, plural, other{导入 {count} 张照片}}",
+  "importProgress": "正在复制 {done} / {total}…",
+  "importDone": "已导入 {copied} 张，跳过已存在的 {skipped} 张，失败 {failed} 张"
 }

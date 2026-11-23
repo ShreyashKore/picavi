@@ -130,7 +130,6 @@ class LibraryScan {
 
 /// Lists every photo under [root], skipping hidden folders and following no
 /// links. Unreadable folders are skipped. Runs in an isolate.
-@visibleForTesting
 LibraryScan scanLibraryRoot(String root, Set<String> extensions) {
   final files = <ScannedFile>[];
   final sidecars = <String, SidecarEntries>{};
@@ -190,7 +189,6 @@ class PhotoFacts {
 
 /// Reads when each photo was taken and with what camera. Only the first
 /// 256 KB are read: that is where JPEG and TIFF keep their EXIF.
-@visibleForTesting
 Future<Map<String, PhotoFacts>> readPhotoFacts(List<String> paths) async {
   const headBytes = 256 * 1024;
   final result = <String, PhotoFacts>{};

@@ -7,10 +7,12 @@ import '../domain/repositories/catalog_repository.dart';
 import '../domain/repositories/library_settings_repository.dart';
 import '../domain/repositories/photo_info_repository.dart';
 import '../domain/services/duplicate_finder.dart';
+import '../domain/services/import_service.dart';
 import '../domain/services/library_indexer.dart';
 import 'repositories/preferences_library_settings_repository.dart';
 import 'repositories/sidecar_photo_info_repository.dart';
 import 'repositories/sqlite_catalog_repository.dart';
+import 'services/file_system_import_service.dart';
 import 'services/file_system_library_indexer.dart';
 import 'services/hashing_duplicate_finder.dart';
 import 'services/thumbnail_cache.dart';
@@ -25,8 +27,14 @@ class LibraryServices {
     required this.fileOperations,
     LibraryIndexer? indexer,
     DuplicateFinder? duplicateFinder,
+    ImportService? importService,
+    String? defaultImportDestination,
   }) : indexer = indexer ?? FileSystemLibraryIndexer(catalog),
-       duplicateFinder = duplicateFinder ?? HashingDuplicateFinder(catalog);
+       duplicateFinder = duplicateFinder ?? HashingDuplicateFinder(catalog),
+       importService = importService ?? FileSystemImportService(),
+       defaultImportDestination =
+           defaultImportDestination ??
+           FileSystemImportService.defaultDestination();
 
   /// Opens the catalog and thumbnail cache in the app's support folder.
   static Future<LibraryServices> open({
@@ -52,6 +60,10 @@ class LibraryServices {
   final FileOperationsService fileOperations;
   final LibraryIndexer indexer;
   final DuplicateFinder duplicateFinder;
+  final ImportService importService;
+
+  /// Where imports go until the user picks another folder.
+  final String defaultImportDestination;
 
   Future<void> close() => catalog.close();
 }

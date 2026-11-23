@@ -290,5 +290,21 @@
   "libraryPickFolderMessage": "Elige una carpeta con fotos. Se incluyen sus subcarpetas.",
   "libraryOpenFailed": "No se pudo abrir la biblioteca",
   "shareAction": "{count, plural, =1{Compartir…} other{Compartir {count} imágenes…}}",
-  "shareFailedNotice": "No se pudo abrir el menú de compartir"
+  "shareFailedNotice": "No se pudo abrir el menú de compartir",
+  "importTitle": "Importar fotos",
+  "importDevices": "Cámaras y tarjetas",
+  "importRefreshDevices": "Buscar cámaras y tarjetas",
+  "importNoDevices": "No hay ninguno conectado. Conecta una cámara o inserta una tarjeta de memoria.",
+  "importFromFolder": "Desde una carpeta…",
+  "importChooseSource": "Elige una cámara, tarjeta o carpeta a la izquierda. Las fotos se copian en carpetas por fecha; no se cambia nada en la tarjeta.",
+  "importDestination": "En {folder} / año / fecha",
+  "importChangeDestination": "Cambiar…",
+  "importNothingFound": "No se encontraron fotos aquí",
+  "importAlreadyImported": "Importada",
+  "importSelectedCount": "{selected} de {total} seleccionadas",
+  "importSelectNew": "Seleccionar nuevas",
+  "importSelectNone": "No seleccionar ninguna",
+  "importButton": "{count, plural, =1{Importar 1 foto} other{Importar {count} fotos}}",
+  "importProgress": "Copiando {done} de {total}…",
+  "importDone": "Importadas {copied}, omitidas {skipped} que ya estaban, {failed} con error"
 }

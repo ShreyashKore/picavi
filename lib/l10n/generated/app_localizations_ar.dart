@@ -1125,4 +1125,70 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shareFailedNotice => 'تعذّر فتح قائمة المشاركة';
+
+  @override
+  String get importTitle => 'استيراد الصور';
+
+  @override
+  String get importDevices => 'الكاميرات والبطاقات';
+
+  @override
+  String get importRefreshDevices => 'البحث عن الكاميرات والبطاقات';
+
+  @override
+  String get importNoDevices =>
+      'لا يوجد جهاز متصل. وصّل كاميرا أو أدخل بطاقة ذاكرة.';
+
+  @override
+  String get importFromFolder => 'من مجلد…';
+
+  @override
+  String get importChooseSource =>
+      'اختر كاميرا أو بطاقة أو مجلدًا على اليسار. تُنسخ الصور إلى مجلدات مؤرخة؛ ولا يتغير شيء على البطاقة.';
+
+  @override
+  String importDestination(String folder) {
+    return 'إلى $folder / السنة / التاريخ';
+  }
+
+  @override
+  String get importChangeDestination => 'تغيير…';
+
+  @override
+  String get importNothingFound => 'لم يتم العثور على صور هنا';
+
+  @override
+  String get importAlreadyImported => 'مستوردة';
+
+  @override
+  String importSelectedCount(int selected, int total) {
+    return 'تم تحديد $selected من $total';
+  }
+
+  @override
+  String get importSelectNew => 'تحديد الجديدة';
+
+  @override
+  String get importSelectNone => 'إلغاء التحديد';
+
+  @override
+  String importButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'استيراد $count صور',
+      one: 'استيراد صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importProgress(int done, int total) {
+    return 'جارٍ نسخ $done من $total…';
+  }
+
+  @override
+  String importDone(int copied, int skipped, int failed) {
+    return 'تم استيراد $copied، وتخطي $skipped موجودة، وفشل $failed';
+  }
 }

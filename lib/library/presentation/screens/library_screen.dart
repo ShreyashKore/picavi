@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart' as p;
 
 import '../../../core/l10n/l10n_extensions.dart';
 import '../../../core/theme/app_colors.dart';
@@ -17,6 +18,7 @@ import '../widgets/library_dialogs.dart';
 import '../widgets/library_grid.dart';
 import '../widgets/library_sidebar.dart';
 import 'duplicates_screen.dart';
+import 'import_screen.dart';
 
 /// Picasa-style library: every photo in the watched folders, by folder,
 /// album or month. Pops with the path of a photo to open in the viewer.
@@ -200,6 +202,33 @@ class _LibraryScreenState extends State<LibraryScreen> {
     }
   }
 
+  Future<void> _openImport() async {
+    final services = widget.services;
+    final destination = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => ImportScreen(
+          service: services.importService,
+          settings: services.settings,
+          thumbnails: services.thumbnails,
+          defaultDestination: services.defaultImportDestination,
+          pickFolder: widget.pickFolder,
+        ),
+      ),
+    );
+    if (destination == null) {
+      return;
+    }
+    final watched = _controller.state.roots.any(
+      (root) => p.equals(root, destination) || p.isWithin(root, destination),
+    );
+    // Imported photos belong in the library: watch their folder if needed.
+    if (watched) {
+      _controller.reindex();
+    } else {
+      await _controller.addRoot(destination);
+    }
+  }
+
   Future<void> _openDuplicates() async {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -306,6 +335,11 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 selectedIcon: const Icon(Icons.visibility_outlined),
                 onPressed: () =>
                     unawaited(_controller.setShowHidden(!state.showHidden)),
+              ),
+              IconButton(
+                tooltip: l10n.importTitle,
+                icon: const Icon(Icons.download_for_offline_outlined),
+                onPressed: () => unawaited(_openImport()),
               ),
               IconButton(
                 tooltip: l10n.duplicatesTitle,

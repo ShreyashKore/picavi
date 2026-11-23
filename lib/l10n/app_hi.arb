@@ -290,5 +290,21 @@
   "libraryPickFolderMessage": "फ़ोटो वाला फ़ोल्डर चुनें। इसके उप-फ़ोल्डर भी शामिल होंगे।",
   "libraryOpenFailed": "लाइब्रेरी नहीं खुल सकी",
   "shareAction": "{count, plural, =1{साझा करें…} other{{count} छवियाँ साझा करें…}}",
-  "shareFailedNotice": "साझा करने का मेनू नहीं खुल सका"
+  "shareFailedNotice": "साझा करने का मेनू नहीं खुल सका",
+  "importTitle": "फ़ोटो इंपोर्ट करें",
+  "importDevices": "कैमरे और कार्ड",
+  "importRefreshDevices": "कैमरे और कार्ड खोजें",
+  "importNoDevices": "कोई जुड़ा नहीं है। कैमरा लगाएँ या मेमोरी कार्ड डालें।",
+  "importFromFolder": "किसी फ़ोल्डर से…",
+  "importChooseSource": "बाईं ओर कैमरा, कार्ड या फ़ोल्डर चुनें। फ़ोटो तारीख वाले फ़ोल्डरों में कॉपी होती हैं; कार्ड पर कुछ नहीं बदलता।",
+  "importDestination": "{folder} / वर्ष / तारीख में",
+  "importChangeDestination": "बदलें…",
+  "importNothingFound": "यहाँ कोई फ़ोटो नहीं मिली",
+  "importAlreadyImported": "इंपोर्ट की गई",
+  "importSelectedCount": "{total} में से {selected} चुनी गईं",
+  "importSelectNew": "नई चुनें",
+  "importSelectNone": "कोई नहीं चुनें",
+  "importButton": "{count, plural, =1{1 फ़ोटो इंपोर्ट करें} other{{count} फ़ोटो इंपोर्ट करें}}",
+  "importProgress": "{total} में से {done} कॉपी हो रही हैं…",
+  "importDone": "{copied} इंपोर्ट हुईं, पहले से मौजूद {skipped} छोड़ी गईं, {failed} विफल"
 }

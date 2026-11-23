@@ -21,4 +21,11 @@ class PreferencesLibrarySettingsRepository
   @override
   Future<void> setHiddenFolders(Set<String> folders) =>
       _preferences.setLibraryHiddenFolders(folders.toList()..sort());
+
+  @override
+  Future<String?> importDestination() => _preferences.getImportDestination();
+
+  @override
+  Future<void> setImportDestination(String folder) =>
+      _preferences.setImportDestination(folder);
 }

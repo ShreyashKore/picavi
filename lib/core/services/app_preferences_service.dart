@@ -17,6 +17,7 @@ class AppPreferencesService {
   static const String _slideshowFullScreenKey = 'slideshowFullScreen';
   static const String _libraryFoldersKey = 'libraryWatchedFolders';
   static const String _libraryHiddenFoldersKey = 'libraryHiddenFolders';
+  static const String _importDestinationKey = 'importDestination';
 
   /// Maximum number of recently opened folders kept in history.
   static const int maxRecentFolders = 10;
@@ -283,6 +284,24 @@ class AppPreferencesService {
 
   Future<void> setLibraryHiddenFolders(List<String> folders) =>
       _setStringList(_libraryHiddenFoldersKey, folders);
+
+  Future<String?> getImportDestination() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      return preferences.getString(_importDestinationKey);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> setImportDestination(String folder) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.setString(_importDestinationKey, folder);
+    } catch (_) {
+      // Ignore persistence failures and keep the app usable.
+    }
+  }
 
   Future<List<String>> _getStringList(String key) async {
     try {

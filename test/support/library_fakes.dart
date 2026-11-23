@@ -63,6 +63,15 @@ class InMemoryLibrarySettings implements LibrarySettingsRepository {
 
   @override
   Future<void> setHiddenFolders(Set<String> folders) async => hidden = folders;
+
+  String? destination;
+
+  @override
+  Future<String?> importDestination() async => destination;
+
+  @override
+  Future<void> setImportDestination(String folder) async =>
+      destination = folder;
 }
 
 class FakeDuplicateFinder implements DuplicateFinder {

@@ -1242,5 +1242,106 @@
   "shareFailedNotice": "Couldn't open the share menu",
   "@shareFailedNotice": {
     "description": "Shown when the share menu could not be opened."
+  },
+  "importTitle": "Import photos",
+  "@importTitle": {
+    "description": "Title/tooltip: import photos from a camera or card."
+  },
+  "importDevices": "Cameras and cards",
+  "@importDevices": {
+    "description": "Sidebar heading for cameras and memory cards."
+  },
+  "importRefreshDevices": "Look for cameras and cards",
+  "@importRefreshDevices": {
+    "description": "Tooltip: look for cameras and cards again."
+  },
+  "importNoDevices": "None connected. Plug in a camera or insert a memory card.",
+  "@importNoDevices": {
+    "description": "Shown when no camera or card is connected."
+  },
+  "importFromFolder": "From a folder…",
+  "@importFromFolder": {
+    "description": "Import source: any folder."
+  },
+  "importChooseSource": "Choose a camera, card or folder on the left. Photos are copied into dated folders; nothing on the card is changed.",
+  "@importChooseSource": {
+    "description": "Shown before a source is chosen."
+  },
+  "importDestination": "Into {folder} / year / date",
+  "@importDestination": {
+    "description": "Shows where photos will be copied.",
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "importChangeDestination": "Change…",
+  "@importChangeDestination": {
+    "description": "Button that changes the import folder."
+  },
+  "importNothingFound": "No photos found here",
+  "@importNothingFound": {
+    "description": "Shown when the source has no photos."
+  },
+  "importAlreadyImported": "Imported",
+  "@importAlreadyImported": {
+    "description": "Label on photos imported before."
+  },
+  "importSelectedCount": "{selected} of {total} selected",
+  "@importSelectedCount": {
+    "description": "Selection count in the import screen.",
+    "placeholders": {
+      "selected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "importSelectNew": "Select new",
+  "@importSelectNew": {
+    "description": "Button: select photos not imported yet."
+  },
+  "importSelectNone": "Select none",
+  "@importSelectNone": {
+    "description": "Button: select nothing."
+  },
+  "importButton": "{count, plural, =1{Import 1 photo} other{Import {count} photos}}",
+  "@importButton": {
+    "description": "Button that starts importing.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importProgress": "Copying {done} of {total}…",
+  "@importProgress": {
+    "description": "Progress while importing.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "importDone": "Imported {copied}, skipped {skipped} already there, {failed} failed",
+  "@importDone": {
+    "description": "Summary after importing.",
+    "placeholders": {
+      "copied": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
   }
 }

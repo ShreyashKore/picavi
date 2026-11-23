@@ -1785,6 +1785,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t open the share menu'**
   String get shareFailedNotice;
+
+  /// Title/tooltip: import photos from a camera or card.
+  ///
+  /// In en, this message translates to:
+  /// **'Import photos'**
+  String get importTitle;
+
+  /// Sidebar heading for cameras and memory cards.
+  ///
+  /// In en, this message translates to:
+  /// **'Cameras and cards'**
+  String get importDevices;
+
+  /// Tooltip: look for cameras and cards again.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for cameras and cards'**
+  String get importRefreshDevices;
+
+  /// Shown when no camera or card is connected.
+  ///
+  /// In en, this message translates to:
+  /// **'None connected. Plug in a camera or insert a memory card.'**
+  String get importNoDevices;
+
+  /// Import source: any folder.
+  ///
+  /// In en, this message translates to:
+  /// **'From a folder…'**
+  String get importFromFolder;
+
+  /// Shown before a source is chosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a camera, card or folder on the left. Photos are copied into dated folders; nothing on the card is changed.'**
+  String get importChooseSource;
+
+  /// Shows where photos will be copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Into {folder} / year / date'**
+  String importDestination(String folder);
+
+  /// Button that changes the import folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Change…'**
+  String get importChangeDestination;
+
+  /// Shown when the source has no photos.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos found here'**
+  String get importNothingFound;
+
+  /// Label on photos imported before.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported'**
+  String get importAlreadyImported;
+
+  /// Selection count in the import screen.
+  ///
+  /// In en, this message translates to:
+  /// **'{selected} of {total} selected'**
+  String importSelectedCount(int selected, int total);
+
+  /// Button: select photos not imported yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Select new'**
+  String get importSelectNew;
+
+  /// Button: select nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Select none'**
+  String get importSelectNone;
+
+  /// Button that starts importing.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Import 1 photo} other{Import {count} photos}}'**
+  String importButton(int count);
+
+  /// Progress while importing.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying {done} of {total}…'**
+  String importProgress(int done, int total);
+
+  /// Summary after importing.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {copied}, skipped {skipped} already there, {failed} failed'**
+  String importDone(int copied, int skipped, int failed);
 }
 
 class _AppLocalizationsDelegate

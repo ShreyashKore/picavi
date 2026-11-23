@@ -1087,4 +1087,68 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shareFailedNotice => '无法打开共享菜单';
+
+  @override
+  String get importTitle => '导入照片';
+
+  @override
+  String get importDevices => '相机和存储卡';
+
+  @override
+  String get importRefreshDevices => '查找相机和存储卡';
+
+  @override
+  String get importNoDevices => '未连接任何设备。请连接相机或插入存储卡。';
+
+  @override
+  String get importFromFolder => '从文件夹…';
+
+  @override
+  String get importChooseSource =>
+      '在左侧选择相机、存储卡或文件夹。照片会复制到按日期命名的文件夹中，卡上的内容不会改变。';
+
+  @override
+  String importDestination(String folder) {
+    return '到 $folder / 年 / 日期';
+  }
+
+  @override
+  String get importChangeDestination => '更改…';
+
+  @override
+  String get importNothingFound => '这里没有找到照片';
+
+  @override
+  String get importAlreadyImported => '已导入';
+
+  @override
+  String importSelectedCount(int selected, int total) {
+    return '已选择 $selected / $total';
+  }
+
+  @override
+  String get importSelectNew => '选择新照片';
+
+  @override
+  String get importSelectNone => '全不选';
+
+  @override
+  String importButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '导入 $count 张照片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importProgress(int done, int total) {
+    return '正在复制 $done / $total…';
+  }
+
+  @override
+  String importDone(int copied, int skipped, int failed) {
+    return '已导入 $copied 张，跳过已存在的 $skipped 张，失败 $failed 张';
+  }
 }
