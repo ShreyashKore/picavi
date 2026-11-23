@@ -212,6 +212,39 @@ void main() {
       final zoomedRect = tester.getRect(find.byKey(overlayKey));
       expect(zoomedRect.width, closeTo(320 * 1.2, 0.5));
     });
+
+    testWidgets('overlay stays on the image when padding squeezes it', (
+      tester,
+    ) async {
+      final controller = InteractiveImageViewerController();
+      final image = _buildSvgImage(
+        const Color(0xFF8E24AA),
+        width: 40,
+        height: 20,
+      );
+      const overlayKey = ValueKey<String>('overlay');
+
+      await _pumpViewer(
+        tester,
+        controller: controller,
+        image: image,
+        imagePadding: const EdgeInsets.only(bottom: 120),
+        overlayBuilder: (context, size) =>
+            const SizedBox.expand(key: overlayKey),
+      );
+      for (var i = 0; i < 20 && controller.value.imageInfo == null; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump();
+      }
+      await tester.pump();
+
+      // The 320x160 fit is squeezed to 120 tall; the image keeps 2:1.
+      final overlayRect = tester.getRect(find.byKey(overlayKey));
+      expect(overlayRect.width / overlayRect.height, closeTo(2, 0.01));
+      expect(overlayRect.height, closeTo(120, 0.5));
+    });
   });
 }
 
@@ -220,6 +253,7 @@ Future<void> _pumpViewer(
   required InteractiveImageViewerController controller,
   required AppImage image,
   Widget Function(BuildContext context, Size fittedImageSize)? overlayBuilder,
+  EdgeInsetsGeometry imagePadding = EdgeInsets.zero,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -232,6 +266,7 @@ Future<void> _pumpViewer(
               controller: controller,
               image: image,
               overlayBuilder: overlayBuilder,
+              imagePadding: imagePadding,
             ),
           ),
         ),

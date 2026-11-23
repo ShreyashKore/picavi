@@ -841,11 +841,19 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
                                           ),
                                           if (widget.overlayBuilder
                                               case final overlayBuilder?)
+                                            // Padding can squeeze the box;
+                                            // scale like the image (contain)
+                                            // so the overlay stays on it.
                                             SizedBox.fromSize(
                                               size: fittedImageSize,
-                                              child: overlayBuilder(
-                                                context,
-                                                fittedImageSize,
+                                              child: FittedBox(
+                                                child: SizedBox.fromSize(
+                                                  size: fittedImageSize,
+                                                  child: overlayBuilder(
+                                                    context,
+                                                    fittedImageSize,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                         ],
