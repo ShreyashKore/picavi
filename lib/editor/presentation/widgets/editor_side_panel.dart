@@ -32,7 +32,7 @@ class EditorSidePanel extends StatelessWidget {
     required this.onRedEyeRadiusChanged,
   });
 
-  static const double width = 300;
+  static const double width = 320;
 
   final EditorState state;
   final EditorPanelTab tab;
@@ -83,18 +83,21 @@ class EditorSidePanel extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: SegmentedButton<EditorPanelTab>(
             showSelectedIcon: false,
+            style: SegmentedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+            ),
             segments: [
               ButtonSegment(
                 value: EditorPanelTab.fixes,
-                label: Text(context.l10n.editorTabFixes),
+                label: _TabLabel(context.l10n.editorTabFixes),
               ),
               ButtonSegment(
                 value: EditorPanelTab.tuning,
-                label: Text(context.l10n.editorTabTuning),
+                label: _TabLabel(context.l10n.editorTabTuning),
               ),
               ButtonSegment(
                 value: EditorPanelTab.effects,
-                label: Text(context.l10n.editorTabEffects),
+                label: _TabLabel(context.l10n.editorTabEffects),
               ),
             ],
             selected: {tab},
@@ -351,6 +354,21 @@ class EditorSidePanel extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Keeps a tab's label on one line, shrinking long translations to fit.
+class _TabLabel extends StatelessWidget {
+  const _TabLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(text, maxLines: 1, softWrap: false),
     );
   }
 }
