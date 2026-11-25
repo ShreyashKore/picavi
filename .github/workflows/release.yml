@@ -69,10 +69,14 @@ jobs:
         shell: bash
         run: |
           version="$(sed -nE 's/^version: *([^+[:space:]]+).*/\1/p' pubspec.yaml)"
-          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
-            echo "::error::Tag $GITHUB_REF_NAME does not match pubspec version $version"
-            exit 1
-          fi
+          # v1.2.3, or a pre-release of it such as v1.2.3-alpha.1.
+          case "$GITHUB_REF_NAME" in
+            "v$version" | "v$version"-*) ;;
+            *)
+              echo "::error::Tag $GITHUB_REF_NAME does not match pubspec version $version"
+              exit 1
+              ;;
+          esac
 
       - name: Read Flutter version from .fvmrc
         id: fvm
@@ -165,5 +169,10 @@ jobs:
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" release/* --clobber
           else
-            gh release create "$TAG" release/* --verify-tag --generate-notes --title "Picavi $TAG"
+            # A suffixed tag (v1.2.3-alpha.1) is a pre-release, which GitHub
+            # leaves out of releases/latest.
+            prerelease=false
+            case "$TAG" in *-*) prerelease=true ;; esac
+            gh release create "$TAG" release/* --verify-tag --generate-notes \
+              --title "Picavi $TAG" --prerelease="$prerelease"
           fi
