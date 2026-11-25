@@ -6,6 +6,6 @@ abstract class FaceDetectorService {
   bool get isAvailable;
 
   /// Faces in the photo at [path] (empty if none), or null if it couldn't
-  /// be read.
+  /// be read or detection failed.
   Future<List<DetectedFace>?> detect(String path);
 }
