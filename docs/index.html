@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picavi: free Picasa alternative for macOS, Windows and Linux</title>
+<meta name="description" content="Picavi is a free Picasa alternative for macOS, Windows and Linux: a fast photo viewer, non-destructive editor and offline photo library. No account, no uploads.">
+<link rel="canonical" href="https://shreyashkore.github.io/picavi/">
+<link rel="icon" href="images/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/icon-180.png">
+<meta name="theme-color" content="#0b0d2a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Picavi">
+<meta property="og:title" content="Picavi: free Picasa alternative for macOS, Windows and Linux">
+<meta property="og:description" content="Picavi is a free Picasa alternative for macOS, Windows and Linux: a fast photo viewer, non-destructive editor and offline photo library. No account, no uploads.">
+<meta property="og:url" content="https://shreyashkore.github.io/picavi/">
+<meta property="og:image" content="https://shreyashkore.github.io/picavi/images/picavi-social-preview.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="Picavi, the photo viewer, editor and library for everyone who still misses Picasa">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="image" href="images/hero-lake.webp" type="image/webp">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "SoftwareApplication",
+   "name": "Picavi",
+   "url": "https://shreyashkore.github.io/picavi/",
+   "description": "Picavi is a free Picasa alternative for macOS, Windows and Linux: a fast photo viewer, non-destructive editor and offline photo library. No account, no uploads.",
+   "applicationCategory": "MultimediaApplication",
+   "operatingSystem": "macOS 12 or later, Windows, Linux",
+   "downloadUrl": "https://github.com/ShreyashKore/picavi/releases",
+   "image": "https://shreyashkore.github.io/picavi/images/picavi-social-preview.jpg",
+   "screenshot": [
+    "https://shreyashkore.github.io/picavi/images/photo-viewer.webp",
+    "https://shreyashkore.github.io/picavi/images/photo-library.webp",
+    "https://shreyashkore.github.io/picavi/images/photo-editor.webp"
+   ],
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   }
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Is Picavi a good replacement for Picasa?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "If you used Picasa to look through folders, star and caption photos, make quick fixes and keep everything on your own computer, Picavi covers that today. If you depend on RAW files or videos, it doesn't yet."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I bring my Picasa library over?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Your photos, yes: add the same folders to the Picavi library and it indexes them in place. Picasa's own albums, face tags and unsaved edits (its .picasa.ini files) aren't imported yet. Picavi leaves those files alone."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it run on Apple silicon Macs, Windows 11 and Linux?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "It runs on macOS 12 or later, Windows and Linux desktops. A few features use macOS frameworks and are Mac-only for now: face grouping, Live Text, the share menu, and HEIC, AVIF and TIFF decoding."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is it free? Do I need an account?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "It's free, and there is no account or cloud. Photos, edits, tags and faces stay on your computer. Picavi goes online only for map tiles while a map is open, and once to fetch its interface font."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Will it change or delete my originals?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Edits never do. The one thing written into a photo is a rotation you choose to save. Deleting moves files to the Trash or Recycle Bin, and copies and moves never overwrite."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Which image formats are supported?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "JPEG, PNG, GIF, WebP, BMP, ICO and SVG everywhere, plus HEIC, HEIF, AVIF and TIFF on macOS."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<style>
+:root { --ink:#f4f3ff; --soft:#b9bbe2; --bg:#0a0b22; --panel:#12143a; --line:rgba(190,190,255,.16); --leaf:#b6d987; --leaf-ink:#1c2b07; }
+* { box-sizing:border-box; margin:0; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--ink); font:17px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; -webkit-font-smoothing:antialiased; }
+img { max-width:100%; height:auto; display:block; }
+a { color:var(--leaf); }
+:focus-visible { outline:2px solid var(--leaf); outline-offset:3px; border-radius:6px; }
+.wrap { width:min(1160px,100% - 40px); margin-inline:auto; }
+.hero { position:relative; padding:22px 0 230px; background:linear-gradient(90deg,rgba(9,10,38,.94),rgba(14,14,54,.74) 45%,rgba(16,12,58,.28)),linear-gradient(0deg,var(--bg),transparent 42%),url(images/hero-lake.webp) center 60%/cover; }
+nav { display:flex; align-items:center; gap:26px; font-size:15px; font-weight:600; }
+nav .brand { display:flex; align-items:center; gap:10px; margin-right:auto; font-size:20px; letter-spacing:-.4px; color:var(--ink); text-decoration:none; }
+nav a:not(.brand) { color:var(--soft); text-decoration:none; }
+nav a:not(.brand):hover { color:var(--ink); }
+.top { display:grid; grid-template-columns:1fr 1.02fr; gap:24px; align-items:center; padding-top:34px; }
+h1 { font-size:clamp(38px,5.2vw,64px); line-height:1.04; letter-spacing:-.035em; font-weight:750; text-wrap:balance; }
+.lede { margin:22px 0 30px; max-width:33em; font-size:clamp(17px,1.6vw,20px); color:#dcdcf7; }
+.btn { display:inline-block; padding:13px 24px; border-radius:999px; font-weight:700; text-decoration:none; background:var(--leaf); color:var(--leaf-ink); }
+.btn:hover { background:#c6e59c; }
+.btn.ghost { background:rgba(255,255,255,.08); color:var(--ink); box-shadow:inset 0 0 0 1px var(--line); margin-left:8px; }
+.btn.ghost:hover { background:rgba(255,255,255,.14); }
+.note { margin-top:16px; font-size:14.5px; color:var(--soft); }
+.first { margin-top:-190px; position:relative; }
+section { padding:72px 0 0; }
+h2 { font-size:clamp(28px,3.3vw,42px); line-height:1.12; letter-spacing:-.028em; font-weight:720; text-wrap:balance; }
+h2 + p { margin-top:14px; color:var(--soft); max-width:46em; }
+.shot { margin-top:26px; }
+.cols { display:grid; grid-template-columns:repeat(3,1fr); gap:30px 40px; margin-top:26px; }
+h3 { font-size:18px; letter-spacing:-.01em; }
+.cols p { color:var(--soft); margin-top:4px; font-size:16px; }
+.dl { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:28px; }
+.dl > div { background:var(--panel); border-radius:18px; padding:24px; display:flex; flex-direction:column; gap:8px; }
+.dl p { color:var(--soft); font-size:15.5px; flex:1; }
+.dl a { font-weight:700; }
+code { font:.88em ui-monospace,SFMono-Regular,Menlo,monospace; background:rgba(255,255,255,.08); padding:.12em .4em; border-radius:5px; overflow-wrap:anywhere; }
+.tbl { overflow-x:auto; margin-top:28px; }
+table { border-collapse:collapse; width:100%; min-width:560px; font-size:16px; }
+th,td { text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); font-weight:500; }
+thead th { font-weight:700; }
+tbody th { color:var(--soft); }
+td.y { color:var(--leaf); } td.n { color:#f0a9a9; } td.p { color:#f2d58a; }
+.collage { border-radius:14px; margin-top:28px; }
+details { border-bottom:1px solid var(--line); padding:16px 0; }
+summary { cursor:pointer; font-weight:650; font-size:18px; }
+details p { color:var(--soft); margin-top:10px; max-width:48em; }
+footer { margin-top:80px; padding:34px 0 46px; border-top:1px solid var(--line); color:var(--soft); font-size:14.5px; }
+footer p + p { margin-top:8px; }
+@media (max-width:860px) {
+  nav a:not(.brand):not(.keep) { display:none; }
+  .top { grid-template-columns:1fr; padding-top:30px; }
+  .top > img { width:min(440px,100%); margin-inline:auto; }
+  .hero { padding-bottom:120px; } .first { margin-top:-96px; }
+  .cols,.dl { grid-template-columns:1fr; }
+  section { padding-top:56px; }
+  table { min-width:0; font-size:14.5px; } th,td { padding:10px 8px; overflow-wrap:anywhere; }
+}
+@media (max-width:420px) { .btn { display:block; text-align:center; } .btn.ghost { margin:10px 0 0; } }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="./"><img src="images/icon-180.png" alt="" width="36" height="36">Picavi</a>
+      <a href="#features">Features</a>
+      <a href="#compare">Picavi vs Picasa</a>
+      <a href="#faq">FAQ</a>
+      <a class="keep" href="https://github.com/ShreyashKore/picavi">GitHub</a>
+    </nav>
+    <div class="top">
+      <div>
+        <h1>The free Picasa alternative for your desktop</h1>
+        <p class="lede">Picavi is a photo viewer, editor and library for everyone who still misses Picasa. Flip through a folder, fix a photo in a click, and keep everything on your own disk.</p>
+        <a class="btn" href="#download">Download Picavi</a><a class="btn ghost" href="#compare">Compare with Picasa</a>
+        <p class="note">For macOS, Windows and Linux. No account, no uploads. Currently in alpha.</p>
+      </div>
+      <img src="images/polaroids.webp" width="1360" height="1280" alt="A fan of photo prints: balloons, northern lights, a canyon, a reef, lavender and a sunflower">
+    </div>
+  </div>
+</header>
+<main>
+  <div class="wrap first" id="features">
+    <img src="images/photo-viewer.webp" width="2024" height="1304" alt="Picavi photo viewer showing a mountain lake with a thumbnail filmstrip and zoom, slideshow and edit controls">
+  </div>
+  <section class="wrap" style="padding-top:24px">
+    <h2>Open one photo, see the whole folder</h2>
+    <p>Picavi loads every image next to the one you opened, so you can keep pressing the arrow key.</p>
+    <div class="cols">
+      <div><h3>Fast to look through</h3><p>Smooth zoom and pan, full screen, slideshow, and an info panel with EXIF, captions and tags.</p></div>
+      <div><h3>Tidy as you go</h3><p>Rename, copy, move or bin one photo or a whole selection. Deleting always goes to the Trash.</p></div>
+      <div><h3>All from the keyboard</h3><p>Star, rotate, edit and browse with single keys. Press ? to see every shortcut.</p></div>
+    </div>
+  </section>
+  <section class="wrap">
+    <h2>A photo library that leaves your files where they are</h2>
+    <p>Point it at the folders you already have. Stars, captions and tags are saved in a small file next to your photos, so they travel with the folder.</p>
+    <img class="shot" loading="lazy" src="images/photo-library.webp" width="2024" height="1304" alt="Picavi photo library grouped by month, with albums, starred photos, places, people and folders in the sidebar">
+    <div class="cols">
+      <div><h3>Find anything</h3><p>Browse by month, folder, album or star, or search names, captions, tags, cameras, dates and people.</p></div>
+      <div><h3>Places and people</h3><p>See photos on a map, and on macOS group and name faces without uploading anything.</p></div>
+      <div><h3>Import and de-duplicate</h3><p>Copy from a camera into dated folders, skip what you have, and find exact duplicates.</p></div>
+    </div>
+  </section>
+  <section class="wrap">
+    <h2>Picasa-style editing that never touches the original</h2>
+    <p>I'm Feeling Lucky, fill light, color temperature, red-eye, straighten, crop to print sizes and nine effects. Undo or revert whenever you like.</p>
+    <img class="shot" loading="lazy" src="images/photo-editor.webp" width="2024" height="1304" alt="Picavi photo editor with fill light, highlights, shadows and color temperature sliders">
+  </section>
+  <section class="wrap">
+    <h2>Collages, contact sheets and prints</h2>
+    <p>Turn a selection into a mosaic or grid collage, a contact sheet, or prints with up to nine photos on a page.</p>
+    <img class="collage" loading="lazy" src="images/photo-collage.webp" width="1600" height="1067" alt="Photo collage made in Picavi: nine landscape photos in a justified mosaic">
+  </section>
+  <section class="wrap" id="download">
+    <h2>Download Picavi</h2>
+    <p>Picavi is in alpha and its installers aren't signed yet, so your system asks you to confirm the first launch.</p>
+    <div class="dl">
+      <div><h3>macOS 12 or later</h3><p>Open it once, then allow it in System Settings, Privacy &amp; Security, Open Anyway.</p><a href="https://github.com/ShreyashKore/picavi/releases">Get picavi-macos.dmg</a></div>
+      <div><h3>Windows</h3><p>If SmartScreen appears, choose More info, then Run anyway.</p><a href="https://github.com/ShreyashKore/picavi/releases">Get picavi-windows-setup.exe</a></div>
+      <div><h3>Ubuntu 22.04+, Debian 12+</h3><p><code>sudo apt install ./picavi-linux.deb</code></p><a href="https://github.com/ShreyashKore/picavi/releases">Get picavi-linux.deb</a></div>
+    </div>
+  </section>
+  <section class="wrap" id="compare">
+    <h2>Picavi vs Picasa</h2>
+    <p>Google stopped supporting Picasa in March 2016. Picavi isn't finished either, so here is where it stands. Most of the gaps are on the <a href="https://github.com/ShreyashKore/picavi/blob/main/docs/ROADMAP.md">roadmap</a>.</p>
+    <div class="tbl" tabindex="0" role="region" aria-label="Picavi and Picasa compared">
+      <table>
+        <thead><tr><th scope="col">Feature</th><th scope="col">Picasa 3</th><th scope="col">Picavi</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Still developed</th><td class="n">No, support ended in 2016</td><td class="y">Yes</td></tr>
+          <tr><th scope="row">Platforms</th><td>Windows, macOS</td><td>macOS, Windows, Linux</td></tr>
+          <tr><th scope="row">Works offline, on your own folders</th><td class="y">Yes</td><td class="y">Yes</td></tr>
+          <tr><th scope="row">Non-destructive edits in a sidecar file</th><td>.picasa.ini</td><td>.picavi.json</td></tr>
+          <tr><th scope="row">I'm Feeling Lucky, crop, straighten, red-eye</th><td class="y">Yes</td><td class="y">Yes</td></tr>
+          <tr><th scope="row">Tuning sliders and effects</th><td class="y">Yes</td><td class="y">Yes</td></tr>
+          <tr><th scope="row">Albums, stars, captions, tags</th><td class="y">Yes</td><td class="y">Yes</td></tr>
+          <tr><th scope="row">Photos on a map</th><td class="y">Yes</td><td class="y">Yes</td></tr>
+          <tr><th scope="row">Face recognition</th><td class="y">Yes</td><td class="p">macOS only</td></tr>
+          <tr><th scope="row">Duplicate finder</th><td class="y">Yes</td><td class="p">Exact copies</td></tr>
+          <tr><th scope="row">Collage, contact sheet, print, camera import</th><td class="y">Yes</td><td class="y">Yes</td></tr>
+          <tr><th scope="row">HEIC and AVIF photos</th><td class="n">No</td><td class="p">macOS only</td></tr>
+          <tr><th scope="row">Reads existing .picasa.ini data</th><td class="y">Yes</td><td class="n">Not yet</td></tr>
+          <tr><th scope="row">RAW photos</th><td class="y">Yes</td><td class="n">Not yet</td></tr>
+          <tr><th scope="row">Video playback and movie maker</th><td class="y">Yes</td><td class="n">Not yet</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="wrap" id="faq">
+    <h2>Questions</h2>
+    <div style="margin-top:18px">
+      <details><summary>Is Picavi a good replacement for Picasa?</summary><p>If you used Picasa to look through folders, star and caption photos, make quick fixes and keep everything on your own computer, Picavi covers that today. If you depend on RAW files or videos, it doesn't yet.</p></details>
+      <details><summary>Can I bring my Picasa library over?</summary><p>Your photos, yes: add the same folders to the Picavi library and it indexes them in place. Picasa's own albums, face tags and unsaved edits (its .picasa.ini files) aren't imported yet. Picavi leaves those files alone.</p></details>
+      <details><summary>Does it run on Apple silicon Macs, Windows 11 and Linux?</summary><p>It runs on macOS 12 or later, Windows and Linux desktops. A few features use macOS frameworks and are Mac-only for now: face grouping, Live Text, the share menu, and HEIC, AVIF and TIFF decoding.</p></details>
+      <details><summary>Is it free? Do I need an account?</summary><p>It's free, and there is no account or cloud. Photos, edits, tags and faces stay on your computer. Picavi goes online only for map tiles while a map is open, and once to fetch its interface font.</p></details>
+      <details><summary>Will it change or delete my originals?</summary><p>Edits never do. The one thing written into a photo is a rotation you choose to save. Deleting moves files to the Trash or Recycle Bin, and copies and moves never overwrite.</p></details>
+      <details><summary>Which image formats are supported?</summary><p>JPEG, PNG, GIF, WebP, BMP, ICO and SVG everywhere, plus HEIC, HEIF, AVIF and TIFF on macOS.</p></details>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    <p><a href="https://github.com/ShreyashKore/picavi">Source code</a> · <a href="https://github.com/ShreyashKore/picavi/releases">Releases</a> · <a href="https://github.com/ShreyashKore/picavi/issues">Report a problem</a></p>
+    <p>The photos shown here are computer-generated sample images made for this project.</p>
+    <p>Picasa is a trademark of Google LLC. Picavi is an independent project, not affiliated with or endorsed by Google.</p>
+  </div>
+</footer>
+</body>
+</html>
