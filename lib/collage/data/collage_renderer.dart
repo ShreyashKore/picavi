@@ -214,15 +214,20 @@ void _place(
   final cropY = math.max(0, (drawHeight - slot.height) ~/ 2);
   final offsetX = math.max(0, (slot.width - drawWidth) ~/ 2);
   final offsetY = math.max(0, (slot.height - drawHeight) ~/ 2);
+  final width = math.min(slot.width, drawWidth);
+  final height = math.min(slot.height, drawHeight);
+  // Without dstW/dstH the crop would be stretched to the uncropped size.
   img.compositeImage(
     canvas,
     resized,
     dstX: slot.x + offsetX,
     dstY: slot.y + offsetY,
+    dstW: width,
+    dstH: height,
     srcX: cropX,
     srcY: cropY,
-    srcW: math.min(slot.width, drawWidth),
-    srcH: math.min(slot.height, drawHeight),
+    srcW: width,
+    srcH: height,
   );
 }
 

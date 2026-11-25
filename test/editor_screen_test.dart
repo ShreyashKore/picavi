@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +16,7 @@ void main() {
   late InMemoryImageEditRepository repository;
   ImageEdits? popped;
 
-  Future<void> openEditor(WidgetTester tester) async {
+  Future<void> openEditor(WidgetTester tester, {Locale? locale}) async {
     tester.view.physicalSize = const Size(1400, 900);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -24,6 +25,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData.dark(),
+        locale: locale,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -82,6 +84,36 @@ void main() {
     await tester.tap(find.text('Done'));
     await settle(tester);
     expect(popped?.operations.single, crop);
+  });
+
+  testWidgets('tab labels stay on one line in every language', (tester) async {
+    for (final locale in AppLocalizations.supportedLocales) {
+      await tester.pumpWidget(const SizedBox());
+      await openEditor(tester, locale: locale);
+
+      final l10n = lookupAppLocalizations(locale);
+      for (final label in [
+        l10n.editorTabFixes,
+        l10n.editorTabTuning,
+        l10n.editorTabEffects,
+      ]) {
+        final paragraph = tester.renderObject<RenderParagraph>(
+          find.text(label),
+        );
+        final lines = paragraph
+            .getBoxesForSelection(
+              TextSelection(baseOffset: 0, extentOffset: label.length),
+            )
+            .map((box) => box.top.round())
+            .toSet();
+        expect(lines, hasLength(1), reason: '$locale "$label" wraps');
+        expect(
+          paragraph.didExceedMaxLines,
+          isFalse,
+          reason: '$locale "$label" is cut off',
+        );
+      }
+    }
   });
 
   testWidgets('tuning is applied when leaving the tab', (tester) async {

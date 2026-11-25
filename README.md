@@ -86,6 +86,8 @@ Open one image and every supported image in its folder loads into the filmstrip.
 
 ### ✨ And then do something with them
 
+![Photo collage made in Picavi: nine landscape photos in a justified mosaic](docs/images/photo-collage.webp)
+
 - Make photo collages (mosaic or grid) and contact sheets.
 - Print 1, 2, 4 or 9 photos per page.
 - Share through the macOS share menu, and select text inside photos with Live Text (macOS).
