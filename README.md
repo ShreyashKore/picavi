@@ -1,6 +1,6 @@
-# oiv
+# Picavi
 
-Open Image Viewer / Picavi desktop viewer.
+An open image viewer for the desktop (code name `oiv`).
 
 ## What it does
 

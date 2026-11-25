@@ -5,7 +5,7 @@ Claude Code reads [CLAUDE.md](CLAUDE.md), which mirrors this file — **keep bot
 
 ## What this is
 
-**oiv** ("Open Image Viewer", branded **Picavi**) is a Flutter **desktop** image
+**Picavi** (code name `oiv`, "Open Image Viewer") is a Flutter **desktop** image
 viewer (macOS, Linux, Windows — no mobile/web). Opening one image loads every
 supported sibling in the same folder into a Picasa-style gallery with a bottom
 thumbnail rail, zoom/pan, keyboard navigation, and slideshow.
@@ -13,6 +13,12 @@ thumbnail rail, zoom/pan, keyboard navigation, and slideshow.
 - Entry point: `lib/main.dart` → `lib/app.dart` → `ViewerScreen`.
 - Dart import package: `package:oiv/...`. Bundle id / channel namespace: `com.gyanoba.oiv`.
 - Dart SDK `^3.11.5`; lints via `package:flutter_lints` (`analysis_options.yaml`).
+
+**Naming:** the product is **Picavi** — everything users see (app bundle, window
+titles, UI text, docs). `oiv` is the internal code name — Dart package, bundle id,
+method channel, Linux/Windows binary and the Windows `ProductName`. Keep the split:
+the bundle id, Linux application id and Windows `ProductName` decide where users'
+data is stored, so renaming them would lose settings and albums.
 
 ## Commands
 

@@ -90,11 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.gyanoba" "\0"
-            VALUE "FileDescription", "oiv" "\0"
+            VALUE "FileDescription", "Picavi" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "oiv" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.gyanoba. All rights reserved." "\0"
             VALUE "OriginalFilename", "oiv.exe" "\0"
+            // Names the app data folder (path_provider): changing it loses the library.
             VALUE "ProductName", "oiv" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
