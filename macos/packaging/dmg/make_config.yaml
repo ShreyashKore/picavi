@@ -1,0 +1,16 @@
+title: Picavi
+background-color: "#F5F7FB"
+icon-size: 128
+window:
+  size:
+    width: 640
+    height: 400
+contents:
+  - path: Picavi.app
+    type: file
+    x: 180
+    y: 220
+  - path: /Applications
+    type: link
+    x: 460
+    y: 220

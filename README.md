@@ -104,3 +104,17 @@ flutter run -d macos --dart-entrypoint-args=/absolute/path/to/image.jpg
 flutter analyze
 flutter test
 ```
+
+## Releasing
+
+Bump `version` in `pubspec.yaml`, commit, then push a matching tag:
+
+```bash
+git tag v1.0.4
+git push origin v1.0.4
+```
+
+[release.yml](.github/workflows/release.yml) builds a macOS `.dmg`, a Linux `.deb`
+and a Windows installer, and publishes them as a GitHub release once all three have
+built and the checks pass. Run the workflow by hand to build the packages without
+releasing. Packages are not signed with a developer certificate or notarised.
