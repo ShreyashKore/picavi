@@ -89,6 +89,57 @@ void main() {
     expect((bottom.r, bottom.b), (0, 255));
   });
 
+  test('cropped photos stay inside their slots', () {
+    const green = [0, 255, 0];
+    for (final layout in [CollageLayout.mosaic, CollageLayout.grid]) {
+      for (final size in CollageSize.values) {
+        // Photos far from the shape of their slots, so most are cropped.
+        final tiles = [
+          for (var i = 0; i < 9; i++)
+            CollageTile(
+              i.isEven ? solid(300, 100, green) : solid(100, 300, green),
+              '$i.jpg',
+            ),
+        ];
+        final options = CollageOptions(
+          layout: layout,
+          size: size,
+          spacing: 0.03,
+          background: CollageBackground.black,
+        );
+        final slots = layout == CollageLayout.mosaic
+            ? mosaicSlots([
+                for (final tile in tiles) tile.image.width / tile.image.height,
+              ], options)
+            : gridSlots(tiles.length, options);
+
+        final page = renderCollagePages(tiles, options).single;
+
+        // A little slack for rounding at slot edges.
+        bool nearSlot(int x, int y) => slots.any(
+          (s) =>
+              x >= s.x - 2 &&
+              x <= s.x + s.width + 2 &&
+              y >= s.y - 2 &&
+              y <= s.y + s.height + 2,
+        );
+        final outside = <(int, int)>[
+          for (var y = 0; y < page.height; y += 7)
+            for (var x = 0; x < page.width; x += 7)
+              if (page.getPixel(x, y).g != 0 && !nearSlot(x, y)) (x, y),
+        ];
+        expect(outside, isEmpty, reason: '$layout $size paints over the gaps');
+        for (final slot in slots) {
+          final centre = page.getPixel(
+            slot.x + slot.width ~/ 2,
+            slot.y + slot.height ~/ 2,
+          );
+          expect(centre.g, 255, reason: '$layout $size draws every photo');
+        }
+      }
+    }
+  });
+
   test('contact sheets split into pages of 35', () {
     final tiles = [
       for (var i = 0; i < 40; i++)
