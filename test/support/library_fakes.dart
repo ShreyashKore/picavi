@@ -144,6 +144,9 @@ class FakeFaceDetector implements FaceDetectorService {
   FakeFaceDetector(this.faces, {this.isAvailable = true});
 
   final Map<String, List<DetectedFace>> faces;
+
+  /// Photos detection fails for.
+  final Set<String> failing = {};
   final List<String> calls = [];
 
   @override
@@ -152,7 +155,7 @@ class FakeFaceDetector implements FaceDetectorService {
   @override
   Future<List<DetectedFace>?> detect(String path) async {
     calls.add(path);
-    return faces[path] ?? const [];
+    return failing.contains(path) ? null : faces[path] ?? const [];
   }
 }
 

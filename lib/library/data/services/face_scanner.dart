@@ -1,3 +1,5 @@
+import 'package:path/path.dart' as p;
+
 import '../../domain/entities/catalog_image.dart';
 import '../../domain/entities/face.dart';
 import '../../domain/entities/library_query.dart';
@@ -23,15 +25,22 @@ class FaceScanner {
     final scanned = await _catalog.faceScanStamps();
     final todo = [
       for (final image in images)
-        if (scanned[image.path] != image.stamp) image,
+        // Drawings, not photos, and Vision can't read them anyway.
+        if (p.extension(image.path).toLowerCase() != '.svg' &&
+            scanned[image.path] != image.stamp)
+          image,
     ];
     var processed = 0;
     yield IndexProgress(found: todo.length, processed: processed);
     for (final image in todo) {
-      final faces = await _detector.detect(image.path) ?? const [];
-      await _catalog.replaceFaces(image.path, image.stamp, [
-        for (final face in faces) (face, nameFor(face, image)),
-      ]);
+      final faces = await _detector.detect(image.path);
+      // A failed scan isn't "no faces": keep what is known and leave the
+      // photo unscanned, so the next scan tries it again.
+      if (faces != null) {
+        await _catalog.replaceFaces(image.path, image.stamp, [
+          for (final face in faces) (face, nameFor(face, image)),
+        ]);
+      }
       processed += 1;
       yield IndexProgress(found: todo.length, processed: processed);
     }

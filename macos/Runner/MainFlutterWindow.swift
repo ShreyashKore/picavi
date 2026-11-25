@@ -287,14 +287,15 @@ class MainFlutterWindow: NSWindow {
 
   /// Finds faces in the image at `path` (EXIF orientation applied). Returns
   /// `{width, height, faces: [{left, top, width, height, crop, print}]}` with
-  /// boxes normalised to a top-left origin, or nil if it can't be decoded.
+  /// boxes normalised to a top-left origin, or nil if it can't be decoded or
+  /// detection fails (so the caller doesn't take it for "no faces").
   private func detectFaces(arguments: Any?, result: @escaping FlutterResult) {
     guard let url = fileURL(from: arguments) else {
       result(nil)
       return
     }
     DispatchQueue.global(qos: .utility).async {
-      let detected = Self.cgImageForTextRecognition(url: url).map {
+      let detected = Self.cgImageForTextRecognition(url: url).flatMap {
         FaceDetector.detect(in: $0)
       }
       DispatchQueue.main.async {
@@ -628,7 +629,7 @@ enum LiveTextRecognizer {
 enum FaceDetector {
   static let cropSize = 160
 
-  static func detect(in image: CGImage) -> [String: Any] {
+  static func detect(in image: CGImage) -> [String: Any]? {
     let width = CGFloat(image.width)
     let height = CGFloat(image.height)
     let request = VNDetectFaceRectanglesRequest()
@@ -636,7 +637,8 @@ enum FaceDetector {
     do {
       try handler.perform([request])
     } catch {
-      return ["width": image.width, "height": image.height, "faces": []]
+      NSLog("Picavi: face detection failed: \(error)")
+      return nil
     }
 
     let minimumSide = max(24, min(width, height) * 0.02)

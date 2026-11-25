@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:oiv/library/data/services/face_grouping.dart';
 import 'package:oiv/library/data/services/face_scanner.dart';
 import 'package:oiv/library/data/services/vision_face_detector_service.dart';
+import 'package:oiv/library/domain/entities/catalog_image.dart';
 import 'package:oiv/library/domain/entities/face.dart';
 import 'package:oiv/library/domain/entities/library_query.dart';
 import 'package:oiv/library/domain/entities/photo_info.dart';
@@ -168,6 +169,56 @@ void main() {
         )).single.path,
         '/p/b.jpg',
       );
+    });
+
+    test('a failed scan is tried again', () async {
+      final detector = FakeFaceDetector({
+        '/p/a.jpg': [detectedFace(0)],
+      })..failing.add('/p/a.jpg');
+      final scanner = FaceScanner(fixture.catalog, detector);
+
+      final progress = await scanner.scan().toList();
+      expect(progress.last.done, isTrue);
+      expect(progress.last.processed, 2);
+      expect(await fixture.catalog.faces(), isEmpty);
+      expect((await fixture.catalog.faceScanStamps()).keys, ['/p/b.jpg']);
+
+      detector
+        ..failing.clear()
+        ..calls.clear();
+      await scanner.scan().drain<void>();
+      expect(detector.calls, ['/p/a.jpg']);
+      expect((await fixture.catalog.faces()).single.path, '/p/a.jpg');
+    });
+
+    test('a failed scan of a changed photo keeps its faces', () async {
+      final detector = FakeFaceDetector({
+        '/p/a.jpg': [detectedFace(0)],
+      });
+      final scanner = FaceScanner(fixture.catalog, detector);
+      await scanner.scan().drain<void>();
+      final before = await fixture.catalog.faceScanStamps();
+
+      // Scanned when the file was different.
+      await fixture.catalog.replaceFaces('/p/a.jpg', const FileStamp(1, 1), [
+        (detectedFace(0), 'Alice'),
+      ]);
+      detector.failing.add('/p/a.jpg');
+      await scanner.scan().drain<void>();
+      expect((await fixture.catalog.faces()).single.name, 'Alice');
+
+      detector.failing.clear();
+      await scanner.scan().drain<void>();
+      expect(await fixture.catalog.faceScanStamps(), before);
+    });
+
+    test('SVGs are not scanned', () async {
+      await fixture.catalog.upsert([catalogPhoto('/p/logo.SVG')]);
+      final detector = FakeFaceDetector({});
+
+      await FaceScanner(fixture.catalog, detector).scan().drain<void>();
+
+      expect(detector.calls, unorderedEquals(['/p/a.jpg', '/p/b.jpg']));
     });
 
     test('removing photos drops their faces', () async {
