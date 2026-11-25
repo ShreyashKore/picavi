@@ -25,9 +25,7 @@ class VisionTextRecognitionService implements TextRecognitionService {
     }
 
     final arguments = switch (source) {
-      FileTextRecognitionSource(:final path) => <String, Object?>{
-        'path': path,
-      },
+      FileTextRecognitionSource(:final path) => <String, Object?>{'path': path},
       PixelTextRecognitionSource(:final width, :final height, :final rgba) =>
         <String, Object?>{'width': width, 'height': height, 'rgba': rgba},
     };

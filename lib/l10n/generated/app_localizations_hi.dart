@@ -489,7 +489,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => 'छवि कॉपी करें';
+  String get shortcutCopyImage => 'छवि या चुना गया टेक्स्ट कॉपी करें';
 
   @override
   String get shortcutSelectAll => 'सभी छवियाँ चुनें';
@@ -1111,4 +1111,384 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get libraryOpenFailed => 'लाइब्रेरी नहीं खुल सकी';
+
+  @override
+  String shareAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ साझा करें…',
+      one: 'साझा करें…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareFailedNotice => 'साझा करने का मेनू नहीं खुल सका';
+
+  @override
+  String get importTitle => 'फ़ोटो इंपोर्ट करें';
+
+  @override
+  String get importDevices => 'कैमरे और कार्ड';
+
+  @override
+  String get importRefreshDevices => 'कैमरे और कार्ड खोजें';
+
+  @override
+  String get importNoDevices =>
+      'कोई जुड़ा नहीं है। कैमरा लगाएँ या मेमोरी कार्ड डालें।';
+
+  @override
+  String get importFromFolder => 'किसी फ़ोल्डर से…';
+
+  @override
+  String get importChooseSource =>
+      'बाईं ओर कैमरा, कार्ड या फ़ोल्डर चुनें। फ़ोटो तारीख वाले फ़ोल्डरों में कॉपी होती हैं; कार्ड पर कुछ नहीं बदलता।';
+
+  @override
+  String importDestination(String folder) {
+    return '$folder / वर्ष / तारीख में';
+  }
+
+  @override
+  String get importChangeDestination => 'बदलें…';
+
+  @override
+  String get importNothingFound => 'यहाँ कोई फ़ोटो नहीं मिली';
+
+  @override
+  String get importAlreadyImported => 'इंपोर्ट की गई';
+
+  @override
+  String importSelectedCount(int selected, int total) {
+    return '$total में से $selected चुनी गईं';
+  }
+
+  @override
+  String get importSelectNew => 'नई चुनें';
+
+  @override
+  String get importSelectNone => 'कोई नहीं चुनें';
+
+  @override
+  String importButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोटो इंपोर्ट करें',
+      one: '1 फ़ोटो इंपोर्ट करें',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importProgress(int done, int total) {
+    return '$total में से $done कॉपी हो रही हैं…';
+  }
+
+  @override
+  String importDone(int copied, int skipped, int failed) {
+    return '$copied इंपोर्ट हुईं, पहले से मौजूद $skipped छोड़ी गईं, $failed विफल';
+  }
+
+  @override
+  String get collageAction => 'कोलाज बनाएँ…';
+
+  @override
+  String get collageButton => 'कोलाज…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोटो का कोलाज',
+      one: '1 फ़ोटो का कोलाज',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => 'मोज़ेक';
+
+  @override
+  String get collageGrid => 'ग्रिड';
+
+  @override
+  String get collageContactSheet => 'कॉन्टैक्ट शीट';
+
+  @override
+  String get collageHint =>
+      'मोज़ेक हर फ़ोटो को पूरा रखता है; ग्रिड उन्हें बराबर खानों में काटता है।';
+
+  @override
+  String get collageContactSheetHint =>
+      '35 थंबनेल और उनके फ़ाइल नामों वाले A4 पेज, प्रिंट के लिए तैयार।';
+
+  @override
+  String get collageSpacing => 'अंतराल';
+
+  @override
+  String get collageBackground => 'पृष्ठभूमि';
+
+  @override
+  String get collageWhite => 'सफ़ेद';
+
+  @override
+  String get collageBlack => 'काला';
+
+  @override
+  String get collageCharcoal => 'गहरा स्लेटी';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return 'वाइडस्क्रीन ($width × $height)';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return 'बड़ा 3:2 ($width × $height)';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return 'वर्गाकार ($width × $height)';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return 'पोर्ट्रेट 2:3 ($width × $height)';
+  }
+
+  @override
+  String get collageWorking => 'कोलाज बन रहा है…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$name से शुरू होकर $count पेज सहेजे गए',
+      one: '$name सहेजा गया',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => 'कोलाज नहीं बन सका';
+
+  @override
+  String get collageFileName => 'कोलाज';
+
+  @override
+  String get contactSheetFileName => 'कॉन्टैक्ट शीट';
+
+  @override
+  String get placesTitle => 'स्थान';
+
+  @override
+  String get placesEmpty =>
+      'अभी किसी फ़ोटो में स्थान नहीं है। फ़ोन की फ़ोटो में आमतौर पर होता है; बाकी के लिए उन्हें चुनें और स्थान सेट करें चुनें।';
+
+  @override
+  String get placesSetLocation => 'स्थान सेट करें…';
+
+  @override
+  String get placesPickHint =>
+      'मानचित्र पर वहाँ क्लिक करें जहाँ फ़ोटो ली गई थीं। ज़ूम के लिए स्क्रॉल करें, खिसकाने के लिए खींचें। फ़ोटो फ़ाइलें नहीं बदलतीं।';
+
+  @override
+  String get placesNoPointYet => 'अभी कोई स्थान नहीं चुना गया';
+
+  @override
+  String get placesRemoveLocation => 'स्थान हटाएँ';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count छवियाँ प्रिंट करें…',
+      one: 'प्रिंट करें…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोटो प्रिंट करें',
+      one: '1 फ़ोटो प्रिंट करें',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => 'प्रति पेज फ़ोटो';
+
+  @override
+  String get printHint =>
+      'फ़ोटो बिना काटे अपनी जगह में फिट होती हैं, आपके संपादन के साथ। काग़ज़ का आकार और दिशा अगली विंडो में चुनें।';
+
+  @override
+  String get printContinue => 'जारी रखें…';
+
+  @override
+  String get printPreparing => 'फ़ोटो प्रिंट के लिए तैयार हो रही हैं…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Picavi फ़ोटो ($count)',
+      one: 'Picavi फ़ोटो',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => 'ये फ़ोटो प्रिंट नहीं हो सकीं';
+
+  @override
+  String get liveTextCopy => 'टेक्स्ट कॉपी करें';
+
+  @override
+  String get liveTextSelectAll => 'सारा टेक्स्ट चुनें';
+
+  @override
+  String get liveTextCopiedNotice => 'टेक्स्ट क्लिपबोर्ड पर कॉपी किया गया';
+
+  @override
+  String get liveTextSettingTitle => 'छवियों में टेक्स्ट चुनें';
+
+  @override
+  String get liveTextSettingDescription =>
+      'फ़ोटो के टेक्स्ट पर पॉइंटर ले जाकर उसे चुनें और कॉपी करें। टेक्स्ट इसी Mac पर पहचाना जाता है, कुछ भी अपलोड नहीं होता।';
+
+  @override
+  String get peopleTitle => 'लोग';
+
+  @override
+  String get peopleUnavailable => 'चेहरे खोजने के लिए अभी macOS चाहिए।';
+
+  @override
+  String peopleScanning(int done, int total) {
+    return 'चेहरे खोजे जा रहे हैं… $total में से $done फ़ोटो';
+  }
+
+  @override
+  String peopleSummary(int people, int faces) {
+    String _temp0 = intl.Intl.pluralLogic(
+      people,
+      locale: localeName,
+      other: '$people लोग',
+      one: '1 व्यक्ति',
+      zero: 'अभी कोई नाम नहीं',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      faces,
+      locale: localeName,
+      other: '$faces बेनाम चेहरे',
+      one: '1 बेनाम चेहरा',
+      zero: 'कोई बेनाम चेहरा नहीं',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get peoplePrivacy =>
+      'चेहरे इसी Mac पर खोजे जाते हैं; कुछ भी अपलोड नहीं होता।';
+
+  @override
+  String get peopleLookingForFaces => 'आपकी फ़ोटो में चेहरे खोजे जा रहे हैं…';
+
+  @override
+  String get peopleNoFaces => 'लाइब्रेरी में कोई चेहरा नहीं मिला';
+
+  @override
+  String get peopleNamed => 'लोग';
+
+  @override
+  String get peopleUnnamed => 'बेनाम चेहरे';
+
+  @override
+  String get peopleUnnamedHint =>
+      'मिलते-जुलते चेहरे समूह में रखे जाते हैं। समूह को नाम दें, या पहले कुछ चेहरों पर क्लिक करके केवल उन्हें चुनें। समूह अनुमान हैं — नाम देने से पहले जाँच लें।';
+
+  @override
+  String peopleShowMore(int count) {
+    return 'और दिखाएँ ($count और समूह)';
+  }
+
+  @override
+  String get peopleFace => 'चेहरा';
+
+  @override
+  String peopleFaceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count चेहरे',
+      one: '1 चेहरा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String peopleFacesPicked(int picked, int count) {
+    return '$count में से $picked चुने गए';
+  }
+
+  @override
+  String get peopleName => 'नाम दें…';
+
+  @override
+  String get peopleIgnore => 'अनदेखा करें';
+
+  @override
+  String peopleWhoIsThis(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ये $count चेहरे किसके हैं?',
+      one: 'यह कौन है?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get peopleNameLabel => 'नाम';
+
+  @override
+  String get peopleBack => 'सभी लोग';
+
+  @override
+  String get peopleRename => 'नाम बदलें';
+
+  @override
+  String get peopleForget => 'नाम भूलें';
+
+  @override
+  String peopleForgetTitle(String name) {
+    return '“$name” भूलें?';
+  }
+
+  @override
+  String get peopleForgetMessage =>
+      'उनके चेहरे बेनाम चेहरों में लौट जाएँगे। फ़ोटो नहीं बदलतीं।';
+
+  @override
+  String peopleIsThis(String name) {
+    return 'क्या यह $name है?';
+  }
+
+  @override
+  String get peopleYes => 'हाँ';
+
+  @override
+  String get peopleNo => 'नहीं';
 }

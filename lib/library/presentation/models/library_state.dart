@@ -2,7 +2,7 @@ import '../../domain/entities/catalog_image.dart';
 import '../../domain/entities/library_query.dart';
 
 /// What the grid is showing.
-enum LibrarySource { allPhotos, starred, folder, album }
+enum LibrarySource { allPhotos, starred, places, people, folder, album }
 
 enum LibraryNoticeType {
   saveFailed,

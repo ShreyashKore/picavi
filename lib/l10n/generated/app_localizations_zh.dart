@@ -473,7 +473,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => '复制图片';
+  String get shortcutCopyImage => '复制图片或所选文本';
 
   @override
   String get shortcutSelectAll => '全选图片';
@@ -1073,4 +1073,367 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get libraryOpenFailed => '无法打开图库';
+
+  @override
+  String shareAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '共享 $count 张图片…',
+      one: '共享…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareFailedNotice => '无法打开共享菜单';
+
+  @override
+  String get importTitle => '导入照片';
+
+  @override
+  String get importDevices => '相机和存储卡';
+
+  @override
+  String get importRefreshDevices => '查找相机和存储卡';
+
+  @override
+  String get importNoDevices => '未连接任何设备。请连接相机或插入存储卡。';
+
+  @override
+  String get importFromFolder => '从文件夹…';
+
+  @override
+  String get importChooseSource =>
+      '在左侧选择相机、存储卡或文件夹。照片会复制到按日期命名的文件夹中，卡上的内容不会改变。';
+
+  @override
+  String importDestination(String folder) {
+    return '到 $folder / 年 / 日期';
+  }
+
+  @override
+  String get importChangeDestination => '更改…';
+
+  @override
+  String get importNothingFound => '这里没有找到照片';
+
+  @override
+  String get importAlreadyImported => '已导入';
+
+  @override
+  String importSelectedCount(int selected, int total) {
+    return '已选择 $selected / $total';
+  }
+
+  @override
+  String get importSelectNew => '选择新照片';
+
+  @override
+  String get importSelectNone => '全不选';
+
+  @override
+  String importButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '导入 $count 张照片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importProgress(int done, int total) {
+    return '正在复制 $done / $total…';
+  }
+
+  @override
+  String importDone(int copied, int skipped, int failed) {
+    return '已导入 $copied 张，跳过已存在的 $skipped 张，失败 $failed 张';
+  }
+
+  @override
+  String get collageAction => '制作拼贴…';
+
+  @override
+  String get collageButton => '拼贴…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 张照片的拼贴',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => '马赛克';
+
+  @override
+  String get collageGrid => '网格';
+
+  @override
+  String get collageContactSheet => '印样';
+
+  @override
+  String get collageHint => '马赛克保留每张照片的完整画面；网格会把照片裁成相同的格子。';
+
+  @override
+  String get collageContactSheetHint => '每页 35 张缩略图并附文件名的 A4 页面，可直接打印。';
+
+  @override
+  String get collageSpacing => '间距';
+
+  @override
+  String get collageBackground => '背景';
+
+  @override
+  String get collageWhite => '白色';
+
+  @override
+  String get collageBlack => '黑色';
+
+  @override
+  String get collageCharcoal => '炭灰';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return '宽屏（$width × $height）';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return '大 3:2（$width × $height）';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return '正方形（$width × $height）';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return '纵向 2:3（$width × $height）';
+  }
+
+  @override
+  String get collageWorking => '正在制作拼贴…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已保存 $count 页，第一页为 $name',
+      one: '已保存 $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => '无法制作拼贴';
+
+  @override
+  String get collageFileName => '拼贴';
+
+  @override
+  String get contactSheetFileName => '印样';
+
+  @override
+  String get placesTitle => '地点';
+
+  @override
+  String get placesEmpty => '还没有带位置的照片。手机拍的照片通常带有位置；其他照片可以选中后选择“设置位置”。';
+
+  @override
+  String get placesSetLocation => '设置位置…';
+
+  @override
+  String get placesPickHint => '在地图上点击照片的拍摄地点。滚动缩放，拖动移动。照片文件不会被修改。';
+
+  @override
+  String get placesNoPointYet => '尚未选择地点';
+
+  @override
+  String get placesRemoveLocation => '移除位置';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '打印 $count 张图片…',
+      one: '打印…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '打印 $count 张照片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => '每页照片数';
+
+  @override
+  String get printHint => '照片会在不裁剪的情况下适应所在区域，并应用你的编辑。纸张大小和方向在下一个窗口中选择。';
+
+  @override
+  String get printContinue => '继续…';
+
+  @override
+  String get printPreparing => '正在准备打印照片…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Picavi 照片（$count）',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => '无法打印这些照片';
+
+  @override
+  String get liveTextCopy => '复制文本';
+
+  @override
+  String get liveTextSelectAll => '全选文本';
+
+  @override
+  String get liveTextCopiedNotice => '文本已复制到剪贴板';
+
+  @override
+  String get liveTextSettingTitle => '选择图片中的文本';
+
+  @override
+  String get liveTextSettingDescription =>
+      '将指针悬停在照片中的文本上即可选择并复制。文本在这台 Mac 上识别，不会上传任何内容。';
+
+  @override
+  String get peopleTitle => '人物';
+
+  @override
+  String get peopleUnavailable => '目前仅 macOS 支持查找人脸。';
+
+  @override
+  String peopleScanning(int done, int total) {
+    return '正在查找人脸… 第 $done / $total 张照片';
+  }
+
+  @override
+  String peopleSummary(int people, int faces) {
+    String _temp0 = intl.Intl.pluralLogic(
+      people,
+      locale: localeName,
+      other: '$people 人',
+      zero: '尚未命名任何人',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      faces,
+      locale: localeName,
+      other: '$faces 张未命名的人脸',
+      zero: '没有未命名的人脸',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get peoplePrivacy => '人脸在这台 Mac 上识别，不会上传任何内容。';
+
+  @override
+  String get peopleLookingForFaces => '正在照片中查找人脸…';
+
+  @override
+  String get peopleNoFaces => '图库中没有找到人脸';
+
+  @override
+  String get peopleNamed => '人物';
+
+  @override
+  String get peopleUnnamed => '未命名的人脸';
+
+  @override
+  String get peopleUnnamedHint => '相似的人脸会被分为一组。为整组命名，或先点击选择其中几张。分组只是推测，命名前请检查。';
+
+  @override
+  String peopleShowMore(int count) {
+    return '显示更多（还有 $count 组）';
+  }
+
+  @override
+  String get peopleFace => '人脸';
+
+  @override
+  String peopleFaceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 张人脸',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String peopleFacesPicked(int picked, int count) {
+    return '已选 $picked / $count';
+  }
+
+  @override
+  String get peopleName => '命名…';
+
+  @override
+  String get peopleIgnore => '忽略';
+
+  @override
+  String peopleWhoIsThis(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '这是谁？',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get peopleNameLabel => '姓名';
+
+  @override
+  String get peopleBack => '所有人物';
+
+  @override
+  String get peopleRename => '重命名';
+
+  @override
+  String get peopleForget => '忘记名字';
+
+  @override
+  String peopleForgetTitle(String name) {
+    return '忘记“$name”？';
+  }
+
+  @override
+  String get peopleForgetMessage => '其人脸将回到“未命名的人脸”。照片不会改变。';
+
+  @override
+  String peopleIsThis(String name) {
+    return '这是 $name 吗？';
+  }
+
+  @override
+  String get peopleYes => '是';
+
+  @override
+  String get peopleNo => '不是';
 }

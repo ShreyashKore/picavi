@@ -489,7 +489,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => 'نسخ الصورة';
+  String get shortcutCopyImage => 'نسخ الصورة أو النص المحدد';
 
   @override
   String get shortcutSelectAll => 'تحديد كل الصور';
@@ -1111,4 +1111,384 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get libraryOpenFailed => 'تعذّر فتح المكتبة';
+
+  @override
+  String shareAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'مشاركة $count صور…',
+      one: 'مشاركة…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareFailedNotice => 'تعذّر فتح قائمة المشاركة';
+
+  @override
+  String get importTitle => 'استيراد الصور';
+
+  @override
+  String get importDevices => 'الكاميرات والبطاقات';
+
+  @override
+  String get importRefreshDevices => 'البحث عن الكاميرات والبطاقات';
+
+  @override
+  String get importNoDevices =>
+      'لا يوجد جهاز متصل. وصّل كاميرا أو أدخل بطاقة ذاكرة.';
+
+  @override
+  String get importFromFolder => 'من مجلد…';
+
+  @override
+  String get importChooseSource =>
+      'اختر كاميرا أو بطاقة أو مجلدًا على اليسار. تُنسخ الصور إلى مجلدات مؤرخة؛ ولا يتغير شيء على البطاقة.';
+
+  @override
+  String importDestination(String folder) {
+    return 'إلى $folder / السنة / التاريخ';
+  }
+
+  @override
+  String get importChangeDestination => 'تغيير…';
+
+  @override
+  String get importNothingFound => 'لم يتم العثور على صور هنا';
+
+  @override
+  String get importAlreadyImported => 'مستوردة';
+
+  @override
+  String importSelectedCount(int selected, int total) {
+    return 'تم تحديد $selected من $total';
+  }
+
+  @override
+  String get importSelectNew => 'تحديد الجديدة';
+
+  @override
+  String get importSelectNone => 'إلغاء التحديد';
+
+  @override
+  String importButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'استيراد $count صور',
+      one: 'استيراد صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importProgress(int done, int total) {
+    return 'جارٍ نسخ $done من $total…';
+  }
+
+  @override
+  String importDone(int copied, int skipped, int failed) {
+    return 'تم استيراد $copied، وتخطي $skipped موجودة، وفشل $failed';
+  }
+
+  @override
+  String get collageAction => 'إنشاء صورة مجمّعة…';
+
+  @override
+  String get collageButton => 'صورة مجمّعة…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'صورة مجمّعة من $count صور',
+      one: 'صورة مجمّعة من صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => 'فسيفساء';
+
+  @override
+  String get collageGrid => 'شبكة';
+
+  @override
+  String get collageContactSheet => 'ورقة معاينة';
+
+  @override
+  String get collageHint =>
+      'تُبقي الفسيفساء كل صورة كاملة؛ وتقصّ الشبكة الصور إلى خلايا متساوية.';
+
+  @override
+  String get collageContactSheetHint =>
+      'صفحات A4 تحوي 35 صورة مصغّرة مع أسماء ملفاتها، جاهزة للطباعة.';
+
+  @override
+  String get collageSpacing => 'التباعد';
+
+  @override
+  String get collageBackground => 'الخلفية';
+
+  @override
+  String get collageWhite => 'أبيض';
+
+  @override
+  String get collageBlack => 'أسود';
+
+  @override
+  String get collageCharcoal => 'فحمي';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return 'شاشة عريضة ($width × $height)';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return 'كبير 3:2 ($width × $height)';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return 'مربع ($width × $height)';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return 'عمودي 2:3 ($width × $height)';
+  }
+
+  @override
+  String get collageWorking => 'جارٍ إنشاء الصورة المجمّعة…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم حفظ $count صفحات، أولها $name',
+      one: 'تم حفظ $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => 'تعذّر إنشاء الصورة المجمّعة';
+
+  @override
+  String get collageFileName => 'صورة مجمعة';
+
+  @override
+  String get contactSheetFileName => 'ورقة معاينة';
+
+  @override
+  String get placesTitle => 'الأماكن';
+
+  @override
+  String get placesEmpty =>
+      'لا توجد صور بموقع بعد. صور الهاتف عادةً تحمل موقعًا؛ أما غيرها فحدّدها واختر تعيين الموقع.';
+
+  @override
+  String get placesSetLocation => 'تعيين الموقع…';
+
+  @override
+  String get placesPickHint =>
+      'انقر على الخريطة حيث التُقطت الصور. مرّر للتكبير واسحب للتحريك. لا تتغير ملفات الصور.';
+
+  @override
+  String get placesNoPointYet => 'لم يتم اختيار مكان بعد';
+
+  @override
+  String get placesRemoveLocation => 'إزالة الموقع';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'طباعة $count صور…',
+      one: 'طباعة…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'طباعة $count صور',
+      one: 'طباعة صورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => 'الصور في كل صفحة';
+
+  @override
+  String get printHint =>
+      'تُوضع الصور في مساحتها دون قصّ ومع تطبيق تعديلاتك. يُختار حجم الورق واتجاهه في النافذة التالية.';
+
+  @override
+  String get printContinue => 'متابعة…';
+
+  @override
+  String get printPreparing => 'جارٍ تجهيز الصور للطباعة…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'صور Picavi ($count)',
+      one: 'صورة Picavi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => 'تعذّرت طباعة هذه الصور';
+
+  @override
+  String get liveTextCopy => 'نسخ النص';
+
+  @override
+  String get liveTextSelectAll => 'تحديد كل النص';
+
+  @override
+  String get liveTextCopiedNotice => 'تم نسخ النص إلى الحافظة';
+
+  @override
+  String get liveTextSettingTitle => 'تحديد النص في الصور';
+
+  @override
+  String get liveTextSettingDescription =>
+      'مرّر المؤشر فوق النص في الصورة لتحديده ونسخه. يتم التعرف على النص على جهاز Mac هذا ولا يُرفع أي شيء.';
+
+  @override
+  String get peopleTitle => 'الأشخاص';
+
+  @override
+  String get peopleUnavailable => 'يتطلب البحث عن الوجوه نظام macOS حاليًا.';
+
+  @override
+  String peopleScanning(int done, int total) {
+    return 'جارٍ البحث عن الوجوه… $done من $total صورة';
+  }
+
+  @override
+  String peopleSummary(int people, int faces) {
+    String _temp0 = intl.Intl.pluralLogic(
+      people,
+      locale: localeName,
+      other: '$people أشخاص',
+      one: 'شخص واحد',
+      zero: 'لم يُسمَّ أحد بعد',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      faces,
+      locale: localeName,
+      other: '$faces وجوه بلا اسم',
+      one: 'وجه واحد بلا اسم',
+      zero: 'لا وجوه بلا اسم',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get peoplePrivacy =>
+      'يتم العثور على الوجوه على جهاز Mac هذا؛ ولا يُرفع أي شيء.';
+
+  @override
+  String get peopleLookingForFaces => 'جارٍ البحث عن الوجوه في صورك…';
+
+  @override
+  String get peopleNoFaces => 'لم يتم العثور على وجوه في المكتبة';
+
+  @override
+  String get peopleNamed => 'الأشخاص';
+
+  @override
+  String get peopleUnnamed => 'وجوه بلا اسم';
+
+  @override
+  String get peopleUnnamedHint =>
+      'تُجمَع الوجوه المتشابهة. سمِّ مجموعة، أو انقر على وجوه لاختيارها فقط أولًا. المجموعات تخمين — تحقّق قبل التسمية.';
+
+  @override
+  String peopleShowMore(int count) {
+    return 'عرض المزيد ($count مجموعات أخرى)';
+  }
+
+  @override
+  String get peopleFace => 'وجه';
+
+  @override
+  String peopleFaceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count وجوه',
+      one: 'وجه واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String peopleFacesPicked(int picked, int count) {
+    return 'تم اختيار $picked من $count';
+  }
+
+  @override
+  String get peopleName => 'تسمية…';
+
+  @override
+  String get peopleIgnore => 'تجاهل';
+
+  @override
+  String peopleWhoIsThis(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'لمن هذه الوجوه الـ$count؟',
+      one: 'من هذا؟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get peopleNameLabel => 'الاسم';
+
+  @override
+  String get peopleBack => 'كل الأشخاص';
+
+  @override
+  String get peopleRename => 'إعادة التسمية';
+
+  @override
+  String get peopleForget => 'نسيان الاسم';
+
+  @override
+  String peopleForgetTitle(String name) {
+    return 'نسيان «$name»؟';
+  }
+
+  @override
+  String get peopleForgetMessage =>
+      'تعود وجوههم إلى الوجوه بلا اسم. لا تتغير الصور.';
+
+  @override
+  String peopleIsThis(String name) {
+    return 'هل هذا $name؟';
+  }
+
+  @override
+  String get peopleYes => 'نعم';
+
+  @override
+  String get peopleNo => 'لا';
 }

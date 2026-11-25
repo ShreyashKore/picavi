@@ -1,3 +1,6 @@
+import 'face.dart';
+import 'geo_point.dart';
+
 /// What the user said about a photo: Picasa's star, caption and tags, and
 /// whether it is hidden from the library. Stored next to the photo, never
 /// inside it.
@@ -7,6 +10,8 @@ class PhotoInfo {
     this.caption = '',
     this.tags = const <String>[],
     this.hidden = false,
+    this.location,
+    this.people = const <PersonTag>[],
   });
 
   static const PhotoInfo none = PhotoInfo();
@@ -16,19 +21,35 @@ class PhotoInfo {
   final List<String> tags;
   final bool hidden;
 
-  bool get isEmpty => !starred && caption.isEmpty && tags.isEmpty && !hidden;
+  /// Where the photo was taken, set by hand (overrides the camera's GPS).
+  final GeoPoint? location;
+
+  /// Named faces in the photo.
+  final List<PersonTag> people;
+
+  bool get isEmpty =>
+      !starred &&
+      caption.isEmpty &&
+      tags.isEmpty &&
+      !hidden &&
+      location == null &&
+      people.isEmpty;
 
   PhotoInfo copyWith({
     bool? starred,
     String? caption,
     List<String>? tags,
     bool? hidden,
+    GeoPoint? Function()? location,
+    List<PersonTag>? people,
   }) {
     return PhotoInfo(
       starred: starred ?? this.starred,
       caption: caption ?? this.caption,
       tags: tags ?? this.tags,
       hidden: hidden ?? this.hidden,
+      location: location != null ? location() : this.location,
+      people: people ?? this.people,
     );
   }
 
@@ -48,12 +69,29 @@ class PhotoInfo {
       other.starred == starred &&
       other.caption == caption &&
       other.hidden == hidden &&
-      other.tags.length == tags.length &&
-      Iterable<int>.generate(
-        tags.length,
-      ).every((i) => other.tags[i] == tags[i]);
+      other.location == location &&
+      _sameList(other.tags, tags) &&
+      _sameList(other.people, people);
 
   @override
-  int get hashCode =>
-      Object.hash(starred, caption, Object.hashAll(tags), hidden);
+  int get hashCode => Object.hash(
+    starred,
+    caption,
+    Object.hashAll(tags),
+    hidden,
+    location,
+    Object.hashAll(people),
+  );
+
+  static bool _sameList<T>(List<T> a, List<T> b) {
+    if (a.length != b.length) {
+      return false;
+    }
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

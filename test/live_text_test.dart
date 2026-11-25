@@ -36,7 +36,11 @@ void main() {
             'quad': _quad(0, 0, 1, 0.1),
             'words': [
               {'start': 0, 'end': 9, 'quad': _quad(0, 0, 1, 0.1)},
-              {'start': 0, 'end': 3, 'quad': <double>[1, 2]},
+              {
+                'start': 0,
+                'end': 3,
+                'quad': <double>[1, 2],
+              },
               {'start': 0, 'end': 3, 'quad': _quad(0, 0, 1, 0.1)},
             ],
           },
@@ -122,7 +126,10 @@ void main() {
     late LiveTextController controller;
     late int panStarts;
 
+    Offset? contextMenuPosition;
+
     Future<void> pumpOverlay(WidgetTester tester) async {
+      contextMenuPosition = null;
       controller = LiveTextController(_FakeRecognitionService());
       addTearDown(controller.dispose);
       panStarts = 0;
@@ -139,7 +146,10 @@ void main() {
               child: SizedBox(
                 width: 400,
                 height: 200,
-                child: LiveTextOverlay(controller: controller),
+                child: LiveTextOverlay(
+                  controller: controller,
+                  onContextMenu: (position) => contextMenuPosition = position,
+                ),
               ),
             ),
           ),
@@ -205,6 +215,39 @@ void main() {
       await tester.tapAt(hello, kind: PointerDeviceKind.mouse);
       await tester.pump();
       expect(controller.hasSelection, isFalse);
+    });
+
+    testWidgets('right-clicking text selects the word and asks for a menu', (
+      tester,
+    ) async {
+      await pumpOverlay(tester);
+
+      await tester.tapAt(
+        background,
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryButton,
+      );
+      await tester.pump();
+      expect(contextMenuPosition, isNull);
+
+      await tester.tapAt(
+        world,
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryButton,
+      );
+      await tester.pump();
+      expect(contextMenuPosition, world);
+      expect(controller.selectedText, 'world!');
+
+      // Right-clicking inside an existing selection keeps it.
+      controller.selectAll();
+      await tester.tapAt(
+        hello,
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryButton,
+      );
+      await tester.pump();
+      expect(controller.selectedText, 'Hello, world!\nPicavi');
     });
   });
 }

@@ -1,6 +1,8 @@
 import 'package:path/path.dart' as p;
 
 import '../../../core/sidecar/picavi_sidecar_store.dart';
+import '../../domain/entities/face.dart';
+import '../../domain/entities/geo_point.dart';
 import '../../domain/entities/photo_info.dart';
 import '../../domain/repositories/photo_info_repository.dart';
 
@@ -9,7 +11,14 @@ import '../../domain/repositories/photo_info_repository.dart';
 class SidecarPhotoInfoRepository implements PhotoInfoRepository {
   const SidecarPhotoInfoRepository({this.store = const PicaviSidecarStore()});
 
-  static const Set<String> fields = {'starred', 'caption', 'tags', 'hidden'};
+  static const Set<String> fields = {
+    'starred',
+    'caption',
+    'tags',
+    'hidden',
+    'location',
+    'people',
+  };
 
   final PicaviSidecarStore store;
 
@@ -25,6 +34,13 @@ class SidecarPhotoInfoRepository implements PhotoInfoRepository {
       caption: caption is String ? caption : '',
       tags: tags is List ? tags.whereType<String>().toList() : const [],
       hidden: entry['hidden'] == true,
+      location: GeoPoint.fromJson(entry['location']),
+      people: entry['people'] is List
+          ? (entry['people'] as List)
+                .map(PersonTag.fromJson)
+                .whereType<PersonTag>()
+                .toList()
+          : const [],
     );
   }
 
@@ -53,6 +69,10 @@ class SidecarPhotoInfoRepository implements PhotoInfoRepository {
       if (info.caption.isNotEmpty) entry['caption'] = info.caption;
       if (info.tags.isNotEmpty) entry['tags'] = info.tags;
       if (info.hidden) entry['hidden'] = true;
+      if (info.location != null) entry['location'] = info.location!.toJson();
+      if (info.people.isNotEmpty) {
+        entry['people'] = [for (final tag in info.people) tag.toJson()];
+      }
     });
   }
 

@@ -14,9 +14,14 @@ import '../../../../core/services/app_preferences_service.dart';
 import '../../../../core/services/default_viewer_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_image.dart';
+import '../../../collage/data/raster_collage_service.dart';
+import '../../../collage/domain/collage_options.dart';
+import '../../../collage/presentation/collage_dialogs.dart';
 import '../../../editor/data/repositories/sidecar_image_edit_repository.dart';
+import '../../../print_photos/presentation/print_flow.dart';
 import '../../../editor/data/services/edited_image_provider.dart';
 import '../../../editor/data/services/flutter_image_pixel_source.dart';
+import '../../../editor/data/services/isolate_edit_render_service.dart';
 import '../../../editor/data/services/raster_image_export_service.dart';
 import '../../../editor/data/services/rendering_quick_fix_service.dart';
 import '../../../editor/domain/entities/image_edits.dart';
@@ -32,18 +37,22 @@ import '../../data/services/desktop_image_picker_service.dart';
 import '../../data/services/native_file_channel_service.dart';
 import '../../data/services/raster_image_transform_service.dart';
 import '../../data/services/slideshow_settings_store.dart';
+import '../../data/services/vision_text_recognition_service.dart';
 import '../../data/platform_image_formats.dart';
 import '../../domain/entities/image_sort_order.dart';
+import '../../domain/entities/recognized_text.dart';
 import '../../domain/entities/recent_folder.dart';
 import '../../domain/entities/slideshow_settings.dart';
 import '../../domain/repositories/image_repository.dart';
 import '../../domain/services/image_picker_service.dart';
+import '../controllers/live_text_controller.dart';
 import '../controllers/viewer_controller.dart';
 import '../models/viewer_notice.dart';
 import '../models/viewer_state.dart';
 import '../widgets/caption_tags_dialog.dart';
 import '../widgets/image_info_overlay.dart';
 import '../widgets/interactive_image_viewer.dart';
+import '../widgets/live_text_overlay.dart';
 import '../widgets/keyboard_shortcuts_dialog.dart';
 import '../widgets/recent_folders_panel.dart';
 import '../widgets/rename_image_dialog.dart';
@@ -65,7 +74,7 @@ class ViewerScreen extends StatefulWidget {
 
 class _ViewerScreenState extends State<ViewerScreen>
     with WidgetsBindingObserver, WindowListener {
-  static const double _thumbnailExtent = 72;
+  static const double _thumbnailExtent = 84;
   static const double _thumbnailControlsInset = 60;
   static const int _recentFolderPreviewCount = 4;
 
@@ -80,6 +89,7 @@ class _ViewerScreenState extends State<ViewerScreen>
   static const FlutterImagePixelSource _pixelSource = FlutterImagePixelSource();
   late final DesktopFileOperationsService _fileOperations;
   Future<LibraryServices>? _libraryServices;
+  final GlobalKey _actionsMenuKey = GlobalKey();
   late final AppPreferencesService _appPreferencesService;
   late final DefaultViewerService _defaultViewerService;
   late final InteractiveImageViewerController _imageViewerController;
@@ -103,6 +113,15 @@ class _ViewerScreenState extends State<ViewerScreen>
   bool _suppressDefaultViewerHintUntilRestart = false;
   bool _restoreLastOpenedImageEnabled = false;
   bool _showRecentFoldersEnabled = false;
+
+  /// Live Text: recognizes text in the current image once it settles.
+  static const Duration _liveTextDelay = Duration(milliseconds: 350);
+  final LiveTextController _liveTextController = LiveTextController(
+    const VisionTextRecognitionService(),
+  );
+  bool _liveTextEnabled = true;
+  Timer? _liveTextTimer;
+  String? _pendingLiveTextKey;
   List<RecentFolder> _recentFolders = const <RecentFolder>[];
   String? _lastImagePath;
   DefaultViewerStatus? _defaultViewerStatus;
@@ -141,6 +160,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       ..addListener(_onImageViewerChanged);
     unawaited(_initializeDefaultViewerState());
     unawaited(_refreshRestoreLastOpenedImagePreference());
+    unawaited(_refreshLiveTextPreference());
     unawaited(_refreshRecentFolders());
     unawaited(_restoreSortOrder());
     _slideshowSettingsStore = SlideshowSettingsStore(_appPreferencesService);
@@ -186,6 +206,8 @@ class _ViewerScreenState extends State<ViewerScreen>
     WidgetsBinding.instance.removeObserver(this);
     windowManager.removeListener(this);
     _stopSlideshow(rebuild: false);
+    _liveTextTimer?.cancel();
+    _liveTextController.dispose();
     _imageViewerController
       ..removeListener(_onImageViewerChanged)
       ..dispose();
@@ -213,6 +235,7 @@ class _ViewerScreenState extends State<ViewerScreen>
 
     final state = _controller.state;
     _syncPresentationState(state);
+    _scheduleLiveText();
     _handleNotice(state.notice);
     setState(() {});
   }
@@ -374,6 +397,10 @@ class _ViewerScreenState extends State<ViewerScreen>
   }
 
   void _handleEscape() {
+    if (_liveTextController.hasSelection) {
+      _liveTextController.clearSelection();
+      return;
+    }
     if (_controller.state.hasSelection) {
       _controller.clearSelection();
       return;
@@ -452,6 +479,12 @@ class _ViewerScreenState extends State<ViewerScreen>
         await _openEditor();
       case ViewerFileAction.export:
         await _exportTargets();
+      case ViewerFileAction.collage:
+        await _makeCollage();
+      case ViewerFileAction.print:
+        await _printTargets();
+      case ViewerFileAction.share:
+        await _controller.shareTargets(shareAnchorFor(_actionsMenuKey));
       case ViewerFileAction.feelingLucky:
         await _controller.quickFixTargets(QuickFix.feelingLucky);
       case ViewerFileAction.autoContrast:
@@ -592,6 +625,69 @@ class _ViewerScreenState extends State<ViewerScreen>
     }
     if (mounted) {
       _viewerFocusNode.requestFocus();
+    }
+  }
+
+  /// Makes a collage of the selection, or of the whole folder when nothing
+  /// is selected.
+  Future<void> _makeCollage() async {
+    final state = _controller.state;
+    final paths = state.hasSelection
+        ? state.actionTargets
+        : [for (final image in state.images) image.path];
+    if (paths.isEmpty) {
+      return;
+    }
+    _stopSlideshow();
+    final options = await showCollageOptionsDialog(
+      context,
+      photoCount: paths.length,
+    );
+    if (options == null || !mounted) {
+      return;
+    }
+    final directory = await _controller.pickFolder(_exportFolderTexts);
+    if (directory == null || !mounted) {
+      return;
+    }
+    final written = await createCollageWithProgress(
+      context,
+      service: const RasterCollageService(),
+      photos: [
+        for (final path in paths) CollagePhoto(path, state.editsFor(path)),
+      ],
+      options: options,
+      directory: directory,
+    );
+    if (!mounted) {
+      return;
+    }
+    final l10n = context.l10n;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          written.isEmpty
+              ? l10n.collageFailed
+              : l10n.collageSaved(written.length, p.basename(written.first)),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _printTargets() async {
+    final state = _controller.state;
+    final targets = state.actionTargets;
+    if (targets.isEmpty) {
+      return;
+    }
+    _stopSlideshow();
+    final ok = await printPhotos(context, [
+      for (final path in targets) CollagePhoto(path, state.editsFor(path)),
+    ]);
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.printFailed)));
     }
   }
 
@@ -839,6 +935,7 @@ class _ViewerScreenState extends State<ViewerScreen>
           defaultViewerService: _defaultViewerService,
           initialStatus: _defaultViewerStatus,
           slideshowSettingsStore: _slideshowSettingsStore,
+          showLiveTextSetting: _liveTextController.isAvailable,
         ),
       ),
     );
@@ -847,6 +944,143 @@ class _ViewerScreenState extends State<ViewerScreen>
     await _refreshRestoreLastOpenedImagePreference();
     await _refreshRecentFolders();
     await _loadSlideshowSettings();
+    await _refreshLiveTextPreference();
+  }
+
+  Future<void> _refreshLiveTextPreference() async {
+    final enabled = await _appPreferencesService.isLiveTextEnabled();
+    if (!mounted || enabled == _liveTextEnabled) {
+      return;
+    }
+    setState(() => _liveTextEnabled = enabled);
+    _scheduleLiveText();
+  }
+
+  bool get _isLiveTextActive =>
+      _liveTextEnabled && !_isPlaying && _liveTextController.isAvailable;
+
+  /// Identifies what is on screen: the file, its revision and its edits.
+  String? _liveTextKeyFor(ViewerState state) {
+    if (!state.hasImages) {
+      return null;
+    }
+    final image = state.currentImage;
+    if (p.extension(image.path).toLowerCase() == '.svg') {
+      return null;
+    }
+    final edits = state.editsFor(image.path);
+    return '${image.path}|${image.revision}|${edits.hashCode}';
+  }
+
+  /// Hides text from the previous image at once and recognizes the current
+  /// one after a short pause, so flicking through images stays cheap.
+  void _scheduleLiveText() {
+    final state = _controller.state;
+    final key = _isLiveTextActive ? _liveTextKeyFor(state) : null;
+    if (key == null) {
+      _liveTextTimer?.cancel();
+      _pendingLiveTextKey = null;
+      if (_liveTextController.key != null) {
+        _liveTextController.clear();
+      }
+      return;
+    }
+    if (key == _liveTextController.key || key == _pendingLiveTextKey) {
+      return;
+    }
+
+    _liveTextController.clear();
+    _liveTextTimer?.cancel();
+    _pendingLiveTextKey = key;
+    final path = state.currentImage.path;
+    final edits = state.editsFor(path);
+    _liveTextTimer = Timer(_liveTextDelay, () {
+      _pendingLiveTextKey = null;
+      if (!mounted) {
+        return;
+      }
+      unawaited(
+        _liveTextController.analyze(key, () => _liveTextSourceFor(path, edits)),
+      );
+    });
+  }
+
+  /// The file itself, or the image with its edits applied (what the viewer
+  /// shows), so text positions line up with the display.
+  Future<TextRecognitionSource?> _liveTextSourceFor(
+    String path,
+    ImageEdits edits,
+  ) async {
+    if (edits.isEmpty) {
+      return FileTextRecognitionSource(path);
+    }
+    final source = await _pixelSource.load(
+      path,
+      maxDimension: EditedImageProvider.viewerMaxDimension,
+    );
+    if (source == null) {
+      return null;
+    }
+    final rendered = await const IsolateEditRenderService().render(
+      source,
+      edits.operations,
+    );
+    return PixelTextRecognitionSource(
+      width: rendered.width,
+      height: rendered.height,
+      rgba: rendered.pixels,
+    );
+  }
+
+  Future<void> _copyLiveText() async {
+    final text = _liveTextController.selectedText;
+    if (text == null || text.isEmpty) {
+      return;
+    }
+    await Clipboard.setData(ClipboardData(text: text));
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.maybeOf(context)
+      ?..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(context.l10n.liveTextCopiedNotice)),
+      );
+  }
+
+  Future<void> _showLiveTextMenu(Offset globalPosition) async {
+    final overlay = Overlay.of(context).context.findRenderObject();
+    if (overlay is! RenderBox) {
+      return;
+    }
+    final copyLabel = context.l10n.liveTextCopy;
+    final selectAllLabel = context.l10n.liveTextSelectAll;
+    final action = await showMenu<_LiveTextMenuAction>(
+      context: context,
+      position: RelativeRect.fromRect(
+        globalPosition & const Size(1, 1),
+        Offset.zero & overlay.size,
+      ),
+      items: [
+        PopupMenuItem(value: _LiveTextMenuAction.copy, child: Text(copyLabel)),
+        PopupMenuItem(
+          value: _LiveTextMenuAction.selectAll,
+          child: Text(selectAllLabel),
+        ),
+      ],
+    );
+    if (!mounted) {
+      return;
+    }
+    switch (action) {
+      case _LiveTextMenuAction.copy:
+        await _copyLiveText();
+      case _LiveTextMenuAction.selectAll:
+        _liveTextController.selectAll();
+      case null:
+        break;
+    }
+    _viewerFocusNode.requestFocus();
   }
 
   String _defaultViewerActionLabel(DefaultViewerStatus? status) {
@@ -914,7 +1148,6 @@ class _ViewerScreenState extends State<ViewerScreen>
           return;
         }
 
-        _centerThumbnailOn(state.currentIndex, animate: false);
         _viewerFocusNode.requestFocus();
       });
       return;
@@ -931,7 +1164,6 @@ class _ViewerScreenState extends State<ViewerScreen>
           return;
         }
 
-        _centerThumbnailOn(state.currentIndex);
         _viewerFocusNode.requestFocus();
       });
     }
@@ -993,6 +1225,7 @@ class _ViewerScreenState extends State<ViewerScreen>
       ),
       ViewerNoticeType.editsRemoved => l10n.editsRemovedNotice(notice.count),
       ViewerNoticeType.photoInfoSaveFailed => l10n.photoInfoSaveFailedNotice,
+      ViewerNoticeType.shareFailed => l10n.shareFailedNotice,
     };
   }
 
@@ -1040,6 +1273,7 @@ class _ViewerScreenState extends State<ViewerScreen>
     setState(() {
       _isPlaying = true;
     });
+    _scheduleLiveText();
     _slideshowSequencer = SlideshowSequencer(
       imageCount: state.images.length,
       startIndex: state.currentIndex,
@@ -1083,34 +1317,10 @@ class _ViewerScreenState extends State<ViewerScreen>
       setState(() {
         _isPlaying = false;
       });
+      _scheduleLiveText();
     } else {
       _isPlaying = false;
     }
-  }
-
-  void _centerThumbnailOn(int index, {bool animate = true}) {
-    if (!_thumbnailScrollController.hasClients) {
-      return;
-    }
-
-    final viewportWidth = _thumbnailScrollController.position.viewportDimension;
-    final rawOffset =
-        (index * _thumbnailExtent) - ((viewportWidth - _thumbnailExtent) / 2);
-    final targetOffset = rawOffset.clamp(
-      0.0,
-      _thumbnailScrollController.position.maxScrollExtent,
-    );
-
-    if (animate) {
-      _thumbnailScrollController.animateTo(
-        targetOffset,
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOutCubic,
-      );
-      return;
-    }
-
-    _thumbnailScrollController.jumpTo(targetOffset);
   }
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
@@ -1176,9 +1386,15 @@ class _ViewerScreenState extends State<ViewerScreen>
   /// `keyboard_shortcuts_dialog.dart`.
   VoidCallback? _commandShortcutActionFor(LogicalKeyboardKey key) {
     if (key == LogicalKeyboardKey.keyC) {
+      if (_liveTextController.hasSelection) {
+        return () => unawaited(_copyLiveText());
+      }
       return () => unawaited(_controller.copyCurrentImageToClipboard());
     }
     if (key == LogicalKeyboardKey.keyA) {
+      if (_liveTextController.hasSelection) {
+        return _liveTextController.selectAll;
+      }
       return _controller.selectAll;
     }
     if (key == LogicalKeyboardKey.backspace) {
@@ -1403,6 +1619,13 @@ class _ViewerScreenState extends State<ViewerScreen>
                 left: 20,
                 right: 20,
               ),
+              overlayBuilder: _isLiveTextActive
+                  ? (context, _) => LiveTextOverlay(
+                      controller: _liveTextController,
+                      onContextMenu: (position) =>
+                          unawaited(_showLiveTextMenu(position)),
+                    )
+                  : null,
             ),
           ),
 
@@ -1418,6 +1641,11 @@ class _ViewerScreenState extends State<ViewerScreen>
                 viewState: imageViewState,
                 caption: state.photoInfoFor(state.currentImage.path).caption,
                 tags: state.photoInfoFor(state.currentImage.path).tags,
+                people: [
+                  for (final tag
+                      in state.photoInfoFor(state.currentImage.path).people)
+                    tag.name,
+                ],
               ),
             ),
 
@@ -1530,6 +1758,8 @@ class _ViewerScreenState extends State<ViewerScreen>
       onSortOrderChanged: (sortOrder) => unawaited(_changeSortOrder(sortOrder)),
       onShowShortcuts: () => unawaited(_showKeyboardShortcuts()),
       actionsMenu: ViewerActionsMenu(
+        key: _actionsMenuKey,
+        canShare: _controller.canShare,
         targetCount: state.actionTargets.length,
         canEdit: _canEditCurrent,
         hasEdits: state.actionTargets.any(
@@ -1730,3 +1960,5 @@ class _DropHighlight extends StatelessWidget {
     );
   }
 }
+
+enum _LiveTextMenuAction { copy, selectAll }

@@ -1,0 +1,32 @@
+display_name: Picavi
+package_name: picavi
+maintainer:
+  name: Shreyash Kore
+  email: kore.shreyash@gmail.com
+priority: optional
+section: graphics
+installed_size: 60000
+dependencies:
+  - libgtk-3-0
+  - liblzma5
+  # The release is built inside an ubuntu:22.04 container, so the bundle needs
+  # at most these. scripts/check_linux_glibc_baseline.sh verifies it.
+  - libc6 (>= 2.35)
+  - libstdc++6 (>= 12)
+icon: linux/icons/oiv_256.png
+generic_name: Image Viewer
+categories:
+  - Graphics
+  - Viewer
+# Keep in sync with linux/oiv.desktop.in.
+supported_mime_type:
+  - image/bmp
+  - image/gif
+  - image/jpeg
+  - image/png
+  - image/svg+xml
+  - image/webp
+  - image/x-icon
+startup_notify: true
+# The runner sets its program name to the GTK application id.
+startup_wm_class: com.gyanoba.oiv

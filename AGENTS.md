@@ -5,7 +5,7 @@ Claude Code reads [CLAUDE.md](CLAUDE.md), which mirrors this file — **keep bot
 
 ## What this is
 
-**oiv** ("Open Image Viewer", branded **Picavi**) is a Flutter **desktop** image
+**Picavi** (code name `oiv`, "Open Image Viewer") is a Flutter **desktop** image
 viewer (macOS, Linux, Windows — no mobile/web). Opening one image loads every
 supported sibling in the same folder into a Picasa-style gallery with a bottom
 thumbnail rail, zoom/pan, keyboard navigation, and slideshow.
@@ -14,12 +14,18 @@ thumbnail rail, zoom/pan, keyboard navigation, and slideshow.
 - Dart import package: `package:oiv/...`. Bundle id / channel namespace: `com.gyanoba.oiv`.
 - Dart SDK `^3.11.5`; lints via `package:flutter_lints` (`analysis_options.yaml`).
 
+**Naming:** the product is **Picavi** — everything users see (app bundle, window
+titles, UI text, docs). `oiv` is the internal code name — Dart package, bundle id,
+method channel, Linux/Windows binary and the Windows `ProductName`. Keep the split:
+the bundle id, Linux application id and Windows `ProductName` decide where users'
+data is stored, so renaming them would lose settings and albums.
+
 ## Commands
 
 ```bash
 flutter pub get                       # install deps
 flutter run -d macos                  # run (also -d linux / -d windows)
-flutter run -d macos -- /path/img.jpg # run with an image path argument
+flutter run -d macos --dart-entrypoint-args=/path/img.jpg  # run with an image path argument
 flutter analyze                       # static analysis — must pass clean
 flutter test                          # run all tests
 flutter test test/viewer_controller_test.dart   # single test file
@@ -68,6 +74,11 @@ lib/
                      SidecarPhotoInfoRepository, LibraryServices (opens it all)
     presentation/    LibraryController + LibraryState, LibraryScreen, DuplicatesScreen,
                      sidebar, grid, folder tree
+  collage/           collage + contact sheet maker: CollageOptions/CollageService (domain),
+                     collage_renderer.dart (pure-Dart layouts) + RasterCollageService (data),
+                     options dialog (presentation)
+  print_photos/      printing: PrintLayout, print_pdf.dart (PDF via package:pdf), print_flow.dart
+                     (layout dialog → system print dialog via package:printing)
 ```
 
 - **State:** plain `ChangeNotifier` + immutable `ViewerState`; no state-management
@@ -99,7 +110,7 @@ lib/
   new files that never overwrite.
 - Sidecar is the source of truth, the catalog a cache: `PicaviSidecarStore`
   (`lib/core/sidecar/`) owns `.picavi.json`; each feature owns its fields of an
-  image's entry (`edits`; `starred`/`caption`/`tags`/`hidden`) and keeps unknown
+  image's entry (`edits`; `starred`/`caption`/`tags`/`hidden`/`location`/`people`) and keeps unknown
   ones. The SQLite catalog is rebuildable by re-indexing, except albums.
 - One pixel pipeline: preview, viewer display (`EditedImageProvider`) and export
   all run `applyEdits` (`editor/data/pipeline/edit_pipeline.dart`) in an isolate.
@@ -121,7 +132,7 @@ macOS forwards Finder "Open With" events into Flutter via
 Swift: `macos/Runner/AppDelegate.swift` + `MainFlutterWindow.swift`. Methods:
 `consumePendingFiles`, `openFiles`, `pickImageFile`, `authorizeDirectoryAccess`,
 `getDefaultViewerStatus`, `setAsDefaultViewer`, `moveToTrash`, `revealInFinder`,
-`copyImageToClipboard`, `openWith`, `decodeImage` (folder access uses security-scoped
+`copyImageToClipboard`, `openWith`, `decodeImage`, `recognizeText`, `shareFiles`, `detectFaces` (folder access uses security-scoped
 bookmarks). Per-platform "open with" registration: macOS `Info.plist`, Linux
 `linux/oiv.desktop.in`, Windows registry. **Change channel names/payloads on the
 Dart and Swift sides together.**

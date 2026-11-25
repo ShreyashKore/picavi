@@ -10,6 +10,7 @@ import '../../../core/sidecar/picavi_sidecar_store.dart';
 import '../../../editor/domain/entities/image_edits.dart';
 import '../../../viewer/data/platform_image_formats.dart';
 import '../../domain/entities/catalog_image.dart';
+import '../../domain/entities/geo_point.dart';
 import '../../domain/entities/library_query.dart';
 import '../../domain/repositories/catalog_repository.dart';
 import '../../domain/services/library_indexer.dart';
@@ -106,6 +107,7 @@ class FileSystemLibraryIndexer implements LibraryIndexer {
       stamp: file.stamp,
       taken: reuse ? previous.taken : facts?.taken,
       camera: reuse ? previous.camera : facts?.camera,
+      gps: reuse ? previous.gps : facts?.gps,
       info: SidecarPhotoInfoRepository.fromFields(entry),
       edits: ImageEdits.fromJson(entry?['edits']),
     );
@@ -130,7 +132,6 @@ class LibraryScan {
 
 /// Lists every photo under [root], skipping hidden folders and following no
 /// links. Unreadable folders are skipped. Runs in an isolate.
-@visibleForTesting
 LibraryScan scanLibraryRoot(String root, Set<String> extensions) {
   final files = <ScannedFile>[];
   final sidecars = <String, SidecarEntries>{};
@@ -182,15 +183,15 @@ LibraryScan scanLibraryRoot(String root, Set<String> extensions) {
 }
 
 class PhotoFacts {
-  const PhotoFacts({this.taken, this.camera});
+  const PhotoFacts({this.taken, this.camera, this.gps});
 
   final DateTime? taken;
   final String? camera;
+  final GeoPoint? gps;
 }
 
 /// Reads when each photo was taken and with what camera. Only the first
 /// 256 KB are read: that is where JPEG and TIFF keep their EXIF.
-@visibleForTesting
 Future<Map<String, PhotoFacts>> readPhotoFacts(List<String> paths) async {
   const headBytes = 256 * 1024;
   final result = <String, PhotoFacts>{};
@@ -222,6 +223,12 @@ Future<Map<String, PhotoFacts>> readPhotoFacts(List<String> paths) async {
               value('Image DateTime'),
         ),
         camera: camera.isEmpty ? null : camera,
+        gps: parseExifGps(
+          tags['GPS GPSLatitude']?.values.toList(),
+          value('GPS GPSLatitudeRef'),
+          tags['GPS GPSLongitude']?.values.toList(),
+          value('GPS GPSLongitudeRef'),
+        ),
       );
     } catch (_) {
       // No readable EXIF: the timeline falls back to the file date.
@@ -249,4 +256,45 @@ DateTime? parseExifDate(String? raw) {
     return null; // "0000:00:00 00:00:00" means unknown.
   }
   return DateTime(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
+}
+
+/// Degrees from EXIF's (degrees, minutes, seconds) ratios and N/S/E/W refs.
+@visibleForTesting
+GeoPoint? parseExifGps(
+  List<Object?>? latitude,
+  String? latitudeRef,
+  List<Object?>? longitude,
+  String? longitudeRef,
+) {
+  double? degrees(List<Object?>? parts) {
+    if (parts == null || parts.isEmpty) {
+      return null;
+    }
+    final values = <double>[];
+    for (final part in parts.take(3)) {
+      final value = switch (part) {
+        final Ratio ratio when ratio.denominator != 0 => ratio.toDouble(),
+        final num number => number.toDouble(),
+        _ => null,
+      };
+      if (value == null) {
+        return null;
+      }
+      values.add(value);
+    }
+    while (values.length < 3) {
+      values.add(0);
+    }
+    return values[0] + values[1] / 60 + values[2] / 3600;
+  }
+
+  final lat = degrees(latitude);
+  final lon = degrees(longitude);
+  if (lat == null || lon == null) {
+    return null;
+  }
+  final south = (latitudeRef ?? '').toUpperCase().startsWith('S');
+  final west = (longitudeRef ?? '').toUpperCase().startsWith('W');
+  final point = GeoPoint(south ? -lat : lat, west ? -lon : lon);
+  return point.isValid ? point : null;
 }

@@ -182,6 +182,7 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
   Offset _gestureStartOffset = Offset.zero;
   double _gestureStartZoom = 1;
   Size _viewportSize = Size.zero;
+  EdgeInsets _padding = EdgeInsets.zero;
   late final AnimationController _transformAnimationController =
       AnimationController(vsync: this)
         ..addListener(_handleTransformAnimation)
@@ -302,8 +303,8 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
       return _imageInfo;
     }
 
-    if (_displayedImage.isSvg && !_viewportSize.isEmpty) {
-      return AppImageInfo(pixelSize: _viewportSize, isVector: true);
+    if (_displayedImage.isSvg && !_fitAreaSize.isEmpty) {
+      return AppImageInfo(pixelSize: _fitAreaSize, isVector: true);
     }
 
     return null;
@@ -325,15 +326,36 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
     );
   }
 
+  /// The part of the viewport the image fits into: the viewport minus
+  /// [InteractiveImageViewer.imagePadding] (or the whole viewport when the
+  /// padding leaves no room).
+  Size get _fitAreaSize {
+    final area = _padding.deflateSize(_viewportSize);
+    return area.width > 0 && area.height > 0 ? area : _viewportSize;
+  }
+
+  /// Where the fit area's center sits relative to the viewport's center;
+  /// the image is laid out around it, so it is the image center at offset 0.
+  Offset get _fitAreaCenterShift {
+    if (_padding.deflateSize(_viewportSize).isEmpty) {
+      return Offset.zero;
+    }
+    return Offset(
+      (_padding.left - _padding.right) / 2,
+      (_padding.top - _padding.bottom) / 2,
+    );
+  }
+
   double _fitScaleForAngle(double angle) {
     final imageSize = _rotatedImageBoundsForAngle(angle);
-    if (_viewportSize.isEmpty || imageSize == null) {
+    final fitArea = _fitAreaSize;
+    if (fitArea.isEmpty || imageSize == null) {
       return 1;
     }
 
     final fitScale = math.min(
-      _viewportSize.width / imageSize.width,
-      _viewportSize.height / imageSize.height,
+      fitArea.width / imageSize.width,
+      fitArea.height / imageSize.height,
     );
 
     if (fitScale <= 0 || !fitScale.isFinite) {
@@ -358,7 +380,8 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
     return 1 / fitScale;
   }
 
-  /// Zoom (relative to fit) at which the rotated image covers the viewport.
+  /// Zoom (relative to fit) at which the rotated image covers the whole
+  /// viewport, padding included.
   double get _fillZoomFactor {
     final imageSize = _rotatedImageBoundsForAngle(_rotationAngle);
     if (_viewportSize.isEmpty || imageSize == null) {
@@ -411,19 +434,38 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
       imageSize.height * fitScale * effectiveZoom,
     );
 
-    final horizontalLimit = math.max(
-      0,
-      (displayedSize.width - _viewportSize.width) / 2,
-    );
-    final verticalLimit = math.max(
-      0,
-      (displayedSize.height - _viewportSize.height) / 2,
-    );
-
+    final shift = _fitAreaCenterShift;
     return Offset(
-      candidate.dx.clamp(-horizontalLimit, horizontalLimit).toDouble(),
-      candidate.dy.clamp(-verticalLimit, verticalLimit).toDouble(),
+      _clampAxis(
+        candidate.dx,
+        shift: shift.dx,
+        displayed: displayedSize.width,
+        viewport: _viewportSize.width,
+      ),
+      _clampAxis(
+        candidate.dy,
+        shift: shift.dy,
+        displayed: displayedSize.height,
+        viewport: _viewportSize.height,
+      ),
     );
+  }
+
+  /// Clamps one axis of the offset. The image center sits at `shift + offset`
+  /// from the viewport center. An image larger than the viewport may pan
+  /// until its edges reach the viewport's; a smaller one stays as close to
+  /// the fit area's center as it can while staying fully visible.
+  static double _clampAxis(
+    double offset, {
+    required double shift,
+    required double displayed,
+    required double viewport,
+  }) {
+    final slack = (displayed - viewport).abs() / 2;
+    final position = displayed > viewport
+        ? (shift + offset).clamp(-slack, slack)
+        : shift.clamp(-slack, slack);
+    return position - shift;
   }
 
   void _notifyController() {
@@ -618,13 +660,17 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
 
     final previousZoom = _zoomFactor;
     final center = Offset(_viewportSize.width / 2, _viewportSize.height / 2);
-    final targetFocalPoint = focalPoint ?? center;
+    final shift = _fitAreaCenterShift;
+    final targetFocalPoint = focalPoint ?? center + shift;
     final normalizedFocalPoint = targetFocalPoint - center;
     final scaleRatio = clampedZoom / previousZoom;
+    // Keep the image point under the focal point in place: the image center
+    // is at `shift + offset` from the viewport center.
+    final imageCenter = shift + _offset;
     final nextOffset = _clampOffset(
-      targetFocalPoint -
-          center -
-          ((normalizedFocalPoint - _offset) * scaleRatio),
+      normalizedFocalPoint -
+          ((normalizedFocalPoint - imageCenter) * scaleRatio) -
+          shift,
       zoomFactor: clampedZoom,
       rotationAngle: _rotationAngle,
     );
@@ -774,8 +820,13 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
     return LayoutBuilder(
       builder: (context, constraints) {
         final nextViewportSize = constraints.biggest;
-        final viewportChanged = _viewportSize != nextViewportSize;
+        final nextPadding = widget.imagePadding.resolve(
+          Directionality.maybeOf(context),
+        );
+        final viewportChanged =
+            _viewportSize != nextViewportSize || _padding != nextPadding;
         _viewportSize = nextViewportSize;
+        _padding = nextPadding;
         _zoomFactor = _clampedZoom(_zoomFactor);
         _offset = _clampOffset(_offset, rotationAngle: _rotationAngle);
         if (viewportChanged) {
@@ -841,11 +892,19 @@ class _InteractiveImageViewerState extends State<InteractiveImageViewer>
                                           ),
                                           if (widget.overlayBuilder
                                               case final overlayBuilder?)
+                                            // Padding can squeeze the box;
+                                            // scale like the image (contain)
+                                            // so the overlay stays on it.
                                             SizedBox.fromSize(
                                               size: fittedImageSize,
-                                              child: overlayBuilder(
-                                                context,
-                                                fittedImageSize,
+                                              child: FittedBox(
+                                                child: SizedBox.fromSize(
+                                                  size: fittedImageSize,
+                                                  child: overlayBuilder(
+                                                    context,
+                                                    fittedImageSize,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                         ],

@@ -1,6 +1,6 @@
-# oiv
+# Picavi
 
-Open Image Viewer / Picavi desktop viewer.
+An open image viewer for the desktop (code name `oiv`).
 
 ## What it does
 
@@ -16,6 +16,10 @@ Open Image Viewer / Picavi desktop viewer.
 - Edits never touch your originals: they are kept in a hidden `.picavi.json` file in the folder (like Picasa's `.picasa.ini`) and follow images you rename, move or copy in Picavi.
 - Star photos (`S`), add captions and tags, and hide photos from the library — saved in the same `.picavi.json`, so they travel with the folder.
 - Library (`L`): add the folders where you keep photos and browse everything by month, folder, album or star; search names, captions, tags, cameras and dates; make albums; find exact duplicates and move extra copies to the Trash. The catalog and thumbnails are kept in the app's support folder; your files stay where they are.
+- People (macOS): faces are found on your Mac, grouped by likeness and named by you; names are saved next to the photos and are searchable.
+- Places: photos with GPS (or a location you set) on a map — map tiles come from OpenStreetMap and load only while the map is open.
+- Import photos from a camera or memory card into dated folders; already-imported photos are skipped and nothing on the card is changed.
+- Make collages (mosaic or grid) and contact sheets, print photos 1–9 per page, and share through the macOS share menu.
 - Export edited copies as JPEG or PNG at a chosen size and quality; apply quick fixes or export a whole selection at once.
 - Sorts the folder by name (natural order, so `IMG_2` comes before `IMG_10`), date modified, file size or type — ascending or descending, remembered between launches.
 - Refreshes the thumbnail strip automatically when images are added to or removed from the folder.
@@ -91,7 +95,7 @@ flutter run -d macos
 You can also pass a file path directly:
 
 ```bash
-flutter run -d macos -- /absolute/path/to/image.jpg
+flutter run -d macos --dart-entrypoint-args=/absolute/path/to/image.jpg
 ```
 
 ## Quality checks
@@ -100,3 +104,18 @@ flutter run -d macos -- /absolute/path/to/image.jpg
 flutter analyze
 flutter test
 ```
+
+## Releasing
+
+Bump `version` in `pubspec.yaml`, commit, then push a matching tag:
+
+```bash
+git tag v1.0.4
+git push origin v1.0.4
+```
+
+[release.yml](.github/workflows/release.yml) builds a macOS `.dmg`, a Linux `.deb`
+and a Windows installer, and publishes them as a GitHub release once all three have
+built and the checks pass. Run the workflow by hand to build the packages without
+releasing. A suffixed tag such as `v1.0.4-alpha.1` publishes a pre-release of that
+version. Packages are not signed with a developer certificate or notarised.

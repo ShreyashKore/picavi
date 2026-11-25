@@ -51,6 +51,10 @@ dependencies:
   sqlite3: ^3.9.1
   path_provider: ^2.1.6
   crypto: ^3.0.8
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
+  printing: ^5.15.1
+  pdf: ^3.13.1
 
 dev_dependencies:
   flutter_test:

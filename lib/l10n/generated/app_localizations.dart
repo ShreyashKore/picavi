@@ -835,7 +835,7 @@ abstract class AppLocalizations {
   /// Shortcut description.
   ///
   /// In en, this message translates to:
-  /// **'Copy image'**
+  /// **'Copy image, or the selected text'**
   String get shortcutCopyImage;
 
   /// Shortcut description.
@@ -1773,6 +1773,516 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t open the library'**
   String get libraryOpenFailed;
+
+  /// Menu item / button that opens the system share menu.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Share…} other{Share {count} images…}}'**
+  String shareAction(int count);
+
+  /// Shown when the share menu could not be opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the share menu'**
+  String get shareFailedNotice;
+
+  /// Title/tooltip: import photos from a camera or card.
+  ///
+  /// In en, this message translates to:
+  /// **'Import photos'**
+  String get importTitle;
+
+  /// Sidebar heading for cameras and memory cards.
+  ///
+  /// In en, this message translates to:
+  /// **'Cameras and cards'**
+  String get importDevices;
+
+  /// Tooltip: look for cameras and cards again.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for cameras and cards'**
+  String get importRefreshDevices;
+
+  /// Shown when no camera or card is connected.
+  ///
+  /// In en, this message translates to:
+  /// **'None connected. Plug in a camera or insert a memory card.'**
+  String get importNoDevices;
+
+  /// Import source: any folder.
+  ///
+  /// In en, this message translates to:
+  /// **'From a folder…'**
+  String get importFromFolder;
+
+  /// Shown before a source is chosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a camera, card or folder on the left. Photos are copied into dated folders; nothing on the card is changed.'**
+  String get importChooseSource;
+
+  /// Shows where photos will be copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Into {folder} / year / date'**
+  String importDestination(String folder);
+
+  /// Button that changes the import folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Change…'**
+  String get importChangeDestination;
+
+  /// Shown when the source has no photos.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos found here'**
+  String get importNothingFound;
+
+  /// Label on photos imported before.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported'**
+  String get importAlreadyImported;
+
+  /// Selection count in the import screen.
+  ///
+  /// In en, this message translates to:
+  /// **'{selected} of {total} selected'**
+  String importSelectedCount(int selected, int total);
+
+  /// Button: select photos not imported yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Select new'**
+  String get importSelectNew;
+
+  /// Button: select nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Select none'**
+  String get importSelectNone;
+
+  /// Button that starts importing.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Import 1 photo} other{Import {count} photos}}'**
+  String importButton(int count);
+
+  /// Progress while importing.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying {done} of {total}…'**
+  String importProgress(int done, int total);
+
+  /// Summary after importing.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {copied}, skipped {skipped} already there, {failed} failed'**
+  String importDone(int copied, int skipped, int failed);
+
+  /// Viewer menu item: make a collage of the selection or folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a collage…'**
+  String get collageAction;
+
+  /// Library selection bar button: make a collage.
+  ///
+  /// In en, this message translates to:
+  /// **'Collage…'**
+  String get collageButton;
+
+  /// Collage dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Collage of 1 photo} other{Collage of {count} photos}}'**
+  String collageTitle(int count);
+
+  /// Collage layout: justified rows.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic'**
+  String get collageMosaic;
+
+  /// Collage layout: equal cells.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid'**
+  String get collageGrid;
+
+  /// Collage layout: contact sheet pages.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact sheet'**
+  String get collageContactSheet;
+
+  /// Explains grid and mosaic.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic keeps each photo whole; grid crops them to equal cells.'**
+  String get collageHint;
+
+  /// Explains contact sheets.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 pages of 35 thumbnails with their file names, ready to print.'**
+  String get collageContactSheetHint;
+
+  /// Collage option: gap between photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Spacing'**
+  String get collageSpacing;
+
+  /// Collage option: background colour.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get collageBackground;
+
+  /// Background colour: white.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get collageWhite;
+
+  /// Background colour: black.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get collageBlack;
+
+  /// Background colour: dark grey.
+  ///
+  /// In en, this message translates to:
+  /// **'Charcoal'**
+  String get collageCharcoal;
+
+  /// Collage size option.
+  ///
+  /// In en, this message translates to:
+  /// **'Widescreen ({width} × {height})'**
+  String collageSizeWide(int width, int height);
+
+  /// Collage size option.
+  ///
+  /// In en, this message translates to:
+  /// **'Large 3:2 ({width} × {height})'**
+  String collageSizeLarge(int width, int height);
+
+  /// Collage size option.
+  ///
+  /// In en, this message translates to:
+  /// **'Square ({width} × {height})'**
+  String collageSizeSquare(int width, int height);
+
+  /// Collage size option.
+  ///
+  /// In en, this message translates to:
+  /// **'Portrait 2:3 ({width} × {height})'**
+  String collageSizePortrait(int width, int height);
+
+  /// Shown while the collage is made.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the collage…'**
+  String get collageWorking;
+
+  /// Notice after a collage was saved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Saved {name}} other{Saved {count} pages, starting with {name}}}'**
+  String collageSaved(int count, String name);
+
+  /// Notice when the collage could not be made.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t make the collage'**
+  String get collageFailed;
+
+  /// File name (without extension) for a saved collage.
+  ///
+  /// In en, this message translates to:
+  /// **'Collage'**
+  String get collageFileName;
+
+  /// File name (without extension) for saved contact sheets.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact sheet'**
+  String get contactSheetFileName;
+
+  /// Library sidebar: photos on a map.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get placesTitle;
+
+  /// Shown in Places when no photo has a location.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos with a location yet. Phone photos usually have one; for others, select them and choose Set location.'**
+  String get placesEmpty;
+
+  /// Button and dialog title: set where photos were taken.
+  ///
+  /// In en, this message translates to:
+  /// **'Set location…'**
+  String get placesSetLocation;
+
+  /// Hint in the location picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Click the map where the photos were taken. Scroll to zoom, drag to move. The photo files are not changed.'**
+  String get placesPickHint;
+
+  /// Shown before a point is chosen on the map.
+  ///
+  /// In en, this message translates to:
+  /// **'No place chosen yet'**
+  String get placesNoPointYet;
+
+  /// Button that removes a location set by hand.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove location'**
+  String get placesRemoveLocation;
+
+  /// Menu item / button that prints photos.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Print…} other{Print {count} images…}}'**
+  String printAction(int count);
+
+  /// Print layout dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Print 1 photo} other{Print {count} photos}}'**
+  String printTitle(int count);
+
+  /// Print option label: photos on each page.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos per page'**
+  String get printPerPage;
+
+  /// Explains the print layout.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos are fitted to their space without cropping, with your edits applied. Paper size and orientation are chosen in the next window.'**
+  String get printHint;
+
+  /// Button that continues to the system print dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue…'**
+  String get printContinue;
+
+  /// Shown while photos are prepared for printing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing photos for printing…'**
+  String get printPreparing;
+
+  /// Name of the print job shown by the system.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Picavi photo} other{Picavi photos ({count})}}'**
+  String printJobName(int count);
+
+  /// Shown when printing could not start.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t print these photos'**
+  String get printFailed;
+
+  /// Context menu item that copies the text selected in an image.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Text'**
+  String get liveTextCopy;
+
+  /// Context menu item that selects all text recognized in an image.
+  ///
+  /// In en, this message translates to:
+  /// **'Select All Text'**
+  String get liveTextSelectAll;
+
+  /// Shown after the text selected in an image was copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Text copied to the clipboard'**
+  String get liveTextCopiedNotice;
+
+  /// Settings switch for selecting text inside images (Live Text).
+  ///
+  /// In en, this message translates to:
+  /// **'Select text in images'**
+  String get liveTextSettingTitle;
+
+  /// Explains the select-text-in-images setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hover over text in a photo to select and copy it. Text is recognized on this Mac, nothing is uploaded.'**
+  String get liveTextSettingDescription;
+
+  /// Library sidebar / info label: people in photos.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get peopleTitle;
+
+  /// Shown where face detection is not available.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding faces needs macOS for now.'**
+  String get peopleUnavailable;
+
+  /// Progress while looking for faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for faces… {done} of {total} photos'**
+  String peopleScanning(int done, int total);
+
+  /// Summary of people and unnamed faces.
+  ///
+  /// In en, this message translates to:
+  /// **'{people, plural, =0{No one named yet} =1{1 person} other{{people} people}} · {faces, plural, =0{no unnamed faces} =1{1 unnamed face} other{{faces} unnamed faces}}'**
+  String peopleSummary(int people, int faces);
+
+  /// Note that face detection is on-device.
+  ///
+  /// In en, this message translates to:
+  /// **'Faces are found on this Mac; nothing is uploaded.'**
+  String get peoplePrivacy;
+
+  /// Shown before any face was found during the first scan.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for faces in your photos…'**
+  String get peopleLookingForFaces;
+
+  /// Shown when no faces were found.
+  ///
+  /// In en, this message translates to:
+  /// **'No faces found in the library'**
+  String get peopleNoFaces;
+
+  /// Heading for named people.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get peopleNamed;
+
+  /// Heading for unnamed faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed faces'**
+  String get peopleUnnamed;
+
+  /// Explains how to name faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Faces that look alike are grouped. Name a group, or click faces to pick just those first. Groups are guesses — check before naming.'**
+  String get peopleUnnamedHint;
+
+  /// Button that shows more unnamed groups.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more ({count} more groups)'**
+  String peopleShowMore(int count);
+
+  /// Accessibility label for one face.
+  ///
+  /// In en, this message translates to:
+  /// **'Face'**
+  String get peopleFace;
+
+  /// Number of faces in a group.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 face} other{{count} faces}}'**
+  String peopleFaceCount(int count);
+
+  /// Picked faces in a group.
+  ///
+  /// In en, this message translates to:
+  /// **'{picked} of {count} picked'**
+  String peopleFacesPicked(int picked, int count);
+
+  /// Button that names faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Name…'**
+  String get peopleName;
+
+  /// Button that hides faces from People.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore'**
+  String get peopleIgnore;
+
+  /// Naming dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Who is this?} other{Who are these {count} faces?}}'**
+  String peopleWhoIsThis(int count);
+
+  /// Field label for a person name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get peopleNameLabel;
+
+  /// Tooltip: back to all people.
+  ///
+  /// In en, this message translates to:
+  /// **'All people'**
+  String get peopleBack;
+
+  /// Button that renames a person.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get peopleRename;
+
+  /// Button that removes a person name.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget name'**
+  String get peopleForget;
+
+  /// Confirmation title before forgetting a person.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget “{name}”?'**
+  String peopleForgetTitle(String name);
+
+  /// Explains forgetting a person.
+  ///
+  /// In en, this message translates to:
+  /// **'Their faces go back to Unnamed faces. Photos are not changed.'**
+  String get peopleForgetMessage;
+
+  /// Heading for suggested faces.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this {name}?'**
+  String peopleIsThis(String name);
+
+  /// Tooltip: yes, this is the person.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get peopleYes;
+
+  /// Tooltip: no, this is not the person.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get peopleNo;
 }
 
 class _AppLocalizationsDelegate

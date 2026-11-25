@@ -491,7 +491,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get shortcutCopyImage => 'Copy image';
+  String get shortcutCopyImage => 'Copy image, or the selected text';
 
   @override
   String get shortcutSelectAll => 'Select all images';
@@ -1113,4 +1113,384 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libraryOpenFailed => 'Couldn\'t open the library';
+
+  @override
+  String shareAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Share $count images…',
+      one: 'Share…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareFailedNotice => 'Couldn\'t open the share menu';
+
+  @override
+  String get importTitle => 'Import photos';
+
+  @override
+  String get importDevices => 'Cameras and cards';
+
+  @override
+  String get importRefreshDevices => 'Look for cameras and cards';
+
+  @override
+  String get importNoDevices =>
+      'None connected. Plug in a camera or insert a memory card.';
+
+  @override
+  String get importFromFolder => 'From a folder…';
+
+  @override
+  String get importChooseSource =>
+      'Choose a camera, card or folder on the left. Photos are copied into dated folders; nothing on the card is changed.';
+
+  @override
+  String importDestination(String folder) {
+    return 'Into $folder / year / date';
+  }
+
+  @override
+  String get importChangeDestination => 'Change…';
+
+  @override
+  String get importNothingFound => 'No photos found here';
+
+  @override
+  String get importAlreadyImported => 'Imported';
+
+  @override
+  String importSelectedCount(int selected, int total) {
+    return '$selected of $total selected';
+  }
+
+  @override
+  String get importSelectNew => 'Select new';
+
+  @override
+  String get importSelectNone => 'Select none';
+
+  @override
+  String importButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Import $count photos',
+      one: 'Import 1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importProgress(int done, int total) {
+    return 'Copying $done of $total…';
+  }
+
+  @override
+  String importDone(int copied, int skipped, int failed) {
+    return 'Imported $copied, skipped $skipped already there, $failed failed';
+  }
+
+  @override
+  String get collageAction => 'Make a collage…';
+
+  @override
+  String get collageButton => 'Collage…';
+
+  @override
+  String collageTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Collage of $count photos',
+      one: 'Collage of 1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageMosaic => 'Mosaic';
+
+  @override
+  String get collageGrid => 'Grid';
+
+  @override
+  String get collageContactSheet => 'Contact sheet';
+
+  @override
+  String get collageHint =>
+      'Mosaic keeps each photo whole; grid crops them to equal cells.';
+
+  @override
+  String get collageContactSheetHint =>
+      'A4 pages of 35 thumbnails with their file names, ready to print.';
+
+  @override
+  String get collageSpacing => 'Spacing';
+
+  @override
+  String get collageBackground => 'Background';
+
+  @override
+  String get collageWhite => 'White';
+
+  @override
+  String get collageBlack => 'Black';
+
+  @override
+  String get collageCharcoal => 'Charcoal';
+
+  @override
+  String collageSizeWide(int width, int height) {
+    return 'Widescreen ($width × $height)';
+  }
+
+  @override
+  String collageSizeLarge(int width, int height) {
+    return 'Large 3:2 ($width × $height)';
+  }
+
+  @override
+  String collageSizeSquare(int width, int height) {
+    return 'Square ($width × $height)';
+  }
+
+  @override
+  String collageSizePortrait(int width, int height) {
+    return 'Portrait 2:3 ($width × $height)';
+  }
+
+  @override
+  String get collageWorking => 'Making the collage…';
+
+  @override
+  String collageSaved(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Saved $count pages, starting with $name',
+      one: 'Saved $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get collageFailed => 'Couldn\'t make the collage';
+
+  @override
+  String get collageFileName => 'Collage';
+
+  @override
+  String get contactSheetFileName => 'Contact sheet';
+
+  @override
+  String get placesTitle => 'Places';
+
+  @override
+  String get placesEmpty =>
+      'No photos with a location yet. Phone photos usually have one; for others, select them and choose Set location.';
+
+  @override
+  String get placesSetLocation => 'Set location…';
+
+  @override
+  String get placesPickHint =>
+      'Click the map where the photos were taken. Scroll to zoom, drag to move. The photo files are not changed.';
+
+  @override
+  String get placesNoPointYet => 'No place chosen yet';
+
+  @override
+  String get placesRemoveLocation => 'Remove location';
+
+  @override
+  String printAction(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Print $count images…',
+      one: 'Print…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String printTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Print $count photos',
+      one: 'Print 1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printPerPage => 'Photos per page';
+
+  @override
+  String get printHint =>
+      'Photos are fitted to their space without cropping, with your edits applied. Paper size and orientation are chosen in the next window.';
+
+  @override
+  String get printContinue => 'Continue…';
+
+  @override
+  String get printPreparing => 'Preparing photos for printing…';
+
+  @override
+  String printJobName(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Picavi photos ($count)',
+      one: 'Picavi photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get printFailed => 'Couldn\'t print these photos';
+
+  @override
+  String get liveTextCopy => 'Copy Text';
+
+  @override
+  String get liveTextSelectAll => 'Select All Text';
+
+  @override
+  String get liveTextCopiedNotice => 'Text copied to the clipboard';
+
+  @override
+  String get liveTextSettingTitle => 'Select text in images';
+
+  @override
+  String get liveTextSettingDescription =>
+      'Hover over text in a photo to select and copy it. Text is recognized on this Mac, nothing is uploaded.';
+
+  @override
+  String get peopleTitle => 'People';
+
+  @override
+  String get peopleUnavailable => 'Finding faces needs macOS for now.';
+
+  @override
+  String peopleScanning(int done, int total) {
+    return 'Looking for faces… $done of $total photos';
+  }
+
+  @override
+  String peopleSummary(int people, int faces) {
+    String _temp0 = intl.Intl.pluralLogic(
+      people,
+      locale: localeName,
+      other: '$people people',
+      one: '1 person',
+      zero: 'No one named yet',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      faces,
+      locale: localeName,
+      other: '$faces unnamed faces',
+      one: '1 unnamed face',
+      zero: 'no unnamed faces',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get peoplePrivacy =>
+      'Faces are found on this Mac; nothing is uploaded.';
+
+  @override
+  String get peopleLookingForFaces => 'Looking for faces in your photos…';
+
+  @override
+  String get peopleNoFaces => 'No faces found in the library';
+
+  @override
+  String get peopleNamed => 'People';
+
+  @override
+  String get peopleUnnamed => 'Unnamed faces';
+
+  @override
+  String get peopleUnnamedHint =>
+      'Faces that look alike are grouped. Name a group, or click faces to pick just those first. Groups are guesses — check before naming.';
+
+  @override
+  String peopleShowMore(int count) {
+    return 'Show more ($count more groups)';
+  }
+
+  @override
+  String get peopleFace => 'Face';
+
+  @override
+  String peopleFaceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count faces',
+      one: '1 face',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String peopleFacesPicked(int picked, int count) {
+    return '$picked of $count picked';
+  }
+
+  @override
+  String get peopleName => 'Name…';
+
+  @override
+  String get peopleIgnore => 'Ignore';
+
+  @override
+  String peopleWhoIsThis(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Who are these $count faces?',
+      one: 'Who is this?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get peopleNameLabel => 'Name';
+
+  @override
+  String get peopleBack => 'All people';
+
+  @override
+  String get peopleRename => 'Rename';
+
+  @override
+  String get peopleForget => 'Forget name';
+
+  @override
+  String peopleForgetTitle(String name) {
+    return 'Forget “$name”?';
+  }
+
+  @override
+  String get peopleForgetMessage =>
+      'Their faces go back to Unnamed faces. Photos are not changed.';
+
+  @override
+  String peopleIsThis(String name) {
+    return 'Is this $name?';
+  }
+
+  @override
+  String get peopleYes => 'Yes';
+
+  @override
+  String get peopleNo => 'No';
 }

@@ -1,5 +1,6 @@
 import '../../../editor/domain/entities/image_edits.dart';
 import '../entities/catalog_image.dart';
+import '../entities/face.dart';
 import '../entities/library_query.dart';
 import '../entities/photo_info.dart';
 
@@ -43,6 +44,37 @@ abstract class CatalogRepository {
   Future<void> addToAlbum(int id, List<String> paths);
 
   Future<void> removeFromAlbum(int id, List<String> paths);
+
+  // Faces
+
+  /// The file stamp each photo had when its faces were last looked for.
+  Future<Map<String, FileStamp>> faceScanStamps();
+
+  /// Replaces the faces of [path] with [faces] (each with a name, if
+  /// known) and records that the photo was scanned at [stamp].
+  Future<void> replaceFaces(
+    String path,
+    FileStamp stamp,
+    List<(DetectedFace, String?)> faces,
+  );
+
+  /// Faces, optionally only of one photo or person, or only unnamed ones.
+  /// Fingerprints are loaded only when [withPrints] is set.
+  Future<List<CatalogFace>> faces({
+    String? path,
+    String? name,
+    bool unnamedOnly = false,
+    bool includeIgnored = false,
+    bool withPrints = false,
+  });
+
+  /// Names (or, with null, un-names) faces.
+  Future<void> nameFaces(List<int> ids, String? name);
+
+  Future<void> setFacesIgnored(List<int> ids, bool ignored);
+
+  /// Everyone who has been named, with a face to show.
+  Future<List<PersonSummary>> people();
 
   Future<void> close();
 }

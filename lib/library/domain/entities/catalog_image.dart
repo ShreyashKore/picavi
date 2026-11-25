@@ -1,4 +1,5 @@
 import '../../../editor/domain/entities/image_edits.dart';
+import 'geo_point.dart';
 import 'photo_info.dart';
 
 /// Size and modification time, used to notice that a file changed.
@@ -27,6 +28,7 @@ class CatalogImage {
     required this.stamp,
     this.taken,
     this.camera,
+    this.gps,
     this.info = PhotoInfo.none,
     this.edits = ImageEdits.none,
   });
@@ -39,6 +41,9 @@ class CatalogImage {
   /// When the photo was taken (EXIF), if known.
   final DateTime? taken;
   final String? camera;
+
+  /// Where the camera said it was taken (EXIF GPS).
+  final GeoPoint? gps;
   final PhotoInfo info;
   final ImageEdits edits;
 
@@ -48,6 +53,9 @@ class CatalogImage {
   /// The date the timeline uses: when it was taken, else when last changed.
   DateTime get date => taken ?? modified;
 
+  /// Where it was taken: set by hand, else from the camera.
+  GeoPoint? get location => info.location ?? gps;
+
   CatalogImage copyWith({PhotoInfo? info, ImageEdits? edits}) {
     return CatalogImage(
       path: path,
@@ -56,6 +64,7 @@ class CatalogImage {
       stamp: stamp,
       taken: taken,
       camera: camera,
+      gps: gps,
       info: info ?? this.info,
       edits: edits ?? this.edits,
     );

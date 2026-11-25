@@ -40,6 +40,8 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  FakeFaceDetector detector = FakeFaceDetector({});
+
   Future<void> openLibrary(WidgetTester tester) async {
     tester.view.physicalSize = const Size(1400, 900);
     tester.view.devicePixelRatio = 1;
@@ -52,6 +54,7 @@ void main() {
       fileOperations: fixture.files,
       indexer: fixture.indexer,
       duplicateFinder: fixture.duplicates,
+      faceDetector: detector,
     );
     await tester.pumpWidget(
       MaterialApp(
@@ -141,5 +144,39 @@ void main() {
       (await tester.runAsync(fixture.catalog.albums))!.single.imageCount,
       1,
     );
+  });
+
+  testWidgets('name a group of faces in People', (tester) async {
+    fixture.settings.roots = ['/pics'];
+    detector = FakeFaceDetector({
+      '/pics/goa/beach.jpg': [detectedFace(0)],
+      '/pics/home/cat.jpg': [detectedFace(0, noise: 0.1)],
+    });
+    await openLibrary(tester);
+
+    await tester.tap(find.text('People').first);
+    await settle(tester);
+    expect(find.text('Unnamed faces'), findsOneWidget);
+    expect(find.text('2 faces'), findsOneWidget);
+
+    await tester.tap(find.text('Name…'));
+    await settle(tester);
+    await tester.enterText(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(TextField),
+      ),
+      'Alice',
+    );
+    await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await settle(tester);
+
+    expect(find.text('Alice'), findsOneWidget);
+    expect(find.text('Unnamed faces'), findsNothing);
+
+    await tester.tap(find.text('Alice'));
+    await settle(tester);
+    expect(find.textContaining('Alice · 2 photos'), findsOneWidget);
   });
 }

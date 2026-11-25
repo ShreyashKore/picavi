@@ -7,4 +7,9 @@ abstract class LibrarySettingsRepository {
   Future<Set<String>> hiddenFolders();
 
   Future<void> setHiddenFolders(Set<String> folders);
+
+  /// Where imported photos go, or null for the default (Pictures).
+  Future<String?> importDestination();
+
+  Future<void> setImportDestination(String folder);
 }

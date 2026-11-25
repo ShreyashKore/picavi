@@ -1,0 +1,178 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  # Dry run: build the packages from any branch without tagging. Manual runs
+  # only produce workflow artifacts; the `publish` job stays tag-only.
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            platform: macos
+            target: dmg
+            stable-name: picavi-macos.dmg
+          # Built inside an ubuntu:22.04 container so the bundle's glibc baseline
+          # (2.35) does not depend on the runner image.
+          # scripts/check_linux_glibc_baseline.sh enforces the result.
+          - os: ubuntu-latest
+            container: ubuntu:22.04
+            platform: linux
+            target: deb
+            stable-name: picavi-linux.deb
+          - os: windows-latest
+            platform: windows
+            target: exe
+            stable-name: picavi-windows-setup.exe
+
+    name: build (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    steps:
+      # Runs first: the container is bare, and checkout and flutter-action need
+      # git, curl, jq and unzip.
+      #   clang … liblzma-dev — Flutter desktop
+      #   openjdk-17-jdk      — package:jni's CMake does find_package(JNI), which
+      #                         needs libjawt, so the -headless JDK is not enough
+      #   binutils            — readelf, for the glibc baseline check
+      - name: Install Linux dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates curl git jq unzip xz-utils zstd \
+            build-essential clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev openjdk-17-jdk binutils
+          # FindJNI needs JAVA_HOME; unlike the runner images, a container does
+          # not export it.
+          echo "JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")" >> "$GITHUB_ENV"
+          # Steps run as root here, but the workspace and tool cache belong to
+          # the runner's uid.
+          git config --global --add safe.directory '*'
+
+      - uses: actions/checkout@v4
+
+      - name: Check that the tag matches pubspec.yaml
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          version="$(sed -nE 's/^version: *([^+[:space:]]+).*/\1/p' pubspec.yaml)"
+          # v1.2.3, or a pre-release of it such as v1.2.3-alpha.1.
+          case "$GITHUB_REF_NAME" in
+            "v$version" | "v$version"-*) ;;
+            *)
+              echo "::error::Tag $GITHUB_REF_NAME does not match pubspec version $version"
+              exit 1
+              ;;
+          esac
+
+      - name: Read Flutter version from .fvmrc
+        id: fvm
+        shell: bash
+        run: echo "FLUTTER_VERSION=$(jq -r '.flutter' .fvmrc)" >> "$GITHUB_OUTPUT"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm.outputs.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Install macOS packaging dependencies
+        if: matrix.platform == 'macos'
+        run: |
+          mkdir -p "$HOME/.local"
+          npm install -g appdmg --prefix "$HOME/.local"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install Windows packaging dependencies
+        if: matrix.platform == 'windows'
+        run: choco install innosetup --no-progress -y
+
+      - name: Install Fastforge
+        run: dart pub global activate fastforge 0.6.14
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      # One platform is enough; nothing is published unless every build passes.
+      - name: Analyze and test
+        if: matrix.platform == 'macos'
+        run: |
+          flutter analyze
+          flutter test
+
+      - name: Package
+        shell: bash
+        env:
+          PLATFORM: ${{ matrix.platform }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          dart pub global run fastforge:main package \
+            --platform="$PLATFORM" \
+            --targets="$TARGET" \
+            --artifact-name='picavi-{{build_name}}-{{platform}}{{#is_installer}}-setup{{/is_installer}}{{#ext}}.{{ext}}{{/ext}}'
+
+      - name: Verify Linux glibc baseline
+        if: matrix.platform == 'linux'
+        shell: bash
+        run: bash scripts/check_linux_glibc_baseline.sh "$(find dist -name '*.deb' | head -1)"
+
+      # Each package ships under its versioned name and under a stable name, so
+      # releases/latest/download/<stable name> always works.
+      - name: Collect packages
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          STABLE_NAME: ${{ matrix.stable-name }}
+        run: |
+          mkdir release
+          cp dist/*/*."$TARGET" release/
+          cp dist/*/*."$TARGET" "release/$STABLE_NAME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: picavi-${{ matrix.platform }}
+          path: release/*
+          if-no-files-found: error
+
+  # Separate from the builds so a release never goes out with a platform missing
+  # and only this job can write to the repository.
+  publish:
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" release/* --clobber
+          else
+            # A suffixed tag (v1.2.3-alpha.1) is a pre-release, which GitHub
+            # leaves out of releases/latest.
+            prerelease=false
+            case "$TAG" in *-*) prerelease=true ;; esac
+            gh release create "$TAG" release/* --verify-tag --generate-notes \
+              --title "Picavi $TAG" --prerelease="$prerelease"
+          fi

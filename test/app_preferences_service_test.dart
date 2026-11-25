@@ -141,5 +141,15 @@ void main() {
 
       expect(await service.getRecentFolders(), isEmpty);
     });
+
+    test('Live Text is on by default and can be turned off', () async {
+      expect(await service.isLiveTextEnabled(), isTrue);
+
+      await service.setLiveTextEnabled(false);
+      expect(await service.isLiveTextEnabled(), isFalse);
+
+      await service.setLiveTextEnabled(true);
+      expect(await service.isLiveTextEnabled(), isTrue);
+    });
   });
 }

@@ -17,9 +17,14 @@ class LiveTextOverlay extends StatefulWidget {
     super.key,
     required this.controller,
     this.selectionColor,
+    this.onContextMenu,
   });
 
   final LiveTextController controller;
+
+  /// Called with the global pointer position when text is right-clicked.
+  /// The clicked word is selected first unless it already is.
+  final ValueChanged<Offset>? onContextMenu;
 
   /// Highlight for selected words; defaults to the theme's primary color.
   final Color? selectionColor;
@@ -52,11 +57,21 @@ class _LiveTextOverlayState extends State<LiveTextOverlay> {
   }
 
   void _handleBackgroundPointerDown(PointerDownEvent event) {
-    if (event.buttons != kPrimaryButton || !widget.controller.hasSelection) {
+    final geometry = _geometry;
+    final word = geometry?.wordAt(event.localPosition);
+    if (event.buttons == kSecondaryButton) {
+      if (word == null) {
+        return;
+      }
+      if (!widget.controller.isSelected(word)) {
+        widget.controller.selectWord(word);
+      }
+      widget.onContextMenu?.call(event.position);
       return;
     }
-    final geometry = _geometry;
-    if (geometry == null || geometry.wordAt(event.localPosition) == null) {
+    if (event.buttons == kPrimaryButton &&
+        word == null &&
+        widget.controller.hasSelection) {
       widget.controller.clearSelection();
     }
   }
@@ -166,14 +181,15 @@ class _LiveTextOverlayState extends State<LiveTextOverlay> {
                     _TextSelectGestureRecognizer:
                         GestureRecognizerFactoryWithHandlers<
                           _TextSelectGestureRecognizer
-                        >(() => _TextSelectGestureRecognizer(debugOwner: this), (
-                          recognizer,
-                        ) {
-                          recognizer
-                            ..onStart = _handleSelectStart
-                            ..onUpdate = _handleSelectUpdate
-                            ..onEnd = _handleSelectEnd;
-                        }),
+                        >(
+                          () => _TextSelectGestureRecognizer(debugOwner: this),
+                          (recognizer) {
+                            recognizer
+                              ..onStart = _handleSelectStart
+                              ..onUpdate = _handleSelectUpdate
+                              ..onEnd = _handleSelectEnd;
+                          },
+                        ),
                   },
                   child: MouseRegion(
                     cursor: SystemMouseCursors.text,
@@ -291,9 +307,8 @@ class _WordGeometry {
     if (lengthSquared == 0) {
       return (p - a).distance;
     }
-    final t =
-        (((p.dx - a.dx) * ab.dx + (p.dy - a.dy) * ab.dy) / lengthSquared)
-            .clamp(0.0, 1.0);
+    final t = (((p.dx - a.dx) * ab.dx + (p.dy - a.dy) * ab.dy) / lengthSquared)
+        .clamp(0.0, 1.0);
     return (p - (a + ab * t)).distance;
   }
 }
